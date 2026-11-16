@@ -917,3 +917,11 @@ html[data-dark="1"] .grid-lines, html[data-dark="1"] .grid-lines i { border-colo
   box-shadow: inset 0 0 0 1px var(--hair); font: 400 12.5px/1.6 var(--sans); color: var(--ink-soft); word-break: keep-all; }
 .share-local { margin: -8px 0 16px; font: 400 12px/1.6 var(--sans); color: var(--ink-mute); word-break: keep-all; }
 .share-local b { font-weight: 600; color: var(--ink-soft); }
+
+/* 체험 모드: 키 입력 버튼 */
+.demo-key { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-top: 12px; }
+.demo-key .mode-note { flex: 1 1 260px; margin: 0; }
+.demo-key-button { flex: none; display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 14px;
+  border: 1px solid var(--ink); border-radius: 999px; background: rgba(255, 255, 255, .55); color: var(--ink);
+  font: 500 12px var(--sans); cursor: pointer; transition: background .3s ease, color .3s ease; }
+.demo-key-button:hover { background: var(--ink); color: var(--paper); }

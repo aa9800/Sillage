@@ -889,9 +889,13 @@ function shrinkImage(file) {
   });
 }
 
-function KeyPanel({ status, onChange }) {
+function KeyPanel({ status, onChange, openSignal }) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(readKey());
+  const input = useRef(null);
+  // 체험 모드 안내의 'AI 키 넣기' 버튼을 누르면 이 창을 열고 입력칸에 바로 커서를 둔다
+  useEffect(() => { if (openSignal) setOpen(true); }, [openSignal]);
+  useEffect(() => { if (open) input.current?.focus(); }, [open]);
   const label = status?.key === 'user' ? '내 키로 AI 연결' : status?.key === 'server' ? 'AI 연결됨' : '체험 모드';
   function save(event) {
     event.preventDefault();
@@ -905,8 +909,8 @@ function KeyPanel({ status, onChange }) {
     </button>
     {open && <form className="key-pop" onSubmit={save}>
       <strong>OpenAI API 키</strong>
-      <p>내 키를 넣으면 LLM 상담, AI 큐레이션, 사진 분석이 켜져요. 키는 이 탭에만 보관되고, 탭을 닫으면 지워져요. 키가 없으면 데모 모드로 동작해요.</p>
-      <input type="password" autoComplete="off" spellCheck={false} placeholder="sk-..." value={value} onChange={event => setValue(event.target.value)} />
+      <p>내 키를 넣으면 LLM 상담, AI 큐레이션, 사진 분석이 켜져요. 키는 이 탭에만 보관되고, 탭을 닫으면 지워져요. 키가 없으면 체험 모드로 동작해요.</p>
+      <input ref={input} type="password" autoComplete="off" spellCheck={false} placeholder="sk-..." value={value} onChange={event => setValue(event.target.value)} />
       <div className="key-actions">
         {readKey() && <button type="button" onClick={() => { setValue(''); try { sessionStorage.removeItem(KEY_STORE); } catch { /* */ } setOpen(false); onChange(); }}>지우기</button>}
         <button type="submit">저장</button>
@@ -947,6 +951,7 @@ function App() {
   const [dragging, setDragging] = useState(false);
   const [intent, setIntent] = useState(null);
   const [shareData, setShareData] = useState(null);
+  const [keyAsk, setKeyAsk] = useState(0);
   const [liked, setLiked] = useState(readLiked);
   const [soundHint, setSoundHint] = useState(() => !sound.enabled && !hintSeen());
   const photoInput = useRef(null);
@@ -1178,7 +1183,7 @@ function App() {
       <header className="site-head studio-head">
         <a className="wordmark" href="/" aria-label="Sillage 처음으로">Sillage</a>
         <span className="head-meta">L’atelier — 향의 아틀리에</span>
-        <span className="head-right"><KeyPanel status={keyStatus} onChange={refreshStatus} /><SoundToggle /><button className="ghost" type="button" onClick={reset}><span aria-hidden="true">↺</span><span className="ghost-label"> 새로 시작</span></button></span>
+        <span className="head-right"><KeyPanel status={keyStatus} onChange={refreshStatus} openSignal={keyAsk} /><SoundToggle /><button className="ghost" type="button" onClick={reset}><span aria-hidden="true">↺</span><span className="ghost-label"> 새로 시작</span></button></span>
       </header>
       {soundHint && view === 'studio' && <div className="sound-hint" role="status">
         <span>효과음을 켜면 노트를 고를 때 유리잔 소리가 나요</span>
@@ -1229,7 +1234,10 @@ function App() {
               <Button label="보내기" type="submit" variant="primary" size="md" isIconOnly
                 icon={<span aria-hidden="true">↑</span>} isDisabled={!input.trim() && !photo} isLoading={busy} />
             </form>
-            {mode === 'demo' && <p className="mode-note">체험 모드예요. 날씨와 향수 조회는 그대로 되고, 오른쪽 위 <b>체험 모드</b>를 눌러 OpenAI 키를 넣으면 AI 상담과 AI 큐레이션이 켜져요.</p>}
+            {mode === 'demo' && <div className="demo-key">
+              <p className="mode-note">체험 모드예요. 날씨와 향수 조회는 그대로 되고, OpenAI 키를 넣으면 AI 상담·AI 큐레이션·사진 분석이 켜져요.</p>
+              <button type="button" className="demo-key-button" onClick={() => setKeyAsk(n => n + 1)}><span aria-hidden="true">✦</span> AI 키 넣기</button>
+            </div>}
             {mode === 'incomplete' && <p className="mode-note">LLM 연결 설정을 완료하면 상담을 시작할 수 있어요.</p>}
           </section>
           <Products results={result} curation={curation?.key === blendKey ? curation : null} curating={curating}
