@@ -148,7 +148,7 @@ def demo_direction(user_texts):
     ready = family != "violet" and (len(user_texts) >= 3 or (
         len(user_texts) >= 2 and bool(re.search(r"출근|매일|저녁|데이트|외출|추천", user_texts[-1]))
     ))
-    label = PALETTES[family][0].split()[0]
+    label = PALETTES[family][0].split()[0].removesuffix("의")
     if family == "violet":
         reply = "어떤 향의 장면이 떠오르세요? 비 온 숲이나 햇볕에 마른 셔츠처럼 말해도 좋아요."
     elif ready:
