@@ -760,17 +760,36 @@ function ShareDialog({ data, onClose }) {
     renderShareCard(data).then(blob => {
       if (!alive || !blob) return;
       url = URL.createObjectURL(blob);
-      setCard({ blob, url, file: new File([blob], 'sillage-blend.png', { type: 'image/png' }) });
+      setCard({ blob, url, file: new File([blob], fileName, { type: 'image/png' }) });
     });
     return () => { alive = false; if (url) URL.revokeObjectURL(url); };
   }, [data]);
 
-  function save() {
+  // 저장 이름: 조합이 보이게(단계마다 첫 노트) + 날짜. 예) sillage_bergamot-lavender-vetiver_20261116.png
+  const fileName = (() => {
+    const parts = stages.map(({ id }) => data.selection[id][0]).filter(Boolean);
+    const d = new Date(), day = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
+    return `sillage_${parts.join('-') || 'blend'}_${day}.png`;
+  })();
+
+  async function save() {
     if (!card) return;
+    // Chrome·Edge: 저장 창을 띄워 위치와 이름을 고르게 한다. 지원하지 않으면 브라우저 기본 다운로드 폴더로 받는다.
+    if (window.showSaveFilePicker) {
+      try {
+        const handle = await window.showSaveFilePicker({ suggestedName: fileName, types: [{ description: 'PNG 이미지', accept: { 'image/png': ['.png'] } }] });
+        const stream = await handle.createWritable();
+        await stream.write(card.blob); await stream.close();
+        setNote(`${handle.name}(으)로 저장했어요.`);
+        return;
+      } catch (error) {
+        if (error?.name === 'AbortError') return;  // 사용자가 저장 창을 닫음
+      }
+    }
     const link = document.createElement('a');
-    link.href = card.url; link.download = 'sillage-blend.png';
+    link.href = card.url; link.download = fileName;
     document.body.append(link); link.click(); link.remove();
-    setNote('이미지를 저장했어요.');
+    setNote(`${fileName}(으)로 다운로드 폴더에 저장했어요.`);
   }
 
   async function copyLink() {
