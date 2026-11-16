@@ -100,7 +100,7 @@ const noteChapters = [
     body: '향수를 뿌리자마자 먼저 인사하는 향이에요. 가볍고 휘발이 빨라 금세 사라지지만, 그 향수를 기억하게 만드는 첫인상이 여기서 정해져요.',
     notes: ['lime', 'salt', 'fig-leaf', 'pear'] },
   { id: 'heart', no: '02', ko: '미들 노트', fr: 'Notes de cœur', en: ['Heart', <em key="e">Notes</em>], word: ['True', 'Heart'], time: '첫 향이 잦아든 뒤 · 몇 시간',
-    body: '첫 향이 걷히면 향수의 성격이 드러나요. 꽃, 허브, 나무처럼 향의 이야기를 끌고 가는 노트들이 가장 오래 무대에 머물러요.',
+    body: '첫 향이 걷히면 향수의 성격이 드러나요. 꽃, 과일, 허브처럼 향의 이야기를 끌고 가는 노트들이 탑 노트 다음으로 한동안 무대에 머물러요.',
     notes: ['freesia', 'sage', 'cypress', 'iris'] },
   { id: 'base', no: '03', ko: '베이스 노트', fr: 'Notes de fond', en: ['Base', <em key="e">Notes</em>], word: ['Last', 'Trace'], time: '시간이 흐른 뒤 · 반나절 이상',
     body: '피부 가까이에 마지막까지 남는 향이에요. 무겁고 천천히 퍼지는 노트가 앞선 향들을 받쳐 주고, 하루의 끝에 기억되는 잔향을 만들어요.',
@@ -112,7 +112,7 @@ const families = [
   { ko: '그린', en: 'Green', color: '#8dbb63', text: '막 꺾은 풀잎의 싱그러움' },
   { ko: '아쿠아틱', en: 'Aquatic', color: '#67c0d3', text: '바닷바람처럼 투명한' },
   { ko: '플로럴', en: 'Floral', color: '#ee9fb8', text: '꽃다발처럼 화사한' },
-  { ko: '머스크', en: 'Musk', color: '#b2a8d4', text: '살결처럼 포근한' },
+  { ko: '머스크·파우더리', en: 'Musky', color: '#b2a8d4', text: '살결처럼 포근한' },
   { ko: '앰버', en: 'Amber', color: '#d98a3d', text: '바닐라·수지의 달고 깊은' },
   { ko: '우디', en: 'Woody', color: '#a97c55', text: '마른 나무의 따뜻한 결' },
 ];
@@ -134,7 +134,7 @@ const strengths = [
 const testingSteps = [
   { title: '시향지로 먼저 좁히기', text: '여러 향을 시향지에 뿌려 마음에 드는 방향을 두세 개로 좁혀요.' },
   { title: '피부에서 확인하기', text: '손목 안쪽에 뿌리고 문지르지 않아요. 같은 향도 피부마다 조금씩 다르게 피어나요.' },
-  { title: '시간을 두고 맡기', text: '첫 향만으로 고르지 말고, 30분 뒤와 몇 시간 뒤의 잔향까지 맡아봐요.' },
+  { title: '시간을 두고 맡기', text: '첫 향만으로 고르지 말고, 30분 뒤와 몇 시간 뒤의 잔향까지 맡아 봐요.' },
   { title: '한 번에 몇 개만', text: '코는 금방 무뎌져요. 한 번에 서너 개 정도만 비교하는 게 좋아요.' },
 ];
 
@@ -362,7 +362,7 @@ function Entrance({ opening, onChapter, onStart }) {
           <p className="index reveal"><span>00</span> / 07 — La pyramide</p>
           <h2 id="ch-intro" className="chapter-title" lang="en"><Lines lines={['A sentence', <em key="e">written in time</em>]} /></h2>
           <p className="title-ko reveal">향수는 시간 위에 쓰인 문장이에요</p>
-          <p className="body reveal">향수는 한 가지 냄새가 아니에요. 가벼운 향은 빨리 날아가고 무거운 향은 오래 남기 때문에, 시간이 지나며 향이 세 겹으로 바뀌어요. 이 세 겹을 <strong>노트</strong>라고 불러요.</p>
+          <p className="body reveal">향수는 한 가지 냄새가 아니에요. 가벼운 향은 빨리 날아가고 무거운 향은 오래 남기 때문에, 시간이 지나며 향이 세 겹으로 바뀌어요. 향을 이루는 재료 하나하나를 <strong>노트</strong>라고 부르고, 나타나는 때에 따라 탑·미들·베이스로 나눠요.</p>
         </div>
         <aside className="chapter-side pyramid" aria-label="노트 피라미드">
           <svg className="pyramid-shape" viewBox="0 0 200 180" aria-hidden="true">
@@ -465,7 +465,7 @@ function Entrance({ opening, onChapter, onStart }) {
           <p className="index reveal"><span>07</span> / 07 — Essayer</p>
           <h2 id="ch-testing" className="chapter-title" lang="en"><Lines lines={['The Art of', <em key="e">Testing</em>]} /></h2>
           <p className="title-ko reveal">시향하는 법</p>
-          <p className="body reveal">마음에 드는 향을 찾았다면, 실제로 맡아볼 때 이 순서를 기억해 주세요. 향은 시간을 두고 바뀌니까 천천히 만나는 게 좋아요.</p>
+          <p className="body reveal">마음에 드는 향을 찾았다면, 실제로 맡아 볼 때 이 순서를 기억해 주세요. 향은 시간을 두고 바뀌니까 천천히 만나는 게 좋아요.</p>
         </div>
         <aside className="chapter-side">
           <ol className="steps">{testingSteps.map((step, i) => <li className="reveal" key={step.title}>
@@ -479,7 +479,7 @@ function Entrance({ opening, onChapter, onStart }) {
     <section className="begin" data-chapter="begin" aria-labelledby="ch-begin">
       <h2 id="ch-begin" className="begin-title" lang="en"><Lines lines={['Now,', <em key="e">find your scent</em>]} /><span className="title-ko fade-in">이제, 당신의 향을 찾아볼 차례예요</span></h2>
       <div className="begin-foot">
-        <p className="fade-in">마음에 드는 노트를 여러 개 골라 섞거나, 떠오르는 장면을 말해 주세요.<br />그 조합과 가까운 실제 향수를 찾아드려요.</p>
+        <p className="fade-in">마음에 드는 노트를 여러 개 골라 섞거나, 떠오르는 장면을 말해 주세요.<br />그 조합과 가까운 실제 향수를 찾아 드려요.</p>
         <button className="cta fade-in" type="button" onClick={onStart}>
           <span className="cta-fill" aria-hidden="true" />
           <span className="cta-label">Find your scent<small>나의 향수 찾기</small></span>
@@ -509,7 +509,7 @@ function Scene({ result, pulse, tones, accents, bottle, origin, selection }) {
   </section>;
 }
 
-function BlendPreview({ selection, tones, onRemove }) {
+function BlendPreview({ selection, tones, onRemove, disabled }) {
   return <div className="blend-preview" aria-label="나의 블렌드">
     {stages.map((stage, i) => {
       const ids = selection[stage.id];
@@ -519,7 +519,7 @@ function BlendPreview({ selection, tones, onRemove }) {
         <span className="blend-stage">{stage.en}</span>
         <span className="blend-bar"><i style={{ background: bar }} /></span>
         <span className="blend-result" style={{ '--c': ids.length ? tones[i] : 'transparent' }} title="섞인 색" />
-        <span className="blend-chips">{ids.length ? ids.map(n => <button type="button" key={n} onClick={() => onRemove(stage.id, n)}
+        <span className="blend-chips">{ids.length ? ids.map(n => <button type="button" key={n} disabled={disabled} onClick={() => onRemove(stage.id, n)}
           style={{ '--c': byId[n].color }} aria-label={`${byId[n].name} 빼기`} title={byId[n].name}><i /><span lang="en">{byId[n].english}</span><b aria-hidden="true">×</b></button>)
           : <em lang="en">Not yet chosen</em>}</span>
       </div>;
@@ -564,7 +564,7 @@ function NoteRail({ notes, picked, choose, stage, disabled }) {
 
 function NotePicker({ selection, choose, disabled, tones, focus }) {
   const [stage, setStage] = useState('top');
-  useEffect(() => { if (focus) setStage(focus); }, [focus]);
+  useEffect(() => { if (focus?.stage) setStage(focus.stage); }, [focus]);
   const group = stages.find(item => item.id === stage);
   const picked = selection[stage];
   return <section className="picker" aria-labelledby="blend-title">
@@ -580,7 +580,7 @@ function NotePicker({ selection, choose, disabled, tones, focus }) {
     </div>
     <p className="stage-hint">{group.detail} <span>· 옆으로 넘겨 보고, 여러 개를 골라 섞을 수 있어요 ({picked.length}/{MAX_PER_STAGE})</span></p>
     <NoteRail notes={notesCatalog.filter(note => note.stage === stage)} picked={picked} choose={choose} stage={stage} disabled={disabled} />
-    <BlendPreview selection={selection} tones={tones} onRemove={choose} />
+    <BlendPreview selection={selection} tones={tones} onRemove={choose} disabled={disabled} />
   </section>;
 }
 
@@ -604,7 +604,7 @@ function Products({ results, curation, curating, liked, onLike, onShare }) {
           <span className="product-no">{String(index + 1).padStart(2, '0')}</span>
           <div><span className="brand">{item.brand}{item.concentration && <em> · {item.concentration}</em>}</span><strong>{item.name}</strong>
             {item.why ? <p className="why">{item.why}</p> : <p>{item.description}</p>}
-            <span className="product-notes">{item.notes.join(' · ')}</span>
+            <span className="product-notes">{(item.notes ?? []).join(' · ')}</span>
             {item.matching_notes?.length > 0 && <span className="match">선택한 노트와 겹침 · {item.matching_notes.join(' · ')}</span>}
             <span className="source">노트 출처 보기</span></div>
           <span aria-hidden="true" className="external">↗</span>
@@ -761,10 +761,11 @@ function ShareDialog({ data, onClose }) {
     if (!el.open) el.showModal();
     let url = null, alive = true;
     renderShareCard(data).then(blob => {
-      if (!alive || !blob) return;
+      if (!alive) return;
+      if (!blob) throw new Error('empty');
       url = URL.createObjectURL(blob);
       setCard({ blob, url, file: new File([blob], fileName, { type: 'image/png' }) });
-    });
+    }).catch(() => { if (alive) { setCard(false); setNote('카드를 만들지 못했어요. 창을 닫고 다시 시도해 주세요.'); } });
     return () => { alive = false; if (url) URL.revokeObjectURL(url); };
   }, [data]);
 
@@ -825,7 +826,7 @@ function ShareDialog({ data, onClose }) {
     }
   }
 
-  return <dialog className="share-dialog" ref={dialog} onClose={onClose} onCancel={onClose}
+  return <dialog className="share-dialog" ref={dialog} onClose={onClose} data-lenis-prevent
     onClick={event => { if (event.target === dialog.current) dialog.current.close(); }} aria-labelledby="share-title">
     <div className="share-panel">
       <button type="button" className="share-close" aria-label="닫기" onClick={() => dialog.current.close()}>×</button>
@@ -834,7 +835,9 @@ function ShareDialog({ data, onClose }) {
       <p className="title-ko">공유하거나 이미지로 간직해 보세요</p>
       {localOnly && <p className="share-local">지금은 이 PC에서 실행 중이라 링크는 이 PC에서만 열려요. 다른 사람에게는 <b>공유하기</b>나 <b>이미지</b>로 보내 주세요.</p>}
       <div className="share-preview" aria-busy={!card}>
-        {card ? <img src={card.url} alt="나의 블렌드 카드: 고른 노트와 시향해 볼 향수" /> : <span className="share-loading">카드를 만드는 중<i /><i /><i /></span>}
+        {card ? <img src={card.url} alt="나의 블렌드 카드: 고른 노트와 시향해 볼 향수" />
+          : card === false ? <span className="share-loading">카드를 만들지 못했어요</span>
+          : <span className="share-loading">카드를 만드는 중<i /><i /><i /></span>}
       </div>
       <div className="share-actions">
         <button type="button" className="share-primary" onClick={share} disabled={!card}>공유하기</button>
@@ -847,12 +850,18 @@ function ShareDialog({ data, onClose }) {
 }
 
 // 대화 중 MCP 도구로 확인한 정보(날씨, 향수 조회 등). 실패한 호출과 중복은 숨긴다.
+const TOOL_TEXT = { get_weather: '오늘 날씨 확인', find_perfume: '향수 노트 확인', describe_note: '노트 정보 확인' };
 function ToolTrail({ tools }) {
   const seen = new Set();
-  const shown = (tools || []).filter(t => t.label !== '확인 실패' && !seen.has(t.label + t.detail) && seen.add(t.label + t.detail)).slice(0, 4);
+  // 노트 설명은 사용자가 노트를 직접 물었을 때(그 도구만 한 번 쓴 경우)만 보여 준다. 노트를 고르며 부른 건 숨긴다.
+  const askedNote = (tools || []).length === 1 && tools[0].tool === 'describe_note';
+  const shown = (tools || [])
+    .filter(t => TOOL_TEXT[t.tool] && t.label !== '확인 실패' && (t.tool !== 'describe_note' || askedNote))
+    .filter(t => !seen.has(t.tool + t.detail) && seen.add(t.tool + t.detail)).slice(0, 3);
   if (!shown.length) return null;
-  return <ul className="tool-trail" aria-label="확인한 정보">{shown.map((t, i) => <li key={i}>
-    <span className="tool-tag" lang="en">MCP</span><b>{t.label}</b>{t.detail && <em>{t.detail}</em>}
+  return <ul className="tool-trail" aria-label="AI가 확인한 정보">{shown.map((t, i) => <li key={i} title="MCP 도구로 확인한 정보">
+    <span className="tool-dot" aria-hidden="true" /><b>{t.label === '날씨(평년값)' ? '날씨 대신 평년값' : TOOL_TEXT[t.tool]}</b>
+    {t.detail && <em>{t.tool === 'describe_note' ? t.detail.split(' · ')[0] : t.detail}</em>}
   </li>)}</ul>;
 }
 
@@ -864,7 +873,7 @@ function ImageCredits() {
   }}>
     <summary>재료 사진 출처 · Wikimedia Commons</summary>
     {credits && <ul>{Object.entries(credits).map(([id, item]) => <li key={id}>
-      <strong>{byId[id]?.name ?? id}</strong> <a href={item.source} target="_blank" rel="noreferrer">{item.title.replace(/^File:/, '')}</a>
+      <strong>{byId[id]?.name ?? id}</strong> <a href={item.source} target="_blank" rel="noreferrer">{(item.title ?? '').replace(/^File:/, '')}</a>
       {item.author && <> · {item.author}</>} · {item.license} · {item.edit}
     </li>)}</ul>}
   </details>;
@@ -907,7 +916,7 @@ function KeyPanel({ status, onChange, openSignal }) {
     <button type="button" className={`key-toggle k-${status?.key ?? 'demo'}`} onClick={() => setOpen(v => !v)} aria-expanded={open}>
       <i aria-hidden="true" /><span>{label}</span>
     </button>
-    {open && <form className="key-pop" onSubmit={save}>
+    {open && <form className="key-pop" onSubmit={save} onKeyDown={event => { if (event.key === 'Escape') setOpen(false); }}>
       <strong>OpenAI API 키</strong>
       <p>내 키를 넣으면 LLM 상담, AI 큐레이션, 사진 분석이 켜져요. 키는 이 탭에만 보관되고, 탭을 닫으면 지워져요. 키가 없으면 체험 모드로 동작해요.</p>
       <input ref={input} type="password" autoComplete="off" spellCheck={false} placeholder="sk-..." value={value} onChange={event => setValue(event.target.value)} />
@@ -999,7 +1008,7 @@ function App() {
   }, [view]);
 
   // 노트 조합이 바뀌고 잠시 멈추면 검증된 향수 DB + LLM 큐레이션을 불러온다
-  const blendKey = JSON.stringify([compact(selection), intent, liked.map(item => item.id)]);
+  const blendKey = JSON.stringify([compact(selection), intent]);
   useEffect(() => {
     if (view !== 'studio' || !countOf(selection)) { setCuration(null); setCurating(false); return; }
     const request = new AbortController();
@@ -1043,8 +1052,13 @@ function App() {
 
   useEffect(() => {
     if (!sharedAtStart) return;
-    api('/api/blend', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ blend: compact(sharedAtStart) }) })
-      .then(response => (response.ok ? response.json() : null)).then(data => { if (data) present(data); }).catch(() => {});
+    const request = new AbortController();
+    blendController.current = request;
+    api('/api/blend', { method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: request.signal, body: JSON.stringify({ blend: compact(sharedAtStart) }) })
+      .then(response => (response.ok ? response.json() : null))
+      .then(data => { if (data && blendController.current === request) present(data); })
+      .catch(() => {})
+      .finally(() => { if (blendController.current === request) blendController.current = null; });
   }, []);
 
   function present(data) {
@@ -1117,14 +1131,14 @@ function App() {
       setMode(data.demo ? 'demo' : 'llm');
       if (data.intent) setIntent(data.intent);
       setMessages([...next, { role: 'assistant', content: data.reply, changes: data.changes ?? [], tools: data.tools ?? [] }]);
-      if (data.changes?.length) { setFocusStage(data.changes[data.changes.length - 1].stage); sound.pour(); }
+      if (data.changes?.length) { setFocusStage({ stage: data.changes[data.changes.length - 1].stage, at: Date.now() }); sound.pour(); }
       if (matchMedia('(max-width: 900px)').matches && stage.current.getBoundingClientRect().top < -100) {
         stage.current.scrollIntoView({ behavior: reduceMotion() ? 'instant' : 'smooth' });
       }
     } catch (failure) {
       if (request.signal.aborted) return;
       setMessages(messages);
-      setInput(text);
+      setInput(current => current || text);
       setPhoto(image);
       setError(failure instanceof SyntaxError || failure instanceof TypeError
         ? '연결이 잠시 끊겼어요. 다시 보내 주세요.' : failure.message);
@@ -1198,13 +1212,13 @@ function App() {
             <p className="index"><span>Atelier</span> — 나만의 블렌드</p>
             <h1 id="page-title" tabIndex={-1} ref={studioTitle} lang="en">The <em>Atelier</em></h1>
             <p className="title-ko">향의 아틀리에</p>
-            <p className="lede">단계마다 마음에 드는 노트를 여러 개 골라 섞어 보세요. 고른 색이 병 속에서 층을 이루며 섞이고, 그 조합과 가까운 향수를 찾아드려요.</p>
+            <p className="lede">단계마다 마음에 드는 노트를 여러 개 골라 섞어 보세요. 고른 색이 병 속에서 층을 이루며 섞이고, 그 조합과 가까운 향수를 찾아 드려요.</p>
             {fromLink && <p className="shared-note">공유받은 블렌드예요. 노트를 바꾸거나 말을 걸어 나만의 향으로 이어 가 보세요.</p>}
           </div>
           <NotePicker selection={selection} choose={choose} disabled={busy} tones={tones} focus={focusStage} />
           <section className="talk" aria-labelledby="talk-title">
             <div className="section-label"><span>II.</span><h2 id="talk-title"><b lang="en">Or, in your words</b>또는, 말로 들려주세요</h2></div>
-            <div className="conversation" ref={conversation} role="log" aria-label="향수 상담 대화">
+            <div className="conversation" ref={conversation} role="log" aria-label="향수 상담 대화" data-lenis-prevent>
               {messages.map((message, i) => <div className={`message ${message.role}`} key={i}>{message.image && <img className="message-photo" src={message.image} alt="보낸 사진" />}<p>{message.content}</p>
                 {message.changes?.length > 0 && <ul className="changes" aria-label="바뀐 노트">{message.changes.map(change => <li key={change.stage}>
                   <span className="change-stage" lang="en">{change.stage}</span>

@@ -304,6 +304,9 @@ async def chat(body: Chat, request: Request):
                 )}
             if responses_api:
                 content, tools_used, tool_data = await consult_with_tools(url, model, key, prompt, turns)
+                # 화면에는 사용자가 직접 말한 향수의 조회만 남긴다(AI가 혼자 찾아본 향수는 숨김)
+                if not mcp_server.perfumes_in(user_texts[-1]):
+                    tools_used = [t for t in tools_used if t["tool"] != "find_perfume"]
             else:
                 # Chat Completions 호환 API: 도구 없이 JSON만 받는다
                 async with httpx.AsyncClient(timeout=25) as client:
@@ -313,12 +316,16 @@ async def chat(body: Chat, request: Request):
                     })
                     result.raise_for_status()
                     content = result.json()["choices"][0]["message"]["content"].strip()
-            if content.startswith("```"):
-                content = content.split("\n", 1)[1].rsplit("```", 1)[0]
-            direction = Direction.model_validate_json(content)
+            content = re.sub(r"^```(?:json)?\s*|\s*```$", "", content.strip())
+            raw = json.loads(content)
+            raw["reply"] = str(raw.get("reply", ""))[:500] or "다시 한번 말해 주시겠어요?"
+            raw["notes"] = [str(n)[:20] for n in raw.get("notes", []) if isinstance(n, (str, int))][:5]
+            raw["changes"] = [c for c in raw.get("changes", []) if isinstance(c, dict)]
+            direction = Direction.model_validate(raw)
         except httpx.HTTPStatusError as error:
             detail = {
-                401: "LLM API 키가 인증되지 않았어요. 서버 설정의 키를 확인해 주세요.",
+                401: ("입력한 OpenAI 키가 맞지 않아요. 오른쪽 위에서 키를 다시 확인해 주세요." if user_key(request)
+                      else "LLM API 키가 인증되지 않았어요. 서버 설정의 키를 확인해 주세요."),
                 403: "이 키에 모델을 사용할 권한이 없어요.",
                 429: "LLM 요청 한도나 잔액을 확인해 주세요.",
             }.get(error.response.status_code, "LLM 서버가 요청을 처리하지 못했어요.")
@@ -331,11 +338,7 @@ async def chat(body: Chat, request: Request):
         updated, copied = apply_tool_results(updated, tool_data, user_texts[-1])
         if copied:
             # '○○ 같은 향': 실제 노트로 채운 결과를 그대로 말한다(LLM 문장 대신 사실만)
-            names = " · ".join(f"{STAGE_KO[st]} {', '.join(blend_notes[i]['name'] for i in ids)}" for st, ids in updated.items())
-            missing = [rag.ko_name(n) for st in ("top", "heart", "base") for n in copied["notes"][st] if not rag.note_ids(n)]
-            direction.reply = (f"{copied['brand']} {copied['name']}의 실제 노트 중 우리 노트와 같은 것으로 블렌드를 채웠어요: {names}."
-                               + (f" 우리 목록에 없는 {', '.join(missing[:4])}{josa(missing[min(3, len(missing) - 1)], '은', '는')} 빠졌어요." if missing else "")
-                               + " 여기서 더 가볍게, 더 따뜻하게처럼 말해 주시면 조정할게요.")
+            direction.reply = copy_reply(copied)
             direction.changes = [{"stage": st} for st in updated]
         else:
             updated = fill_empty_stages(updated, direction)
@@ -345,6 +348,9 @@ async def chat(body: Chat, request: Request):
     else:
         direction, updated, tools_used = await demo_with_tools(user_texts, updated)
         selected = selected_notes(Blend(blend=updated))
+        changed = diff_blend(before, normalized(updated))
+        if explicit and not tools_used and changed:
+            direction.reply = " ".join(change_sentence(c) for c in changed)
 
     after = normalized(updated)
     return {**present(direction, len(user_texts), selected), "blend": after, "changes": diff_blend(before, after),
@@ -360,7 +366,7 @@ def chat_prompt(selected, body):
         f"고를 수 있는 노트(단계[stage]: id(이름·계열: 느낌)):\n{note_menu()}\n"
         "도구 쓰는 법:\n"
         "- 향수 이름이 나오면(예: '탐다오 같은 향', '상탈 33이랑 비교') find_perfume을 영어 이름으로 호출해라. 결과의 실제 노트만 근거로 말하고, "
-        "'같은 향', '비슷하게'를 원하면 our_notes가 그대로 화면에 적용되니 reply에서는 our_notes_ko의 노트를 말해라. 두 향수를 비교하면 각각 호출해 공통점과 차이를 말해라.\n"
+        "'같은 향', '비슷하게'를 원하면 our_notes(같은 노트)와 approx_notes(같은 노트가 없는 단계를 계열로 비슷하게 채운 노트)가 그대로 화면에 적용된다. 두 향수를 비교하면 각각 호출해 공통점과 차이를 말해라.\n"
         "- 날씨, 오늘, 출근길, 계절 날씨가 나오면 get_weather(영어 도시 이름, 말하지 않으면 Seoul)를 호출해라. reply 첫 문장에 도시, 기온, 하늘을 말하고 "
         "suggested_notes를 바탕으로 단계마다 replace해라. 결과에 fallback=true가 있으면 실제 오늘 날씨가 아니니 note의 내용(연결 실패, 평년 날씨 기준)을 첫 문장에서 그대로 알려라.\n"
         "- describe_note는 사용자가 노트의 뜻을 직접 물었을 때만 한 번 호출해라. 노트를 고를 때는 위 목록의 느낌으로 충분하니 부르지 마라.\n"
@@ -458,7 +464,10 @@ def apply_llm_changes(updated, changes):
     """LLM이 정한 노트 변경을 적용한다. 단계를 잘못 지정한 노트는 버리지 않고 그 노트의 원래 단계로 옮긴다."""
     for change in changes:
         stage, action = change.get("stage"), change.get("action")
-        ids = [i for i in change.get("notes", []) if i in blend_notes]
+        if not isinstance(stage, str) or action not in ("add", "remove", "replace"):
+            continue
+        notes = change.get("notes", [])
+        ids = [i for i in (notes if isinstance(notes, list) else []) if isinstance(i, str) and i in blend_notes]
         right = [i for i in ids if blend_notes[i]["stage"] == stage]
         if stage in STAGE_KO and right:
             updated = apply_updates(updated, {stage: ({"replace": "set"}.get(action, action), right)})
@@ -469,7 +478,8 @@ def apply_llm_changes(updated, changes):
     return updated
 
 
-SWEET_AVOID = re.compile(r"(달|단\s?향|단맛|달콤|달달|바닐라|구르망).{0,10}(싫|않|말고|빼|없|별로|부담|피해|과하)|안\s?달|달지\s?않|덜\s?달")
+SWEET_AVOID = re.compile(r"(단\s?향|단맛|달콤|달달|바닐라|구르망).{0,10}(싫|않|말고|빼|없|별로|부담|피해|과하)"
+                         r"|달지\s?않|안\s?달[게고아]|덜\s?달|너무\s?달[아고]|달아서|달아요|달게\s?(하지|말)")
 SIMILAR = re.compile(r"같은|같이|비슷|처럼|느낌으로|만들어|따라|닮은")
 
 
@@ -480,16 +490,38 @@ def apply_tool_results(updated, tool_data, message):
     result, copied = normalized(updated), None
     found = [d for name, d in tool_data if name == "find_perfume" and d.get("found")]
     if len({d["id"] for d in found}) == 1 and SIMILAR.search(message):
-        ours = found[-1]["our_notes"]
-        if any(ours.values()):
-            result = {st: ids[:MAX_PER_STAGE] for st, ids in ours.items() if ids}
-            copied = next(p for p in PERFUMES if p["id"] == found[-1]["id"])
+        copied = found[-1]
+        result = copy_blend(copied)
     for name, data in tool_data:
         if name == "get_weather" and not data.get("error"):
             for stage, ids in data.get("suggested_notes", {}).items():
                 if ids and not result.get(stage):
                     result[stage] = ids[:MAX_PER_STAGE]
     return result, copied
+
+
+def copy_blend(data):
+    """find_perfume 결과로 블렌드를 만든다: 같은 노트를 먼저, 같은 노트가 없는 단계는 계열이 가까운 노트로."""
+    exact, approx = data.get("our_notes", {}), data.get("approx_notes", {})
+    return {st: (exact.get(st) or approx.get(st) or [])[:MAX_PER_STAGE]
+            for st in ("top", "heart", "base") if exact.get(st) or approx.get(st)}
+
+
+def copy_reply(data):
+    """'○○ 같은 향'의 답변. 같은 노트와 비슷하게 고른 노트를 나눠 사실대로 말한다."""
+    exact, approx = data.get("our_notes", {}), data.get("approx_notes", {})
+    same = [blend_notes[i]["name"] for st in ("top", "heart", "base") for i in exact.get(st, [])]
+    near = [f"{STAGE_KO[st]} {blend_notes[i]['name']}" for st in ("top", "heart", "base")
+            if not exact.get(st) for i in approx.get(st, [])]
+    official = [n for ns in data.get("pyramid", {}).values() for n in ns]
+    perfume = data["perfume"]
+    if same:
+        text = f"{perfume}의 공식 노트 중 우리 노트와 같은 {', '.join(same)}{josa(same[-1], '을', '를')} 담았어요."
+    else:
+        text = f"{perfume}의 공식 노트({', '.join(official[:4])})는 우리 노트 30개와 똑같은 게 없어요."
+    if near:
+        text += f" 같은 노트가 없는 단계는 이 향수의 계열에 가까운 노트로 비슷하게 채웠어요: {', '.join(near)}."
+    return text + " 더 가볍게, 더 따뜻하게처럼 말해 주시면 조정할게요."
 
 
 def fill_empty_stages(updated, direction):
@@ -514,8 +546,9 @@ async def demo_with_tools(user_texts, updated):
     """키 없는 데모 모드에서도 날씨와 향수 이름은 MCP 도구로 실제로 확인한다. 그 밖에는 키워드 규칙."""
     last = user_texts[-1]
     async with MCPClient(mcp_server.mcp) as mcp_client:
-        if re.search(r"날씨|오늘|기온|비 오|비와|눈 오", last) and re.search(r"날씨|기온|오늘", last):
-            city = next((c for c in CITY_WORDS if c in last), "서울")
+        if re.search(r"날씨|기온", last) and not mcp_server.perfumes_in(last):
+            city = next((c for c in CITY_WORDS
+                         if re.search(rf"(?<![가-힣]){c}(?=시|$|[^가-힣]|은|는|의|도|날씨)", last)), "서울")
             called = await mcp_client.call_tool("get_weather", {"city": city})
             output = "".join(getattr(part, "text", "") for part in called.content)
             data = json.loads(output)
@@ -552,15 +585,23 @@ async def demo_with_tools(user_texts, updated):
             called = await mcp_client.call_tool("find_perfume", {"name": hit["name"]})
             output = "".join(getattr(part, "text", "") for part in called.content)
             data = json.loads(output)
-            blend = {st: ids[:MAX_PER_STAGE] for st, ids in data["our_notes"].items() if ids}
-            names = ", ".join(blend_notes[i]["name"] for ids in blend.values() for i in ids)
+            blend = copy_blend(data)
             family = blend_family(selected_notes(Blend(blend=blend))) if blend else "violet"
-            reply = (f"{data['perfume']}의 실제 노트 중 우리 노트와 같은 {names}{josa(names, '을', '를')} 블렌드에 담았어요."
-                     if blend else f"{data['perfume']}의 노트는 우리 노트 목록과 겹치는 게 없어요.")
+            reply = copy_reply(data)
             direction = Direction(family=family, temperature="neutral", airy=False, avoid_sweet=False,
                                   notes=[], ready=bool(blend), reply=reply)
             return direction, blend or updated, [tool_label("find_perfume", {"name": hit["name"]}, output)]
     return demo_direction(user_texts), updated, []
+
+
+def change_sentence(c):
+    """바뀐 단계 하나를 한 문장으로. 예) 베이스에서 바닐라를 빼고 샌달우드를 넣었어요."""
+    removed, added = ", ".join(c["removed"]), ", ".join(c["added"])
+    if removed and added:
+        return f"{c['label']}에서 {removed}{josa(removed, '을', '를')} 빼고 {added}{josa(added, '을', '를')} 넣었어요."
+    if added:
+        return f"{c['label']}에 {added}{josa(added, '을', '를')} 넣었어요."
+    return f"{c['label']}에서 {removed}{josa(removed, '을', '를')} 뺐어요."
 
 
 def josa(word, with_final, without_final):
@@ -678,18 +719,18 @@ async def recommend(body: Recommend, request: Request):
     if not selected:
         raise HTTPException(422, "노트를 하나 이상 골라 주세요.")
     intent = body.intent
-    key_id = json.dumps([normalized(body.blend), intent.model_dump() if intent else None, sorted(body.liked)],
+    url, model, key = llm_config(request)
+    key_id = json.dumps([normalized(body.blend), intent.model_dump() if intent else None, sorted(body.liked), bool(key)],
                         sort_keys=True, ensure_ascii=False)
     if key_id in recommend_cache:
         return recommend_cache[key_id]
-    url, model, key = llm_config(request)
     labels = {"top": "탑", "heart": "미들", "base": "베이스"}
     blend_text = " / ".join(f"{labels[st]}: {', '.join(n['name'] + '(' + n['english'] + ')' for n in notes)}"
                             for st, notes in selected.items())
     wish = intent_text(intent)
     try:
         qvec = await rag.aembed(blend_text + (" / " + wish if wish else ""), key) if key else None
-    except httpx.HTTPError:
+    except (httpx.HTTPError, ValueError, KeyError, IndexError):
         qvec = None
     ranked = rag.retrieve(PERFUMES, selected, qvec, k=8, avoid_sweet=bool(intent and intent.avoid_sweet),
                           family=intent.family if intent else None)

@@ -925,3 +925,12 @@ html[data-dark="1"] .grid-lines, html[data-dark="1"] .grid-lines i { border-colo
   border: 1px solid var(--ink); border-radius: 999px; background: rgba(255, 255, 255, .55); color: var(--ink);
   font: 500 12px var(--sans); cursor: pointer; transition: background .3s ease, color .3s ease; }
 .demo-key-button:hover { background: var(--ink); color: var(--paper); }
+
+/* AI가 확인한 정보: 작은 점 + 쉬운 말 */
+.tool-trail .tool-dot { flex: none; width: 6px; height: 6px; margin-right: 2px; border-radius: 50%; background: var(--ink-mute);
+  align-self: center; opacity: .7; }
+.blend-chips button:disabled { opacity: .55; cursor: default; }
+@media (max-width: 900px) {
+  /* 좁은 화면: 키 창이 화면 왼쪽 밖으로 나가지 않게 화면 폭에 맞춘다 */
+  .key-pop { position: fixed; left: 16px; right: 16px; top: 68px; width: auto; }
+}

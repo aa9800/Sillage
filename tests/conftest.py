@@ -1,7 +1,7 @@
 """테스트 공통 설정.
 
 - 실제 OpenAI 키를 쓰지 않도록 LLM 설정을 비운다(.env보다 먼저 정해 두면 load_dotenv가 덮어쓰지 않는다).
-- 날씨는 인터넷 없이도 돌도록 기본으로 '연결 실패'를 흉내 낸다. 실제 연결은 test_weather_live에서만 확인한다.
+- 날씨 테스트는 offline 픽스처로 '연결 실패'를 흉내 내서 인터넷 없이 돈다.
 """
 import os
 import sys

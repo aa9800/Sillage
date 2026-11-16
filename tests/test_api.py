@@ -60,3 +60,14 @@ def test_rejects_note_in_wrong_stage():
 def test_webp_served_as_image():
     r = client.get("/notes/iris.webp")
     assert r.status_code == 200 and r.headers["content-type"] == "image/webp"
+
+
+def test_demo_weather_needs_weather_word():
+    data = chat("오늘 탐다오 같은 향")
+    assert data["tools"][0]["tool"] == "find_perfume"
+
+
+def test_demo_direct_change_reply_matches(offline):
+    data = chat("베이스는 바닐라 말고 샌달우드로", {"base": ["vanilla"]})
+    assert data["blend"] == {"base": ["sandalwood"]}
+    assert data["reply"] == "베이스에서 바닐라를 빼고 샌달우드를 넣었어요."

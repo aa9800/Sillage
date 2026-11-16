@@ -100,14 +100,26 @@ KO_ALIASES = {
 }
 
 
+PARTICLES = r"(?:이랑|랑|이|가|은|는|을|를|과|와|처럼|같|의|도|만|하고|이나|나|로|으로)"
+
+
+def alias_at(text, compact, alias):
+    """별칭이 나온 위치(없으면 -1). 2글자 이하 별칭은 '휠체어'의 '휠'처럼 낱말 속에서 잡히지 않게 경계를 본다."""
+    if len(alias) > 2:
+        return compact.find(alias)
+    m = re.search(rf"(?<![가-힣]){re.escape(alias)}(?=$|[^가-힣]|{PARTICLES})", text)
+    return m.start() if m else -1
+
+
 def perfumes_in(text):
     """문장에 나온 DB 향수들(한글 통칭, 영어 이름 모두). 나온 순서대로."""
     compact = re.sub(r"\s", "", text).lower()
     hits = []
     for alias in sorted(KO_ALIASES, key=len, reverse=True):
-        at = compact.find(alias)
+        at = alias_at(text, compact, alias)
         if at >= 0:
             compact = compact.replace(alias, " " * len(alias))  # 짧은 별칭이 다시 잡히지 않게
+            text = text.replace(alias, " " * len(alias))
             hits.append((at, KO_ALIASES[alias].lower()))
     for p in PERFUMES:
         at = compact.find(re.sub(r"\s", "", p["name"]).lower())
@@ -126,17 +138,33 @@ def resolve_alias(text):
     """문장 속 한글 향수 이름을 영어 이름으로 바꾼다(가장 긴 별칭부터)."""
     compact = re.sub(r"\s", "", text)
     for alias in sorted(KO_ALIASES, key=len, reverse=True):
-        if alias in compact:
+        if alias_at(text, compact, alias) >= 0:
             return KO_ALIASES[alias]
     return None
+
+
+# 향수에 우리 노트와 똑같은 노트가 없는 단계를 채울 때 쓰는 '계열 → 가까운 우리 노트'
+FAMILY_FILL = {
+    "top": {"citrus": "bergamot", "fruity": "pear", "green": "fig-leaf", "aquatic": "salt", "spicy": "pink-pepper",
+            "floral": "pear", "woody": "cardamom", "amber": "pink-pepper", "gourmand": "mandarin", "musk": "bergamot"},
+    "heart": {"floral": "freesia", "fruity": "freesia", "green": "sage", "aquatic": "sage", "woody": "cypress",
+              "citrus": "neroli", "musk": "iris", "spicy": "rose", "amber": "rose", "gourmand": "jasmine"},
+    # 베이스는 잔향을 정하는 계열만 본다. 과일·꽃·시트러스 향수처럼 해당 계열이 없으면 머스크로 채운다.
+    "base": {"woody": "cedarwood", "amber": "amber", "gourmand": "vanilla", "musk": "musk", "spicy": "incense",
+             "green": "vetiver"},
+}
+FILL_DEFAULT = {"top": "bergamot", "heart": "freesia", "base": "musk"}
 
 
 @mcp.tool()
 def find_perfume(name: str) -> str:
     """향수 이름(브랜드 포함 가능, 영어 또는 한국어 통칭)으로 DB에서 찾아 실제 노트와, 그에 해당하는 우리 노트 id를 단계별로 돌려준다.
-    사용자가 '○○ 같은 향'을 원하면 our_notes로 블렌드를 채울 수 있다."""
+    사용자가 '○○ 같은 향'을 원하면 our_notes로 블렌드를 채울 수 있다. 같은 노트가 없는 단계는
+    approx_notes(향수 계열에 가까운 우리 노트)로 채우되, 비슷하게 고른 것이라고 밝혀야 한다."""
     name = resolve_alias(name) or name
     q = _norm(name)
+    if len(q) < 2:
+        return json.dumps({"found": False, "available": [f"{p['brand']} {p['name']}" for p in PERFUMES]}, ensure_ascii=False)
     best, best_score = None, 0
     for p in PERFUMES:
         full, short = _norm(p["brand"] + p["name"]), _norm(p["name"])
@@ -158,7 +186,11 @@ def find_perfume(name: str) -> str:
                 stage = NOTES[i]["stage"] if i in NOTES else None
                 if stage and i not in ours[stage] and len(ours[stage]) < 3:
                     ours[stage].append(i)
-    return json.dumps({"found": True, **_summary(best), "our_notes": ours,
+    approx = {}
+    for st in ("top", "heart", "base"):
+        if not ours[st]:
+            approx[st] = [next((FAMILY_FILL[st][f] for f in best["family"] if f in FAMILY_FILL[st]), FILL_DEFAULT[st])]
+    return json.dumps({"found": True, **_summary(best), "our_notes": ours, "approx_notes": approx,
                        "our_notes_ko": {STAGE_KO[st]: [NOTES[i]["name"] for i in ids] for st, ids in ours.items()}},
                       ensure_ascii=False)
 
