@@ -1,0 +1,1419 @@
+[
+ {
+  "id": "byredo-gypsy-water",
+  "brand": "Byredo",
+  "name": "Gypsy Water",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Bergamot",
+    "Juniper Berries",
+    "Lemon",
+    "Pepper"
+   ],
+   "heart": [
+    "Incense",
+    "Orris",
+    "Pine Needle"
+   ],
+   "base": [
+    "Amber",
+    "Sandalwood",
+    "Vanilla"
+   ]
+  },
+  "family": [
+   "citrus",
+   "woody",
+   "amber"
+  ],
+  "description_ko": "자유로운 영혼의 향수를 표현한 향입니다.",
+  "source": "https://www.byredo.com/us_en/p/gypsy-water-eau-de-parfum?sku=0065212495"
+ },
+ {
+  "id": "jo-malone-london-wood-sage-sea-salt",
+  "brand": "Jo Malone London",
+  "name": "Wood Sage & Sea Salt",
+  "concentration": "",
+  "notes": {
+   "top": [
+    "Ambrette Seeds"
+   ],
+   "heart": [
+    "Sea Salt"
+   ],
+   "base": [
+    "Sage"
+   ]
+  },
+  "family": [
+   "woody",
+   "aquatic",
+   "fruity"
+  ],
+  "description_ko": "우아한 해양과 자연의 향기를 담고 있습니다.",
+  "source": "https://www.jomalone.com/wood-sage-sea-salt"
+ },
+ {
+  "id": "diptyque-philosykos",
+  "brand": "Diptyque",
+  "name": "Philosykos",
+  "concentration": "Eau de Toilette",
+  "notes": {
+   "top": [],
+   "heart": [
+    "Fig Tree Leaves",
+    "Fig"
+   ],
+   "base": [
+    "Wood",
+    "White Cedar"
+   ]
+  },
+  "family": [
+   "fruity",
+   "green",
+   "woody"
+  ],
+  "description_ko": "무화과 숲을 느낄 수 있는 향입니다.",
+  "source": "https://www.luckyscent.com/products/philosykos-eau-de-toilette-by-diptyque"
+ },
+ {
+  "id": "le-labo-santal-33",
+  "brand": "Le Labo",
+  "name": "Santal 33",
+  "concentration": "Eau De Parfum",
+  "notes": {
+   "top": [],
+   "heart": [
+    "cardamom",
+    "iris",
+    "violet"
+   ],
+   "base": [
+    "Australian sandalwood",
+    "cedarwood"
+   ]
+  },
+  "family": [
+   "woody",
+   "spicy",
+   "floral"
+  ],
+  "description_ko": "야생의 고요함을 묘사한 향수입니다.",
+  "source": "https://www.lelabofragrances.com/santal-33-147.html"
+ },
+ {
+  "id": "chanel-coco-mademoiselle",
+  "brand": "Chanel",
+  "name": "Coco Mademoiselle",
+  "concentration": "unknown",
+  "notes": {
+   "top": [
+    "lychee",
+    "grapefruit"
+   ],
+   "heart": [],
+   "base": [
+    "ambery"
+   ]
+  },
+  "family": [
+   "fruity",
+   "floral",
+   "amber"
+  ],
+  "description_ko": "과일과 플로랄이 조화를 이루는 향입니다.",
+  "source": "https://www.chanel.com/us/fragrance/women/c/7x1x1x31/coco-mademoiselle/"
+ },
+ {
+  "id": "dior-sauvage",
+  "brand": "Dior",
+  "name": "Sauvage",
+  "concentration": "Eau de Toilette",
+  "notes": {
+   "top": [
+    "Bergamot from Reggio di Calabria"
+   ],
+   "heart": [],
+   "base": [
+    "Ambroxan"
+   ]
+  },
+  "family": [
+   "citrus",
+   "woody"
+  ],
+  "description_ko": "상쾌한 시트러스 향이 돋보이는 향수",
+  "source": "https://www.dior.com/en_us/beauty/products/sauvage-eau-de-toilette-Y0685240.html"
+ },
+ {
+  "id": "jo-malone-london-english-pear-freesia",
+  "brand": "Jo Malone London",
+  "name": "English Pear & Freesia",
+  "concentration": "cologne",
+  "notes": {
+   "top": [
+    "Williams Pear"
+   ],
+   "heart": [
+    "Freesia"
+   ],
+   "base": [
+    "Patchouli"
+   ]
+  },
+  "family": [
+   "fruity",
+   "floral",
+   "woody"
+  ],
+  "description_ko": "배와 프리지아의 우아한 향입니다.",
+  "source": "https://www.jomalone.com/product/25946/12553/colognes/english-pear-freesia-cologne"
+ },
+ {
+  "id": "jo-malone-london-lime-basil-mandarin",
+  "brand": "Jo Malone London",
+  "name": "Lime Basil & Mandarin",
+  "concentration": "cologne",
+  "notes": {
+   "top": [
+    "Mandarin"
+   ],
+   "heart": [
+    "Basil"
+   ],
+   "base": [
+    "Amberwood"
+   ]
+  },
+  "family": [
+   "citrus",
+   "woody"
+  ],
+  "description_ko": "상큼한 라임과 바질 향이 살아있어요.",
+  "source": "https://www.jomalone.com/our-stories/lime-basil-mandarin"
+ },
+ {
+  "id": "jo-malone-london-peony-blush-suede",
+  "brand": "Jo Malone London",
+  "name": "Peony & Blush Suede",
+  "concentration": "",
+  "notes": {
+   "top": [
+    "Red Apple"
+   ],
+   "heart": [
+    "Peony"
+   ],
+   "base": [
+    "Suede"
+   ]
+  },
+  "family": [
+   "fruity",
+   "floral",
+   "woody"
+  ],
+  "description_ko": "사과와 피오니의 조화로운 향입니다.",
+  "source": "https://www.jomalone.com.au/product/25946/27028/colognes/peony-blush-suede-cologne"
+ },
+ {
+  "id": "jo-malone-london-blackberry-bay",
+  "brand": "Jo Malone London",
+  "name": "Blackberry & Bay",
+  "concentration": "",
+  "notes": {
+   "top": [
+    "Blackberry"
+   ],
+   "heart": [
+    "Bay Leaves"
+   ],
+   "base": [
+    "Cedarwood"
+   ]
+  },
+  "family": [
+   "fruity",
+   "woody"
+  ],
+  "description_ko": "달콤한 블랙베리와 상쾌한 향이 어우러진 향수.",
+  "source": "https://www.jomalone.co.uk/product/25946/23540/colognes/blackberry-bay-cologne"
+ },
+ {
+  "id": "jo-malone-london-myrrh-tonka",
+  "brand": "Jo Malone London",
+  "name": "Myrrh & Tonka",
+  "concentration": "cologne intense",
+  "notes": {
+   "top": [
+    "Lavender"
+   ],
+   "heart": [
+    "Omumbiri Myrrh"
+   ],
+   "base": [
+    "Tonka Bean"
+   ]
+  },
+  "family": [
+   "amber",
+   "floral"
+  ],
+  "description_ko": "편안한 라벤더와 부드러운 향의 조화",
+  "source": "https://www.jomalone.co.uk/product/25946/110447/colognes/myrrh-tonka-cologne-intense"
+ },
+ {
+  "id": "jo-malone-london-velvet-rose-oud",
+  "brand": "Jo Malone London",
+  "name": "Velvet Rose & Oud",
+  "concentration": "Cologne Intense",
+  "notes": {
+   "top": [
+    "Clove"
+   ],
+   "heart": [
+    "Damask Rose"
+   ],
+   "base": [
+    "Oud"
+   ]
+  },
+  "family": [
+   "floral",
+   "woody"
+  ],
+  "description_ko": "장미와 우드의 조화로운 향입니다.",
+  "source": "https://www.jomalone.co.uk/product/9181/22688/fragrances/cologne-intense/velvet-rose-oud/velvet-rose-oud-cologne-intense"
+ },
+ {
+  "id": "jo-malone-london-nectarine-blossom-honey",
+  "brand": "Jo Malone London",
+  "name": "Nectarine Blossom & Honey",
+  "concentration": "cologne",
+  "notes": {
+   "top": [
+    "Cassis"
+   ],
+   "heart": [
+    "Acacia Honey"
+   ],
+   "base": [
+    "Peach"
+   ]
+  },
+  "family": [
+   "fruity",
+   "floral"
+  ],
+  "description_ko": "상큼한 복숭아 향이 매력적입니다.",
+  "source": "https://www.jomalone.co.uk/product/25946/10079/colognes/nectarine-blossom-honey-cologne"
+ },
+ {
+  "id": "diptyque-tam-dao",
+  "brand": "Diptyque",
+  "name": "Tam Dao",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Lime",
+    "Ginger"
+   ],
+   "heart": [
+    "Coriander",
+    "Sandalwood",
+    "Coconut Accord"
+   ],
+   "base": [
+    "Musk",
+    "Cedarwood",
+    "Vanilla",
+    "Amber Wood"
+   ]
+  },
+  "family": [
+   "woody",
+   "spicy"
+  ],
+  "description_ko": "우드와 생강의 조화로운 향이 특징입니다.",
+  "source": "https://www.luckyscent.com/products/tam-dao-eau-de-parfum-by-diptyque"
+ },
+ {
+  "id": "diptyque-do-son",
+  "brand": "Diptyque",
+  "name": "Do Son",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [],
+   "heart": [
+    "tuberose",
+    "Turkish rose",
+    "orange blossom leaf",
+    "rose berries"
+   ],
+   "base": [
+    "white musk",
+    "iris"
+   ]
+  },
+  "family": [
+   "floral"
+  ],
+  "description_ko": "부드러운 튜베로즈 향이 매력적입니다.",
+  "source": "https://www.luckyscent.com/products/do-son-eau-de-parfum-by-diptyque"
+ },
+ {
+  "id": "diptyque-eau-rose",
+  "brand": "Diptyque",
+  "name": "Eau Rose",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [],
+   "heart": [
+    "Roses Damascena",
+    "Chamomile",
+    "Litchi",
+    "Artichoke"
+   ],
+   "base": []
+  },
+  "family": [
+   "floral"
+  ],
+  "description_ko": "꽃과 과일의 조화로운 향이다.",
+  "source": "https://www.luckyscent.com/products/eau-rose-eau-de-parfum-by-diptyque"
+ },
+ {
+  "id": "diptyque-orpheon",
+  "brand": "Diptyque",
+  "name": "Orphéon",
+  "concentration": "Eau de Toilette",
+  "notes": {
+   "top": [
+    "Green Mandarin",
+    "Juniper Berries"
+   ],
+   "heart": [
+    "Cedar"
+   ],
+   "base": []
+  },
+  "family": [
+   "citrus",
+   "woody",
+   "spicy"
+  ],
+  "description_ko": "재즈 클럽의 흥겨운 저녁을 담고 있습니다.",
+  "source": "https://www.luckyscent.com/products/orpheon-eau-de-toilette-by-diptyque"
+ },
+ {
+  "id": "diptyque-fleur-de-peau",
+  "brand": "Diptyque",
+  "name": "Fleur de Peau",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Aldehydes",
+    "Pink Pepper",
+    "Rose"
+   ],
+   "heart": [
+    "Iris",
+    "Ambrette"
+   ],
+   "base": [
+    "Ambergris",
+    "Musk"
+   ]
+  },
+  "family": [
+   "floral",
+   "musk",
+   "amber"
+  ],
+  "description_ko": "부드럽고 복잡한 피부 향기를 가진 향수입니다.",
+  "source": "https://www.luckyscent.com/products/fleur-de-peau-by-diptyque-1?src=plp.fragrances"
+ },
+ {
+  "id": "diptyque-eau-des-sens",
+  "brand": "Diptyque",
+  "name": "Eau des Sens",
+  "concentration": "Eau de Toilette",
+  "notes": {
+   "top": [],
+   "heart": [
+    "Orange Flower",
+    "Bitter Orange",
+    "Juniper",
+    "Angelica"
+   ],
+   "base": [
+    "Patchouli"
+   ]
+  },
+  "family": [
+   "citrus",
+   "floral",
+   "fruity"
+  ],
+  "description_ko": "상큼하고 꽃향이 나는 향수입니다.",
+  "source": "https://www.luckyscent.com/products/eau-des-sens-by-diptyque"
+ },
+ {
+  "id": "diptyque-oyedo",
+  "brand": "Diptyque",
+  "name": "Oyédo",
+  "concentration": "eau de toilette",
+  "notes": {
+   "top": [
+    "Yuzu"
+   ],
+   "heart": [
+    "Green tangerine"
+   ],
+   "base": [
+    "Thyme"
+   ]
+  },
+  "family": [
+   "fruity",
+   "citrus"
+  ],
+  "description_ko": "상큼한 과일 향이 매력적인 향수입니다.",
+  "source": "https://www.selfridges.com/US/en/product/diptyque-oydo-eau-de-toilette-50ml_342-2000170-OYEDO50V1/"
+ },
+ {
+  "id": "le-labo-another-13",
+  "brand": "Le Labo",
+  "name": "Another 13",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [],
+   "heart": [
+    "ambroxyde",
+    "jasmine",
+    "moss"
+   ],
+   "base": []
+  },
+  "family": [
+   "floral",
+   "woody",
+   "amber"
+  ],
+  "description_ko": "매혹적이고 독특한 향기입니다.",
+  "source": "https://www.lelabofragrances.com/another-13-463.html"
+ },
+ {
+  "id": "le-labo-rose-31",
+  "brand": "Le Labo",
+  "name": "Rose 31",
+  "concentration": "Eau De Parfum",
+  "notes": {
+   "top": [
+    "Bergamot",
+    "Cedar"
+   ],
+   "heart": [
+    "Rose",
+    "Cumin",
+    "Olibanum",
+    "Amber"
+   ],
+   "base": [
+    "Gaïac wood",
+    "Cistus"
+   ]
+  },
+  "family": [
+   "floral",
+   "spicy",
+   "woody"
+  ],
+  "description_ko": "장미와 스파이시한 향이 어우러진 향수입니다.",
+  "source": "https://www.lelabofragrances.com/rose-31-146.html"
+ },
+ {
+  "id": "le-labo-the-noir-29",
+  "brand": "Le Labo",
+  "name": "Thé Noir 29",
+  "concentration": "Eau De Parfum",
+  "notes": {
+   "top": [
+    "bergamot",
+    "fig",
+    "bay leaves"
+   ],
+   "heart": [],
+   "base": [
+    "cedarwood",
+    "vetiver",
+    "musk"
+   ]
+  },
+  "family": [
+   "citrus",
+   "woody",
+   "floral"
+  ],
+  "description_ko": "신선함과 깊이를 느낄 수 있는 향수입니다.",
+  "source": "https://www.lelabofragrances.com/th-noir-29-148.html"
+ },
+ {
+  "id": "le-labo-bergamote-22",
+  "brand": "Le Labo",
+  "name": "Bergamote 22",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Bergamot",
+    "Grapefruit"
+   ],
+   "heart": [
+    "Petitgrain",
+    "Orange Blossom",
+    "Nutmeg",
+    "Aspic"
+   ],
+   "base": [
+    "Cedar",
+    "Amber",
+    "Musk",
+    "Vetiver"
+   ]
+  },
+  "family": [
+   "citrus",
+   "floral",
+   "woody"
+  ],
+  "description_ko": "상큼하고 관능적인 향의 조화입니다.",
+  "source": "https://www.luckyscent.com/products/bergamote-22-by-le-labo?sku=46804_R"
+ },
+ {
+  "id": "byredo-mojave-ghost",
+  "brand": "Byredo",
+  "name": "Mojave Ghost",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Ambrette",
+    "Naseberry"
+   ],
+   "heart": [
+    "Magnolia",
+    "Sandalwood",
+    "Violet"
+   ],
+   "base": [
+    "Cedarwood",
+    "Magnolia",
+    "Musks",
+    "Vetiver"
+   ]
+  },
+  "family": [
+   "floral",
+   "woody",
+   "musk"
+  ],
+  "description_ko": "모하비 사막의 아름다움을 담은 향수입니다.",
+  "source": "https://www.byredo.com/us_en/p/mojave-ghost-eau-de-parfum?sku=0065212492"
+ },
+ {
+  "id": "byredo-blanche",
+  "brand": "Byredo",
+  "name": "Blanche",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Aldehyde",
+    "Rose Centifolia"
+   ],
+   "heart": [
+    "Peony",
+    "Violet"
+   ],
+   "base": [
+    "Musks",
+    "Sandalwood"
+   ]
+  },
+  "family": [
+   "floral"
+  ],
+  "description_ko": "부드럽고 우아한 플로럴 향입니다.",
+  "source": "https://www.byredo.com/us_en/p/blanche-eau-de-parfum?sku=0065212494"
+ },
+ {
+  "id": "byredo-bal-d-afrique",
+  "brand": "Byredo",
+  "name": "Bal d'Afrique",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Buchu",
+    "African Marigold",
+    "Bergamot",
+    "Blackcurrant"
+   ],
+   "heart": [
+    "Cyclamen",
+    "Jasmine Petals",
+    "Violet"
+   ],
+   "base": [
+    "Tonka Bean Absolue",
+    "Cedarwood",
+    "Musks",
+    "Vetiver"
+   ]
+  },
+  "family": [
+   "floral",
+   "fruity",
+   "woody"
+  ],
+  "description_ko": "아프리카 문화의 정수를 담은 향수입니다.",
+  "source": "https://www.byredo.com/us_en/p/bal-d-afrique-eau-de-parfum?sku=0065212491"
+ },
+ {
+  "id": "byredo-rose-of-no-man-s-land",
+  "brand": "Byredo",
+  "name": "Rose of No Man's Land",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Pink Pepper",
+    "Turkish Rose Petals"
+   ],
+   "heart": [
+    "Turkish Rose Absolute",
+    "Raspberry Blossom"
+   ],
+   "base": [
+    "Amber",
+    "Papyrus"
+   ]
+  },
+  "family": [
+   "floral",
+   "fruity",
+   "amber"
+  ],
+  "description_ko": "장미의 달콤함과 따뜻함이 느껴지는 향기입니다.",
+  "source": "https://www.byredo.com/us_en/p/rose-of-no-mans-land-eau-de-parfum?sku=0065212493"
+ },
+ {
+  "id": "maison-margiela-replica-lazy-sunday-morning",
+  "brand": "Maison Margiela",
+  "name": "Replica Lazy Sunday Morning",
+  "concentration": "",
+  "notes": {
+   "top": [],
+   "heart": [
+    "Lily of the Valley Accord",
+    "Iris Accord"
+   ],
+   "base": [
+    "White Musks Accord"
+   ]
+  },
+  "family": [
+   "floral",
+   "musk"
+  ],
+  "description_ko": "편안한 주말 아침의 향기입니다.",
+  "source": "https://www.maisonmargiela-fragrances.us/fragrances/replica-eau-de-toilette/replica-lazy-sunday-morning-limited-eau-de-toilette/MM176.html"
+ },
+ {
+  "id": "maison-margiela-replica-jazz-club",
+  "brand": "Maison Margiela",
+  "name": "Replica Jazz Club",
+  "concentration": "Eau de Toilette",
+  "notes": {
+   "top": [
+    "Pink Pepper",
+    "Neroli",
+    "Lemon"
+   ],
+   "heart": [
+    "Rum",
+    "Java Vetiver Oil",
+    "Clary Sage",
+    "Tobacco Leaf",
+    "Vanilla Bean",
+    "Styrax"
+   ],
+   "base": [
+    "Leather",
+    "Tobacco"
+   ]
+  },
+  "family": [
+   "amber",
+   "woody",
+   "spicy"
+  ],
+  "description_ko": "재즈 클럽의 부드러운 향기가 느껴집니다.",
+  "source": "https://www.luckyscent.com/products/jazz-club-by-maison-margiela-replica"
+ },
+ {
+  "id": "maison-margiela-replica-by-the-fireplace",
+  "brand": "Maison Margiela",
+  "name": "Replica By the Fireplace",
+  "concentration": "",
+  "notes": {
+   "top": [],
+   "heart": [
+    "Chestnut",
+    "Cashmeran",
+    "Vanilla"
+   ],
+   "base": []
+  },
+  "family": [
+   "gourmand",
+   "woody",
+   "spicy"
+  ],
+  "description_ko": "따뜻하고 아늑한 은은한 향입니다.",
+  "source": "https://www.maisonmargiela-fragrances.us/gifts-and-sets/replica-by-the-fireplace-eau-de-toilette-gift-set/MM206.html"
+ },
+ {
+  "id": "maison-margiela-replica-beach-walk",
+  "brand": "Maison Margiela",
+  "name": "Replica Beach Walk",
+  "concentration": "",
+  "notes": {
+   "top": [
+    "bergamot"
+   ],
+   "heart": [
+    "coconut milk",
+    "ylang-ylang"
+   ],
+   "base": []
+  },
+  "family": [
+   "floral",
+   "fruity"
+  ],
+  "description_ko": "여름 날을 떠오르게 하는 향입니다.",
+  "source": "https://www.spacenk.com/us/fragrance/personal-fragrance/fragrance/beach-walk-eau-de-toilette-MUK200028401.html"
+ },
+ {
+  "id": "maison-margiela-replica-when-the-rain-stops",
+  "brand": "Maison Margiela",
+  "name": "Replica When the Rain Stops",
+  "concentration": "",
+  "notes": {
+   "top": [],
+   "heart": [
+    "AQUATIC ACCORD",
+    "ISPARTA ROSE PETAL"
+   ],
+   "base": [
+    "PATCHOULI BALI"
+   ]
+  },
+  "family": [
+   "aquatic",
+   "floral",
+   "woody"
+  ],
+  "description_ko": "비 오는 날의 향기를 담은 향수입니다.",
+  "source": "https://www.maisonmargiela-fragrances.us/fragrances/replica-eau-de-toilette/replica-when-the-rain-stops/3614273612661.html"
+ },
+ {
+  "id": "aesop-hwyl",
+  "brand": "Aesop",
+  "name": "Hwyl",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Thyme",
+    "Elemi",
+    "Pink Pepper"
+   ],
+   "heart": [
+    "Cypress",
+    "Suede",
+    "Geranium"
+   ],
+   "base": [
+    "Vetiver",
+    "Frankincense",
+    "Cedar",
+    "Hinoki"
+   ]
+  },
+  "family": [
+   "woody",
+   "spicy",
+   "green"
+  ],
+  "description_ko": "고요한 분위기의 우디 향수입니다.",
+  "source": "https://www.luckyscent.com/products/silently-hwyl-by-aesop"
+ },
+ {
+  "id": "aesop-tacit",
+  "brand": "Aesop",
+  "name": "Tacit",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Yuzu",
+    "Basil Grand Vert",
+    "Clove"
+   ],
+   "heart": [
+    "Rosemary",
+    "Mint",
+    "Fennel"
+   ],
+   "base": [
+    "Cedarwood",
+    "Vetiver Heart",
+    "Amber"
+   ]
+  },
+  "family": [
+   "citrus",
+   "green",
+   "woody"
+  ],
+  "description_ko": "유자와 바질이 어우러진 향수입니다.",
+  "source": "https://www.aesop.com/fragrance/fresh/tacit-eau-de-parfum/FR12.html"
+ },
+ {
+  "id": "aesop-marrakech-intense",
+  "brand": "Aesop",
+  "name": "Marrakech Intense",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Bergamot",
+    "Neroli",
+    "Jasmine"
+   ],
+   "heart": [
+    "Rose",
+    "Cardamom",
+    "Patchouli"
+   ],
+   "base": [
+    "Sandalwood",
+    "Cedarwood",
+    "Clove"
+   ]
+  },
+  "family": [
+   "floral",
+   "spicy",
+   "woody"
+  ],
+  "description_ko": "정열적인 자스민과 시트러스 향이 조화를 이룹니다.",
+  "source": "https://www.luckyscent.com/products/marrakech-intense-by-aesop"
+ },
+ {
+  "id": "aesop-eremia",
+  "brand": "Aesop",
+  "name": "Eremia",
+  "concentration": "eau de parfum",
+  "notes": {
+   "top": [
+    "Yuzu",
+    "Bergamot",
+    "Grapefruit"
+   ],
+   "heart": [
+    "Mimosa",
+    "Green Tea",
+    "Guaiacwood"
+   ],
+   "base": [
+    "Galbanum",
+    "Iris",
+    "Patchouli"
+   ]
+  },
+  "family": [
+   "citrus",
+   "floral",
+   "woody"
+  ],
+  "description_ko": "상큼하고 우아한 향이 조화를 이룬다.",
+  "source": "https://www.aesop.com/uk/p/fragrance/fresh/er-mia-eau-de-parfum/"
+ },
+ {
+  "id": "chanel-chance-eau-tendre",
+  "brand": "Chanel",
+  "name": "Chance Eau Tendre",
+  "concentration": "Eau de Toilette",
+  "notes": {
+   "top": [
+    "grapefruit",
+    "quince"
+   ],
+   "heart": [
+    "jasmine"
+   ],
+   "base": [
+    "white musk"
+   ]
+  },
+  "family": [
+   "fruity",
+   "floral",
+   "musk"
+  ],
+  "description_ko": "상큼하고 부드러운 향이 조화를 이룹니다.",
+  "source": "https://www.chanel.com/us/fragrance/p/126330/chance-eau-tendre-eau-de-toilette-spray/"
+ },
+ {
+  "id": "chanel-bleu-de-chanel",
+  "brand": "Chanel",
+  "name": "Bleu de Chanel",
+  "concentration": "Eau de Toilette",
+  "notes": {
+   "top": [
+    "Grapefruit"
+   ],
+   "heart": [],
+   "base": [
+    "dry cedar",
+    "sandalwood"
+   ]
+  },
+  "family": [
+   "woody",
+   "fruity"
+  ],
+  "description_ko": "상큼한 자몽과 우디 향의 조화입니다.",
+  "source": "https://www.nordstrom.com/s/chanel-bleu-de-chanel-eau-de-toilette-spray/3118978"
+ },
+ {
+  "id": "dior-miss-dior",
+  "brand": "Dior",
+  "name": "Miss Dior",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [],
+   "heart": [
+    "Centifolia rose absolute",
+    "rosewood accords",
+    "Gourmand almond-toned vanilla notes"
+   ],
+   "base": [
+    "Creamy sandalwood",
+    "patchouli"
+   ]
+  },
+  "family": [
+   "floral",
+   "gourmand",
+   "woody"
+  ],
+  "description_ko": "달콤하고 우아한 장미 향이 매력적입니다.",
+  "source": "https://www.dior.com/en_us/beauty/products/miss-dior-eau-de-parfum-E000001556.html"
+ },
+ {
+  "id": "dior-j-adore",
+  "brand": "Dior",
+  "name": "J'adore",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [],
+   "heart": [
+    "Ylang-ylang essence",
+    "Damascus rose essence",
+    "Jasmine grandiflorum",
+    "jasmine sambac"
+   ],
+   "base": []
+  },
+  "family": [
+   "floral"
+  ],
+  "description_ko": "플로럴 향의 우아한 매력을 지닌 향수입니다.",
+  "source": "https://www.dior.com/en_us/beauty/products/j%E2%80%99adore-eau-de-parfum-Y0998031.html"
+ },
+ {
+  "id": "hermes-un-jardin-sur-le-nil",
+  "brand": "Hermès",
+  "name": "Un Jardin sur le Nil",
+  "concentration": "Eau de toilette",
+  "notes": {
+   "top": [],
+   "heart": [
+    "green mango",
+    "lotus",
+    "sycamore"
+   ],
+   "base": []
+  },
+  "family": [
+   "fruity",
+   "floral",
+   "woody"
+  ],
+  "description_ko": "아스완의 정원을 떠올리게 하는 향수입니다.",
+  "source": "https://www.hermes.com/us/en/product/un-jardin-sur-le-nil-eau-de-toilette-V20396/"
+ },
+ {
+  "id": "hermes-terre-d-hermes",
+  "brand": "Hermès",
+  "name": "Terre d'Hermès",
+  "concentration": "",
+  "notes": {
+   "top": [
+    "grapefruit",
+    "cedar",
+    "shiso"
+   ],
+   "heart": [
+    "vetiver",
+    "bergamot",
+    "Sichuan pepper",
+    "citron",
+    "juniper berry",
+    "Timut pepper"
+   ],
+   "base": []
+  },
+  "family": [
+   "woody",
+   "fruity"
+  ],
+  "description_ko": "자연과의 조화를 느낄 수 있는 향입니다.",
+  "source": "https://www.hermes.com/us/en/content/101186-terre-d-hermes/"
+ },
+ {
+  "id": "hermes-twilly-d-hermes",
+  "brand": "Hermès",
+  "name": "Twilly d'Hermès",
+  "concentration": "eau de parfum",
+  "notes": {
+   "top": [],
+   "heart": [
+    "ginger",
+    "tuberose"
+   ],
+   "base": [
+    "sandalwood"
+   ]
+  },
+  "family": [
+   "floral",
+   "spicy"
+  ],
+  "description_ko": "대담한 젊음을 담은 향수입니다.",
+  "source": "https://www.hermes.com/us/en/product/twilly-d-hermes-eau-de-parfum-V107263V0/"
+ },
+ {
+  "id": "tom-ford-lost-cherry",
+  "brand": "Tom Ford",
+  "name": "Lost Cherry",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Black Cherry Accord",
+    "Bitter Almond"
+   ],
+   "heart": [
+    "Griotte Sirup Scenttrek®",
+    "Rose Absolute Orpur®"
+   ],
+   "base": [
+    "Peru Balsam",
+    "Roasted Tonka Orpur®"
+   ]
+  },
+  "family": [
+   "fruity",
+   "floral",
+   "gourmand"
+  ],
+  "description_ko": "체리 향이 매력적인 향수입니다.",
+  "source": "https://www.tomfordbeauty.com/products/lost-cherry-eau-de-parfum"
+ },
+ {
+  "id": "tom-ford-neroli-portofino",
+  "brand": "Tom Ford",
+  "name": "Neroli Portofino",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Tunisian Neroli",
+    "Italian Bergamot",
+    "Winter Yellow Mandarin"
+   ],
+   "heart": [
+    "Orange Flower",
+    "Lavender"
+   ],
+   "base": []
+  },
+  "family": [
+   "citrus",
+   "floral"
+  ],
+  "description_ko": "상큼한 citrus와 플로럴의 조화로운 향.",
+  "source": "https://www.tomfordbeauty.com/products/neroli-portofino-eau-de-parfum?variant=53026873376981"
+ },
+ {
+  "id": "tom-ford-tobacco-vanille",
+  "brand": "Tom Ford",
+  "name": "Tobacco Vanille",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [],
+   "heart": [
+    "Tobacco Leaf",
+    "Ginger",
+    "Spice Notes",
+    "Fruit Accord"
+   ],
+   "base": [
+    "Tonka Bean",
+    "Cocoa"
+   ]
+  },
+  "family": [
+   "spicy",
+   "gourmand"
+  ],
+  "description_ko": "담배와 바닐리의 매혹적인 조화입니다.",
+  "source": "https://www.tomfordbeauty.com/products/tobacco-vanille-eau-de-parfum"
+ },
+ {
+  "id": "acqua-di-parma-colonia",
+  "brand": "Acqua di Parma",
+  "name": "Colonia",
+  "concentration": "Eau de Cologne",
+  "notes": {
+   "top": [
+    "Lemon",
+    "Sweet Orange",
+    "Calabrian Bergamot"
+   ],
+   "heart": [
+    "Lavender",
+    "Rose",
+    "Verbena",
+    "Rosemary"
+   ],
+   "base": [
+    "Vetiver",
+    "Sandalwood",
+    "Patchouli"
+   ]
+  },
+  "family": [
+   "citrus"
+  ],
+  "description_ko": "시트러스 향이 신선하고 우아한 느낌입니다.",
+  "source": "https://www.acquadiparma.com/en/us/colonia/COLONIAEDCRP.html"
+ },
+ {
+  "id": "acqua-di-parma-blu-mediterraneo-fico-di-amalfi",
+  "brand": "Acqua di Parma",
+  "name": "Blu Mediterraneo Fico di Amalfi",
+  "concentration": "Eau de Toilette",
+  "notes": {
+   "top": [
+    "Italian Lemon",
+    "Italian Bergamot",
+    "Grapefruit"
+   ],
+   "heart": [
+    "Fig Nectar",
+    "Pink Pepper",
+    "Jasmine Petals"
+   ],
+   "base": [
+    "Fig Wood",
+    "Cedarwood",
+    "Benzoin"
+   ]
+  },
+  "family": [
+   "woody",
+   "green"
+  ],
+  "description_ko": "상큼한 감귤과 무화과 향이 어우러진 향수입니다.",
+  "source": "https://www.acquadiparma.com/en/us/fico-di-amalfi/FICOEDTSPRAY.html"
+ },
+ {
+  "id": "yves-saint-laurent-libre",
+  "brand": "Yves Saint Laurent",
+  "name": "Libre",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "lavender",
+    "orange blossom"
+   ],
+   "heart": [],
+   "base": [
+    "musk accord",
+    "vanilla"
+   ]
+  },
+  "family": [
+   "floral"
+  ],
+  "description_ko": "라벤더와 오렌지 블라썸의 플로럴 향기입니다.",
+  "source": "https://www.yslbeautyus.com/fragrance/womens-fragrances/libre/libre-eau-de-parfum/109YSL.html"
+ },
+ {
+  "id": "yves-saint-laurent-black-opium",
+  "brand": "Yves Saint Laurent",
+  "name": "Black Opium",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [],
+   "heart": [
+    "Coffee",
+    "White Flowers"
+   ],
+   "base": [
+    "Vanilla"
+   ]
+  },
+  "family": [
+   "spicy",
+   "gourmand",
+   "floral"
+  ],
+  "description_ko": "따뜻하고 매력적인 향입니다.",
+  "source": "https://www.yslbeautyus.com/fragrance/womens-fragrances/black-opium/black-opium-eau-de-parfum/252YSL.html"
+ },
+ {
+  "id": "creed-aventus",
+  "brand": "Creed",
+  "name": "Aventus",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Bergamot",
+    "Blackcurrant Leaves",
+    "Apple",
+    "Pineapple",
+    "Pinkberries"
+   ],
+   "heart": [
+    "Birch",
+    "Patchouli",
+    "Jasmine"
+   ],
+   "base": [
+    "Musk",
+    "Oakmoss",
+    "Ambergris",
+    "Vanilla"
+   ]
+  },
+  "family": [
+   "fruity",
+   "amber",
+   "floral"
+  ],
+  "description_ko": "상징적인 과일 향의 세련된 조화입니다.",
+  "source": "https://www.luckyscent.com/products/aventus-by-creed"
+ },
+ {
+  "id": "creed-silver-mountain-water",
+  "brand": "Creed",
+  "name": "Silver Mountain Water",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Bergamot",
+    "Mandarin",
+    "Neroli"
+   ],
+   "heart": [
+    "Green Tea",
+    "Blackcurrant Bud"
+   ],
+   "base": [
+    "Sandalwood",
+    "Musk"
+   ]
+  },
+  "family": [
+   "citrus",
+   "fruity",
+   "green"
+  ],
+  "description_ko": "상쾌하고 알프스 같은 향기가 돋보입니다.",
+  "source": "https://www.luckyscent.com/products/silver-mountain-water-by-creed"
+ },
+ {
+  "id": "kilian-love-don-t-be-shy",
+  "brand": "Kilian",
+  "name": "Love, Don't Be Shy",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Bergamot Calabria",
+    "Tunisian Neroli",
+    "Pink Pepper Berries"
+   ],
+   "heart": [
+    "Coriander",
+    "Honeysuckle",
+    "Orange Flower",
+    "Orange Water",
+    "Egyptian Jasmine Absolute",
+    "Bulgarian Rose",
+    "Iris Butter Absolute"
+   ],
+   "base": [
+    "Caramelized Sugar",
+    "Vanilla Absolute",
+    "Labdanum",
+    "White Musk"
+   ]
+  },
+  "family": [
+   "gourmand",
+   "floral",
+   "fruity"
+  ],
+  "description_ko": "부드럽고 달콤한 향수가 매력적입니다.",
+  "source": "https://www.luckyscent.com/products/love-dont-be-shy-by-by-kilian"
+ },
+ {
+  "id": "penhaligon-s-luna",
+  "brand": "Penhaligon's",
+  "name": "Luna",
+  "concentration": "Eau de Toilette",
+  "notes": {
+   "top": [
+    "Lemon",
+    "Bergamot",
+    "Bitter Orange"
+   ],
+   "heart": [
+    "Rose",
+    "Juniper Berries",
+    "Jasmine"
+   ],
+   "base": [
+    "Balsam Fir",
+    "Musk",
+    "Ambergris"
+   ]
+  },
+  "family": [
+   "citrus",
+   "floral"
+  ],
+  "description_ko": "상큼하고 부드러운 향입니다.",
+  "source": "https://www.luckyscent.com/products/luna-by-penhaligons"
+ }
+]

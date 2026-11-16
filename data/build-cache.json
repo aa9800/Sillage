@@ -1,0 +1,2621 @@
+{
+ "byredo-gypsy-water": {
+  "id": "byredo-gypsy-water",
+  "brand": "Byredo",
+  "name": "Gypsy Water",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.byredo.com/us_en/p/gypsy-water-eau-de-parfum?sku=0065212495",
+    "found": true,
+    "kept": 10,
+    "dropped": 0
+   }
+  ],
+  "source": "https://www.byredo.com/us_en/p/gypsy-water-eau-de-parfum?sku=0065212495",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Bergamot",
+    "Juniper Berries",
+    "Lemon",
+    "Pepper"
+   ],
+   "heart": [
+    "Incense",
+    "Orris",
+    "Pine Needle"
+   ],
+   "base": [
+    "Amber",
+    "Sandalwood",
+    "Vanilla"
+   ]
+  },
+  "family": [
+   "citrus",
+   "woody",
+   "amber"
+  ],
+  "description_ko": "자유로운 영혼의 향수를 표현한 향입니다.",
+  "dropped": 0
+ },
+ "jo-malone-london-wood-sage-sea-salt": {
+  "id": "jo-malone-london-wood-sage-sea-salt",
+  "brand": "Jo Malone London",
+  "name": "Wood Sage & Sea Salt",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.jomalone.com/product/179/10507/fragrances/colognes/wood-sage-sea-salt-cologne",
+    "error": "Client error '403 Forbidden' for url 'https://www.jomalone.com/product/179/10507/fragrances/colognes/wood-sage-sea-salt-"
+   },
+   {
+    "url": "https://www.lookfantastic.com/p/jo-malone-london-wood-sage-sea-salt-cologne-10ml/16683937/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.lookfantastic.com/p/jo-malone-london-wood-sage-sea-salt-cologne-50ml/12105489/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.lookfantastic.com/p/jo-malone-london-wood-sage-sea-salt-cologne-100ml/12079095/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.cultbeauty.co.uk/p/jo-malone-london-limited-edition-wood-sage-sea-salt-cologne-30ml/16904514/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.nordstrom.com/s/wood-sage-sea-salt-luxury-duo/7208281",
+    "error": "name not in page"
+   },
+   {
+    "url": "https://www.jomalone.com/wood-sage-sea-salt",
+    "via": "chrome",
+    "found": true,
+    "kept": 3
+   }
+  ],
+  "source": "https://www.jomalone.com/wood-sage-sea-salt",
+  "concentration": "",
+  "notes": {
+   "top": [
+    "Ambrette Seeds"
+   ],
+   "heart": [
+    "Sea Salt"
+   ],
+   "base": [
+    "Sage"
+   ]
+  },
+  "family": [
+   "woody",
+   "aquatic",
+   "fruity"
+  ],
+  "description_ko": "우아한 해양과 자연의 향기를 담고 있습니다."
+ },
+ "diptyque-philosykos": {
+  "id": "diptyque-philosykos",
+  "brand": "Diptyque",
+  "name": "Philosykos",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.luckyscent.com/products/philosykos-eau-de-toilette-by-diptyque",
+    "found": true,
+    "kept": 4,
+    "dropped": 0
+   }
+  ],
+  "source": "https://www.luckyscent.com/products/philosykos-eau-de-toilette-by-diptyque",
+  "concentration": "Eau de Toilette",
+  "notes": {
+   "top": [],
+   "heart": [
+    "Fig Tree Leaves",
+    "Fig"
+   ],
+   "base": [
+    "Wood",
+    "White Cedar"
+   ]
+  },
+  "family": [
+   "fruity",
+   "green",
+   "woody"
+  ],
+  "description_ko": "무화과 숲을 느낄 수 있는 향입니다.",
+  "dropped": 0
+ },
+ "le-labo-santal-33": {
+  "id": "le-labo-santal-33",
+  "brand": "Le Labo",
+  "name": "Santal 33",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.lelabofragrances.com/santal-33-147.html",
+    "found": true,
+    "kept": 5,
+    "dropped": 0
+   }
+  ],
+  "source": "https://www.lelabofragrances.com/santal-33-147.html",
+  "concentration": "Eau De Parfum",
+  "notes": {
+   "top": [],
+   "heart": [
+    "cardamom",
+    "iris",
+    "violet"
+   ],
+   "base": [
+    "Australian sandalwood",
+    "cedarwood"
+   ]
+  },
+  "family": [
+   "woody",
+   "spicy",
+   "floral"
+  ],
+  "description_ko": "야생의 고요함을 묘사한 향수입니다.",
+  "dropped": 0
+ },
+ "chanel-coco-mademoiselle": {
+  "id": "chanel-coco-mademoiselle",
+  "brand": "Chanel",
+  "name": "Coco Mademoiselle",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.chanel.com/us/fragrance/women/c/7x1x1x31/coco-mademoiselle/",
+    "error": "Client error '403 Forbidden' for url 'https://www.chanel.com/us/fragrance/women/c/7x1x1x31/coco-mademoiselle/'\nFor more "
+   },
+   {
+    "url": "https://www.chanel.com/us/fragrance/p/116650/coco-mademoiselle-eau-de-parfum-intense-spray/",
+    "error": "Client error '403 Forbidden' for url 'https://www.chanel.com/us/fragrance/p/116650/coco-mademoiselle-eau-de-parfum-inten"
+   },
+   {
+    "url": "https://www.chanel.com/us/fragrance/p/116450/coco-mademoiselle-eau-de-toilette-spray/",
+    "error": "Client error '403 Forbidden' for url 'https://www.chanel.com/us/fragrance/p/116450/coco-mademoiselle-eau-de-toilette-spr"
+   },
+   {
+    "url": "https://www.chanel.com/us/fragrance/p/116460/coco-mademoiselle-eau-de-toilette-spray/",
+    "error": "Client error '403 Forbidden' for url 'https://www.chanel.com/us/fragrance/p/116460/coco-mademoiselle-eau-de-toilette-spr"
+   },
+   {
+    "url": "https://www.chanel.com/us/fragrance/p/116660/coco-mademoiselle-eau-de-parfum-intense-spray/",
+    "error": "Client error '403 Forbidden' for url 'https://www.chanel.com/us/fragrance/p/116660/coco-mademoiselle-eau-de-parfum-inten"
+   },
+   {
+    "url": "https://www.chanel.com/us/fragrance/p/116390/coco-mademoiselle-eau-de-parfum-spray/",
+    "error": "Client error '403 Forbidden' for url 'https://www.chanel.com/us/fragrance/p/116390/coco-mademoiselle-eau-de-parfum-spray"
+   },
+   {
+    "url": "https://www.chanel.com/us/fragrance/women/c/7x1x1x31/coco-mademoiselle/",
+    "via": "chrome",
+    "found": true,
+    "kept": 3
+   }
+  ],
+  "source": "https://www.chanel.com/us/fragrance/women/c/7x1x1x31/coco-mademoiselle/",
+  "concentration": "unknown",
+  "notes": {
+   "top": [
+    "lychee",
+    "grapefruit"
+   ],
+   "heart": [],
+   "base": [
+    "ambery"
+   ]
+  },
+  "family": [
+   "fruity",
+   "floral",
+   "amber"
+  ],
+  "description_ko": "과일과 플로랄이 조화를 이루는 향입니다."
+ },
+ "dior-sauvage": {
+  "id": "dior-sauvage",
+  "brand": "Dior",
+  "name": "Sauvage",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.dior.com/en_int/beauty/fragrance/mens-fragrance/sauvage",
+    "error": "Client error '403 Forbidden' for url 'https://www.dior.com/en_int/beauty/fragrance/mens-fragrance/sauvage'\nFor more info"
+   },
+   {
+    "url": "https://www.dior.com/en_us/beauty/fragrance/mens-fragrance/sauvage",
+    "error": "Client error '403 Forbidden' for url 'https://www.dior.com/en_us/beauty/fragrance/mens-fragrance/sauvage'\nFor more infor"
+   },
+   {
+    "url": "https://www.dior.com/en_us/beauty/products/sauvage-eau-de-parfum-C099600180.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.dior.com/en_us/beauty/products/sauvage-eau-de-parfum-C099600180.html'\n"
+   },
+   {
+    "url": "https://www.dior.com/en_us/beauty/products/sauvage-parfum-C099600456.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.dior.com/en_us/beauty/products/sauvage-parfum-C099600456.html'\nFor mor"
+   },
+   {
+    "url": "https://www.dior.com/en_us/beauty/products/sauvage-eau-de-toilette-Y0685240.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.dior.com/en_us/beauty/products/sauvage-eau-de-toilette-Y0685240.html'\n"
+   },
+   {
+    "url": "https://www.dior.com/en_us/beauty/products/sauvage-eau-de-parfum-F078524009.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.dior.com/en_us/beauty/products/sauvage-eau-de-parfum-F078524009.html'\n"
+   },
+   {
+    "url": "https://www.dior.com/en_us/beauty/products/sauvage-eau-de-toilette-Y0685240.html",
+    "via": "chrome",
+    "found": true,
+    "kept": 2
+   }
+  ],
+  "source": "https://www.dior.com/en_us/beauty/products/sauvage-eau-de-toilette-Y0685240.html",
+  "concentration": "Eau de Toilette",
+  "notes": {
+   "top": [
+    "Bergamot from Reggio di Calabria"
+   ],
+   "heart": [],
+   "base": [
+    "Ambroxan"
+   ]
+  },
+  "family": [
+   "citrus",
+   "woody"
+  ],
+  "description_ko": "상쾌한 시트러스 향이 돋보이는 향수"
+ },
+ "jo-malone-london-english-pear-freesia": {
+  "id": "jo-malone-london-english-pear-freesia",
+  "brand": "Jo Malone London",
+  "name": "English Pear & Freesia",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.jomalone.com/product/1101/10001/english-pear-freesia-cologne",
+    "error": "Client error '403 Forbidden' for url 'https://www.jomalone.com/product/1101/10001/english-pear-freesia-cologne'\nFor more"
+   },
+   {
+    "url": "https://www.notino.com/jo-malone/english-pear-freesia-cologne-100ml/",
+    "error": "Client error '404 Not Found' for url 'https://www.notino.com/jo-malone/english-pear-freesia-cologne-100ml/'\nFor more inf"
+   },
+   {
+    "url": "https://www.luckyscent.com/product/3700/english-pear-freesia-cologne/jo-malone-london",
+    "error": "Client error '404 Not Found' for url 'https://www.luckyscent.com/product/3700/english-pear-freesia-cologne/jo-malone-lon"
+   },
+   {
+    "url": "https://www.mecca.com.au/jo-malone-london/english-pear-freesia-cologne/I-019019.html",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.douglas.de/de/p/jo-malone-london/english-pear-freesia-cologne-100ml/p/3001028010",
+    "error": "Client error '400 Bad Request' for url 'https://www.douglas.de/de/p/jo-malone-london/english-pear-freesia-cologne-100ml/"
+   },
+   {
+    "url": "https://www.lookfantastic.com/p/jo-malone-london-english-pear-and-freesia-cologne-100ml/13870009/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.jomalone.com/product/25946/12553/colognes/english-pear-freesia-cologne",
+    "via": "chrome",
+    "found": true,
+    "kept": 3
+   }
+  ],
+  "source": "https://www.jomalone.com/product/25946/12553/colognes/english-pear-freesia-cologne",
+  "concentration": "cologne",
+  "notes": {
+   "top": [
+    "Williams Pear"
+   ],
+   "heart": [
+    "Freesia"
+   ],
+   "base": [
+    "Patchouli"
+   ]
+  },
+  "family": [
+   "fruity",
+   "floral",
+   "woody"
+  ],
+  "description_ko": "배와 프리지아의 우아한 향입니다."
+ },
+ "jo-malone-london-lime-basil-mandarin": {
+  "id": "jo-malone-london-lime-basil-mandarin",
+  "brand": "Jo Malone London",
+  "name": "Lime Basil & Mandarin",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.jomalone.com/scents/citrus/lime-basil-mandarin",
+    "error": "Client error '403 Forbidden' for url 'https://www.jomalone.com/scents/citrus/lime-basil-mandarin'\nFor more information c"
+   },
+   {
+    "url": "https://www.jomalone.com/product/25946/10101/colognes/lime-basil-mandarin-cologne",
+    "error": "Client error '403 Forbidden' for url 'https://www.jomalone.com/product/25946/10101/colognes/lime-basil-mandarin-cologne'"
+   },
+   {
+    "url": "https://www.jomalone.com/product/25956/9943/bath-body/lime-basil-mandarin-body-creme",
+    "error": "Client error '403 Forbidden' for url 'https://www.jomalone.com/product/25956/9943/bath-body/lime-basil-mandarin-body-cre"
+   },
+   {
+    "url": "https://www.jomalone.com/product/25969/9953/home/lime-basil-mandarin-scented-candle",
+    "error": "Client error '403 Forbidden' for url 'https://www.jomalone.com/product/25969/9953/home/lime-basil-mandarin-scented-candl"
+   },
+   {
+    "url": "https://www.jomalone.com/product/25959/49144/bath-body/bath-shower/body-hand-wash/lime-basil-mandarin-body-hand-wash",
+    "error": "Client error '403 Forbidden' for url 'https://www.jomalone.com/product/25959/49144/bath-body/bath-shower/body-hand-wash/"
+   },
+   {
+    "url": "https://www.jomalone.com/product/25956/104353/bath-body/lime-basil-mandarin-exfoliating-shower-gel",
+    "error": "Client error '403 Forbidden' for url 'https://www.jomalone.com/product/25956/104353/bath-body/lime-basil-mandarin-exfoli"
+   },
+   {
+    "url": "https://www.jomalone.com/our-stories/lime-basil-mandarin",
+    "via": "chrome",
+    "found": true,
+    "kept": 3
+   }
+  ],
+  "source": "https://www.jomalone.com/our-stories/lime-basil-mandarin",
+  "concentration": "cologne",
+  "notes": {
+   "top": [
+    "Mandarin"
+   ],
+   "heart": [
+    "Basil"
+   ],
+   "base": [
+    "Amberwood"
+   ]
+  },
+  "family": [
+   "citrus",
+   "woody"
+  ],
+  "description_ko": "상큼한 라임과 바질 향이 살아있어요."
+ },
+ "jo-malone-london-peony-blush-suede": {
+  "id": "jo-malone-london-peony-blush-suede",
+  "brand": "Jo Malone London",
+  "name": "Peony & Blush Suede",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.jomalone.com/product/25946/27028/colognes/peony-blush-suede-cologne/",
+    "error": "Client error '403 Forbidden' for url 'https://www.jomalone.com/product/25946/27028/colognes/peony-blush-suede-cologne/'\n"
+   },
+   {
+    "url": "https://www.lookfantastic.com/p/jo-malone-london-peony-blush-suede-cologne-50ml/12105487/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.lookfantastic.com/p/pre-packed-jo-malone-london-peony-blush-suede-cologne-100ml/12079059/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.jomalone.com/product/25956/27047/bath-body/peony-blush-suede-body-creme",
+    "error": "Client error '403 Forbidden' for url 'https://www.jomalone.com/product/25956/27047/bath-body/peony-blush-suede-body-crem"
+   },
+   {
+    "url": "https://www.jomalone.com/product/25956/52951/bath-body/peony-blush-suede-body-hand-lotion",
+    "error": "Client error '403 Forbidden' for url 'https://www.jomalone.com/product/25956/52951/bath-body/peony-blush-suede-body-hand"
+   },
+   {
+    "url": "https://www.jomalone.com/product/25956/131191/bath-body/peony-blush-suede-hand-cream",
+    "error": "Client error '403 Forbidden' for url 'https://www.jomalone.com/product/25956/131191/bath-body/peony-blush-suede-hand-cre"
+   },
+   {
+    "url": "https://www.jomalone.com.au/product/25946/27028/colognes/peony-blush-suede-cologne",
+    "via": "chrome",
+    "found": true,
+    "kept": 3
+   }
+  ],
+  "source": "https://www.jomalone.com.au/product/25946/27028/colognes/peony-blush-suede-cologne",
+  "concentration": "",
+  "notes": {
+   "top": [
+    "Red Apple"
+   ],
+   "heart": [
+    "Peony"
+   ],
+   "base": [
+    "Suede"
+   ]
+  },
+  "family": [
+   "fruity",
+   "floral",
+   "woody"
+  ],
+  "description_ko": "사과와 피오니의 조화로운 향입니다."
+ },
+ "jo-malone-london-blackberry-bay": {
+  "id": "jo-malone-london-blackberry-bay",
+  "brand": "Jo Malone London",
+  "name": "Blackberry & Bay",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.jomalone.co.uk/product/25946/23540/colognes/blackberry-bay-cologne",
+    "via": "chrome",
+    "found": true,
+    "kept": 3
+   }
+  ],
+  "error": "search: Unterminated string starting at: line 1 column 327 (char 326)",
+  "source": "https://www.jomalone.co.uk/product/25946/23540/colognes/blackberry-bay-cologne",
+  "concentration": "",
+  "notes": {
+   "top": [
+    "Blackberry"
+   ],
+   "heart": [
+    "Bay Leaves"
+   ],
+   "base": [
+    "Cedarwood"
+   ]
+  },
+  "family": [
+   "fruity",
+   "woody"
+  ],
+  "description_ko": "달콤한 블랙베리와 상쾌한 향이 어우러진 향수."
+ },
+ "jo-malone-london-myrrh-tonka": {
+  "id": "jo-malone-london-myrrh-tonka",
+  "brand": "Jo Malone London",
+  "name": "Myrrh & Tonka",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.jomalone.co.uk/product/25946/110447/colognes/myrrh-tonka-cologne-intense",
+    "error": "Client error '403 Forbidden' for url 'https://www.jomalone.co.uk/product/25946/110447/colognes/myrrh-tonka-cologne-inten"
+   },
+   {
+    "url": "https://www.lookfantastic.com/p/jo-malone-london-myrrh-and-tonka-cologne-intense-50ml/14004366/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.lookfantastic.com/p/jo-malone-london-myrrh-and-tonka-cologne-intense-10ml/16683943/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.lookfantastic.com/p/jo-malone-london-myrrh-and-tonka-cologne-intense-50ml/15511409/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.jomalone.co.uk/product/25969/110783/home-collection/myrrh-tonka-diffuser",
+    "error": "Client error '403 Forbidden' for url 'https://www.jomalone.co.uk/product/25969/110783/home-collection/myrrh-tonka-diffus"
+   },
+   {
+    "url": "https://www.jomalone.co.uk/product/25956/112285/bath-body/myrrh-tonka-body-creme",
+    "error": "Client error '403 Forbidden' for url 'https://www.jomalone.co.uk/product/25956/112285/bath-body/myrrh-tonka-body-creme'\n"
+   },
+   {
+    "url": "https://www.jomalone.co.uk/product/25946/110447/colognes/myrrh-tonka-cologne-intense",
+    "via": "chrome",
+    "found": true,
+    "kept": 3
+   }
+  ],
+  "source": "https://www.jomalone.co.uk/product/25946/110447/colognes/myrrh-tonka-cologne-intense",
+  "concentration": "cologne intense",
+  "notes": {
+   "top": [
+    "Lavender"
+   ],
+   "heart": [
+    "Omumbiri Myrrh"
+   ],
+   "base": [
+    "Tonka Bean"
+   ]
+  },
+  "family": [
+   "amber",
+   "floral"
+  ],
+  "description_ko": "편안한 라벤더와 부드러운 향의 조화"
+ },
+ "jo-malone-london-velvet-rose-oud": {
+  "id": "jo-malone-london-velvet-rose-oud",
+  "brand": "Jo Malone London",
+  "name": "Velvet Rose & Oud",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.jomalone.com/scents/floral/velvet-rose-oud",
+    "error": "Client error '403 Forbidden' for url 'https://www.jomalone.com/scents/floral/velvet-rose-oud'\nFor more information check"
+   },
+   {
+    "url": "https://www.jomalone.com/product/25946/110452/colognes/velvet-rose-oud-cologne-intense?size=100ml",
+    "error": "Client error '403 Forbidden' for url 'https://www.jomalone.com/product/25946/110452/colognes/velvet-rose-oud-cologne-int"
+   },
+   {
+    "url": "https://www.jomalone.com/product/25969/110776/home/velvet-rose-oud-scented-candle",
+    "error": "Client error '403 Forbidden' for url 'https://www.jomalone.com/product/25969/110776/home/velvet-rose-oud-scented-candle'"
+   },
+   {
+    "url": "https://www.jomalone.com/product/25956/112286/bath-body/velvet-rose-oud-body-creme",
+    "error": "Client error '403 Forbidden' for url 'https://www.jomalone.com/product/25956/112286/bath-body/velvet-rose-oud-body-creme"
+   },
+   {
+    "url": "https://www.jomalone.com/product/25956/118183/bath-body/velvet-rose-oud-body-hand-wash",
+    "error": "Client error '403 Forbidden' for url 'https://www.jomalone.com/product/25956/118183/bath-body/velvet-rose-oud-body-hand-"
+   },
+   {
+    "url": "https://www.jomalone.com/product/25969/110782/home/velvet-rose-oud-reed-diffuser",
+    "error": "Client error '403 Forbidden' for url 'https://www.jomalone.com/product/25969/110782/home/velvet-rose-oud-reed-diffuser'\n"
+   },
+   {
+    "url": "https://www.jomalone.co.uk/product/9181/22688/fragrances/cologne-intense/velvet-rose-oud/velvet-rose-oud-cologne-intense",
+    "via": "chrome",
+    "found": true,
+    "kept": 3
+   }
+  ],
+  "source": "https://www.jomalone.co.uk/product/9181/22688/fragrances/cologne-intense/velvet-rose-oud/velvet-rose-oud-cologne-intense",
+  "concentration": "Cologne Intense",
+  "notes": {
+   "top": [
+    "Clove"
+   ],
+   "heart": [
+    "Damask Rose"
+   ],
+   "base": [
+    "Oud"
+   ]
+  },
+  "family": [
+   "floral",
+   "woody"
+  ],
+  "description_ko": "장미와 우드의 조화로운 향입니다."
+ },
+ "jo-malone-london-nectarine-blossom-honey": {
+  "id": "jo-malone-london-nectarine-blossom-honey",
+  "brand": "Jo Malone London",
+  "name": "Nectarine Blossom & Honey",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.jomalone.com/scents/fruity/nectarine-blossom-honey",
+    "error": "Client error '403 Forbidden' for url 'https://www.jomalone.com/scents/fruity/nectarine-blossom-honey'\nFor more informati"
+   },
+   {
+    "url": "https://www.jomalone.com/product/25946/10079/colognes/nectarine-blossom-honey-cologne",
+    "error": "Client error '403 Forbidden' for url 'https://www.jomalone.com/product/25946/10079/colognes/nectarine-blossom-honey-colo"
+   },
+   {
+    "url": "https://www.jomalone.com/product/25956/10024/bath-body/nectarine-blossom-honey-body-creme",
+    "error": "Client error '403 Forbidden' for url 'https://www.jomalone.com/product/25956/10024/bath-body/nectarine-blossom-honey-bod"
+   },
+   {
+    "url": "https://www.jomalone.com/product/25956/27926/bath-body/nectarine-blossom-honey-body-hand-lotion",
+    "error": "Client error '403 Forbidden' for url 'https://www.jomalone.com/product/25956/27926/bath-body/nectarine-blossom-honey-bod"
+   },
+   {
+    "url": "https://www.jomalone.com/product/25969/9980/home/nectarine-blossom-honey-scented-candle",
+    "error": "Client error '403 Forbidden' for url 'https://www.jomalone.com/product/25969/9980/home/nectarine-blossom-honey-scented-c"
+   },
+   {
+    "url": "https://www.nordstrom.com/s/nectarine-blossom-honey-body-hand-lotion/9246414",
+    "error": "name not in page"
+   },
+   {
+    "url": "https://www.jomalone.co.uk/product/25946/10079/colognes/nectarine-blossom-honey-cologne",
+    "via": "chrome",
+    "found": true,
+    "kept": 3
+   }
+  ],
+  "source": "https://www.jomalone.co.uk/product/25946/10079/colognes/nectarine-blossom-honey-cologne",
+  "concentration": "cologne",
+  "notes": {
+   "top": [
+    "Cassis"
+   ],
+   "heart": [
+    "Acacia Honey"
+   ],
+   "base": [
+    "Peach"
+   ]
+  },
+  "family": [
+   "fruity",
+   "floral"
+  ],
+  "description_ko": "상큼한 복숭아 향이 매력적입니다."
+ },
+ "diptyque-tam-dao": {
+  "id": "diptyque-tam-dao",
+  "brand": "Diptyque",
+  "name": "Tam Dao",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.luckyscent.com/products/tam-dao-eau-de-parfum-by-diptyque",
+    "found": true,
+    "kept": 9,
+    "dropped": 0
+   }
+  ],
+  "source": "https://www.luckyscent.com/products/tam-dao-eau-de-parfum-by-diptyque",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Lime",
+    "Ginger"
+   ],
+   "heart": [
+    "Coriander",
+    "Sandalwood",
+    "Coconut Accord"
+   ],
+   "base": [
+    "Musk",
+    "Cedarwood",
+    "Vanilla",
+    "Amber Wood"
+   ]
+  },
+  "family": [
+   "woody",
+   "spicy"
+  ],
+  "description_ko": "우드와 생강의 조화로운 향이 특징입니다.",
+  "dropped": 0
+ },
+ "diptyque-do-son": {
+  "id": "diptyque-do-son",
+  "brand": "Diptyque",
+  "name": "Do Son",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.diptyque.com/en_us/fragrance/do-son-eau-de-parfum-75ml-3700431400199.html",
+    "error": "[Errno 11001] getaddrinfo failed"
+   },
+   {
+    "url": "https://www.luckyscent.com/products/do-son-eau-de-parfum-by-diptyque",
+    "found": true,
+    "kept": 6,
+    "dropped": 0
+   }
+  ],
+  "source": "https://www.luckyscent.com/products/do-son-eau-de-parfum-by-diptyque",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [],
+   "heart": [
+    "tuberose",
+    "Turkish rose",
+    "orange blossom leaf",
+    "rose berries"
+   ],
+   "base": [
+    "white musk",
+    "iris"
+   ]
+  },
+  "family": [
+   "floral"
+  ],
+  "description_ko": "부드러운 튜베로즈 향이 매력적입니다.",
+  "dropped": 0
+ },
+ "diptyque-eau-rose": {
+  "id": "diptyque-eau-rose",
+  "brand": "Diptyque",
+  "name": "Eau Rose",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.luckyscent.com/products/eau-rose-eau-de-parfum-by-diptyque",
+    "found": true,
+    "kept": 4,
+    "dropped": 1
+   }
+  ],
+  "source": "https://www.luckyscent.com/products/eau-rose-eau-de-parfum-by-diptyque",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [],
+   "heart": [
+    "Roses Damascena",
+    "Chamomile",
+    "Litchi",
+    "Artichoke"
+   ],
+   "base": []
+  },
+  "family": [
+   "floral"
+  ],
+  "description_ko": "꽃과 과일의 조화로운 향이다.",
+  "dropped": 1
+ },
+ "diptyque-orpheon": {
+  "id": "diptyque-orpheon",
+  "brand": "Diptyque",
+  "name": "Orphéon",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.luckyscent.com/products/orpheon-eau-de-toilette-by-diptyque",
+    "found": true,
+    "kept": 3,
+    "dropped": 0
+   }
+  ],
+  "source": "https://www.luckyscent.com/products/orpheon-eau-de-toilette-by-diptyque",
+  "concentration": "Eau de Toilette",
+  "notes": {
+   "top": [
+    "Green Mandarin",
+    "Juniper Berries"
+   ],
+   "heart": [
+    "Cedar"
+   ],
+   "base": []
+  },
+  "family": [
+   "citrus",
+   "woody",
+   "spicy"
+  ],
+  "description_ko": "재즈 클럽의 흥겨운 저녁을 담고 있습니다.",
+  "dropped": 0
+ },
+ "diptyque-fleur-de-peau": {
+  "id": "diptyque-fleur-de-peau",
+  "brand": "Diptyque",
+  "name": "Fleur de Peau",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.luckyscent.com/products/fleur-de-peau-by-diptyque-1?src=plp.fragrances",
+    "found": true,
+    "kept": 7,
+    "dropped": 0
+   }
+  ],
+  "source": "https://www.luckyscent.com/products/fleur-de-peau-by-diptyque-1?src=plp.fragrances",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Aldehydes",
+    "Pink Pepper",
+    "Rose"
+   ],
+   "heart": [
+    "Iris",
+    "Ambrette"
+   ],
+   "base": [
+    "Ambergris",
+    "Musk"
+   ]
+  },
+  "family": [
+   "floral",
+   "musk",
+   "amber"
+  ],
+  "description_ko": "부드럽고 복잡한 피부 향기를 가진 향수입니다.",
+  "dropped": 0
+ },
+ "diptyque-eau-des-sens": {
+  "id": "diptyque-eau-des-sens",
+  "brand": "Diptyque",
+  "name": "Eau des Sens",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.luckyscent.com/products/eau-des-sens-by-diptyque",
+    "found": true,
+    "kept": 5,
+    "dropped": 0
+   }
+  ],
+  "source": "https://www.luckyscent.com/products/eau-des-sens-by-diptyque",
+  "concentration": "Eau de Toilette",
+  "notes": {
+   "top": [],
+   "heart": [
+    "Orange Flower",
+    "Bitter Orange",
+    "Juniper",
+    "Angelica"
+   ],
+   "base": [
+    "Patchouli"
+   ]
+  },
+  "family": [
+   "citrus",
+   "floral",
+   "fruity"
+  ],
+  "description_ko": "상큼하고 꽃향이 나는 향수입니다.",
+  "dropped": 0
+ },
+ "diptyque-oyedo": {
+  "id": "diptyque-oyedo",
+  "brand": "Diptyque",
+  "name": "Oyédo",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.luckyscent.com/products/oyedo-by-diptyque",
+    "error": "name not in page"
+   },
+   {
+    "url": "https://www.selfridges.com/US/en/product/diptyque-oydo-eau-de-toilette-50ml_342-2000170-OYEDO50V1/",
+    "found": true,
+    "kept": 3,
+    "dropped": 0
+   }
+  ],
+  "source": "https://www.selfridges.com/US/en/product/diptyque-oydo-eau-de-toilette-50ml_342-2000170-OYEDO50V1/",
+  "concentration": "eau de toilette",
+  "notes": {
+   "top": [
+    "Yuzu"
+   ],
+   "heart": [
+    "Green tangerine"
+   ],
+   "base": [
+    "Thyme"
+   ]
+  },
+  "family": [
+   "fruity",
+   "citrus"
+  ],
+  "description_ko": "상큼한 과일 향이 매력적인 향수입니다.",
+  "dropped": 0
+ },
+ "le-labo-another-13": {
+  "id": "le-labo-another-13",
+  "brand": "Le Labo",
+  "name": "Another 13",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.lelabofragrances.com/another-13-463.html",
+    "found": true,
+    "kept": 3,
+    "dropped": 0
+   }
+  ],
+  "source": "https://www.lelabofragrances.com/another-13-463.html",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [],
+   "heart": [
+    "ambroxyde",
+    "jasmine",
+    "moss"
+   ],
+   "base": []
+  },
+  "family": [
+   "floral",
+   "woody",
+   "amber"
+  ],
+  "description_ko": "매혹적이고 독특한 향기입니다.",
+  "dropped": 0
+ },
+ "le-labo-rose-31": {
+  "id": "le-labo-rose-31",
+  "brand": "Le Labo",
+  "name": "Rose 31",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.lelabofragrances.com/rose-31-146.html",
+    "found": true,
+    "kept": 8,
+    "dropped": 0
+   }
+  ],
+  "source": "https://www.lelabofragrances.com/rose-31-146.html",
+  "concentration": "Eau De Parfum",
+  "notes": {
+   "top": [
+    "Bergamot",
+    "Cedar"
+   ],
+   "heart": [
+    "Rose",
+    "Cumin",
+    "Olibanum",
+    "Amber"
+   ],
+   "base": [
+    "Gaïac wood",
+    "Cistus"
+   ]
+  },
+  "family": [
+   "floral",
+   "spicy",
+   "woody"
+  ],
+  "description_ko": "장미와 스파이시한 향이 어우러진 향수입니다.",
+  "dropped": 0
+ },
+ "le-labo-the-noir-29": {
+  "id": "le-labo-the-noir-29",
+  "brand": "Le Labo",
+  "name": "Thé Noir 29",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.lelabofragrances.com/th-noir-29-148.html",
+    "found": true,
+    "kept": 6,
+    "dropped": 0
+   }
+  ],
+  "source": "https://www.lelabofragrances.com/th-noir-29-148.html",
+  "concentration": "Eau De Parfum",
+  "notes": {
+   "top": [
+    "bergamot",
+    "fig",
+    "bay leaves"
+   ],
+   "heart": [],
+   "base": [
+    "cedarwood",
+    "vetiver",
+    "musk"
+   ]
+  },
+  "family": [
+   "citrus",
+   "woody",
+   "floral"
+  ],
+  "description_ko": "신선함과 깊이를 느낄 수 있는 향수입니다.",
+  "dropped": 0
+ },
+ "le-labo-bergamote-22": {
+  "id": "le-labo-bergamote-22",
+  "brand": "Le Labo",
+  "name": "Bergamote 22",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.lelabofragrances.com/bergamote-22-161.html",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.luckyscent.com/products/bergamote-22-by-le-labo?sku=46804_R",
+    "found": true,
+    "kept": 10,
+    "dropped": 0
+   }
+  ],
+  "source": "https://www.luckyscent.com/products/bergamote-22-by-le-labo?sku=46804_R",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Bergamot",
+    "Grapefruit"
+   ],
+   "heart": [
+    "Petitgrain",
+    "Orange Blossom",
+    "Nutmeg",
+    "Aspic"
+   ],
+   "base": [
+    "Cedar",
+    "Amber",
+    "Musk",
+    "Vetiver"
+   ]
+  },
+  "family": [
+   "citrus",
+   "floral",
+   "woody"
+  ],
+  "description_ko": "상큼하고 관능적인 향의 조화입니다.",
+  "dropped": 0
+ },
+ "byredo-mojave-ghost": {
+  "id": "byredo-mojave-ghost",
+  "brand": "Byredo",
+  "name": "Mojave Ghost",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.byredo.com/us_en/p/mojave-ghost-eau-de-parfum?sku=0065212492",
+    "found": true,
+    "kept": 9,
+    "dropped": 0
+   }
+  ],
+  "source": "https://www.byredo.com/us_en/p/mojave-ghost-eau-de-parfum?sku=0065212492",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Ambrette",
+    "Naseberry"
+   ],
+   "heart": [
+    "Magnolia",
+    "Sandalwood",
+    "Violet"
+   ],
+   "base": [
+    "Cedarwood",
+    "Magnolia",
+    "Musks",
+    "Vetiver"
+   ]
+  },
+  "family": [
+   "floral",
+   "woody",
+   "musk"
+  ],
+  "description_ko": "모하비 사막의 아름다움을 담은 향수입니다.",
+  "dropped": 0
+ },
+ "byredo-blanche": {
+  "id": "byredo-blanche",
+  "brand": "Byredo",
+  "name": "Blanche",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.byredo.com/us_en/p/blanche-eau-de-parfum?sku=0065212494",
+    "found": true,
+    "kept": 6,
+    "dropped": 0
+   }
+  ],
+  "source": "https://www.byredo.com/us_en/p/blanche-eau-de-parfum?sku=0065212494",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Aldehyde",
+    "Rose Centifolia"
+   ],
+   "heart": [
+    "Peony",
+    "Violet"
+   ],
+   "base": [
+    "Musks",
+    "Sandalwood"
+   ]
+  },
+  "family": [
+   "floral"
+  ],
+  "description_ko": "부드럽고 우아한 플로럴 향입니다.",
+  "dropped": 0
+ },
+ "byredo-bal-d-afrique": {
+  "id": "byredo-bal-d-afrique",
+  "brand": "Byredo",
+  "name": "Bal d'Afrique",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.byredo.com/us_en/p/bal-d-afrique-eau-de-parfum?sku=0065212491",
+    "found": true,
+    "kept": 11,
+    "dropped": 0
+   }
+  ],
+  "source": "https://www.byredo.com/us_en/p/bal-d-afrique-eau-de-parfum?sku=0065212491",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Buchu",
+    "African Marigold",
+    "Bergamot",
+    "Blackcurrant"
+   ],
+   "heart": [
+    "Cyclamen",
+    "Jasmine Petals",
+    "Violet"
+   ],
+   "base": [
+    "Tonka Bean Absolue",
+    "Cedarwood",
+    "Musks",
+    "Vetiver"
+   ]
+  },
+  "family": [
+   "floral",
+   "fruity",
+   "woody"
+  ],
+  "description_ko": "아프리카 문화의 정수를 담은 향수입니다.",
+  "dropped": 0
+ },
+ "byredo-rose-of-no-man-s-land": {
+  "id": "byredo-rose-of-no-man-s-land",
+  "brand": "Byredo",
+  "name": "Rose of No Man's Land",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.byredo.com/us_en/p/rose-of-no-mans-land-eau-de-parfum?sku=0065212493",
+    "found": true,
+    "kept": 6,
+    "dropped": 0
+   }
+  ],
+  "source": "https://www.byredo.com/us_en/p/rose-of-no-mans-land-eau-de-parfum?sku=0065212493",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Pink Pepper",
+    "Turkish Rose Petals"
+   ],
+   "heart": [
+    "Turkish Rose Absolute",
+    "Raspberry Blossom"
+   ],
+   "base": [
+    "Amber",
+    "Papyrus"
+   ]
+  },
+  "family": [
+   "floral",
+   "fruity",
+   "amber"
+  ],
+  "description_ko": "장미의 달콤함과 따뜻함이 느껴지는 향기입니다.",
+  "dropped": 0
+ },
+ "maison-margiela-replica-lazy-sunday-morning": {
+  "id": "maison-margiela-replica-lazy-sunday-morning",
+  "brand": "Maison Margiela",
+  "name": "Replica Lazy Sunday Morning",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.maisonmargiela.com/en-us/replica-lazy-sunday-morning-eau-de-toilette-30ml-S33YX0111S12831961.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.maisonmargiela.com/en-us/replica-lazy-sunday-morning-eau-de-toilette-3"
+   },
+   {
+    "url": "https://www.lookfantastic.com/p/maison-margiela-replica-lazy-sunday-morning-eau-de-toilette-100ml/13183504/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.lookfantastic.com/p/maison-margiela-replica-lazy-sunday-morning-eau-de-toilette-30ml/13183505/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.luckyscent.com/products/lazy-sunday-morning-by-maison-margiela-replica?src=plp.fragrances",
+    "error": "Client error '404 Not Found' for url 'https://www.luckyscent.com/products/lazy-sunday-morning-by-maison-margiela-replica"
+   },
+   {
+    "url": "https://www.cultbeauty.com/p/maison-margiela-replica-lazy-sunday-morning-eau-de-toilette-30ml/13183505/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.spacenk.com/us/en_US/fragrance/replica-lazy-sunday-morning-eau-de-toilette-MUK200019013.html",
+    "error": "Client error '404 Not Found' for url 'https://www.spacenk.com/us/bath-body/bath-body-gift-sets/bath-body-sets/knackered-"
+   },
+   {
+    "url": "https://www.maisonmargiela-fragrances.us/fragrances/replica-eau-de-toilette/replica-lazy-sunday-morning-limited-eau-de-toilette/MM176.html",
+    "via": "chrome",
+    "found": true,
+    "kept": 3
+   }
+  ],
+  "source": "https://www.maisonmargiela-fragrances.us/fragrances/replica-eau-de-toilette/replica-lazy-sunday-morning-limited-eau-de-toilette/MM176.html",
+  "concentration": "",
+  "notes": {
+   "top": [],
+   "heart": [
+    "Lily of the Valley Accord",
+    "Iris Accord"
+   ],
+   "base": [
+    "White Musks Accord"
+   ]
+  },
+  "family": [
+   "floral",
+   "musk"
+  ],
+  "description_ko": "편안한 주말 아침의 향기입니다."
+ },
+ "maison-margiela-replica-jazz-club": {
+  "id": "maison-margiela-replica-jazz-club",
+  "brand": "Maison Margiela",
+  "name": "Replica Jazz Club",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.maisonmargiela.com/en-us/replica-jazz-club-eau-de-toilette-%7C-maison-margiela-8057286367763.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.maisonmargiela.com/en-us/replica-jazz-club-eau-de-toilette-%7C-maison-"
+   },
+   {
+    "url": "https://www.luckyscent.com/products/jazz-club-by-maison-margiela-replica",
+    "found": true,
+    "kept": 11,
+    "dropped": 0
+   }
+  ],
+  "source": "https://www.luckyscent.com/products/jazz-club-by-maison-margiela-replica",
+  "concentration": "Eau de Toilette",
+  "notes": {
+   "top": [
+    "Pink Pepper",
+    "Neroli",
+    "Lemon"
+   ],
+   "heart": [
+    "Rum",
+    "Java Vetiver Oil",
+    "Clary Sage",
+    "Tobacco Leaf",
+    "Vanilla Bean",
+    "Styrax"
+   ],
+   "base": [
+    "Leather",
+    "Tobacco"
+   ]
+  },
+  "family": [
+   "amber",
+   "woody",
+   "spicy"
+  ],
+  "description_ko": "재즈 클럽의 부드러운 향기가 느껴집니다.",
+  "dropped": 0
+ },
+ "maison-margiela-replica-by-the-fireplace": {
+  "id": "maison-margiela-replica-by-the-fireplace",
+  "brand": "Maison Margiela",
+  "name": "Replica By the Fireplace",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.maisonmargiela.com/en-us/replica-by-the-fireplace-eau-de-toilette-S33YX0024S11331961.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.maisonmargiela.com/en-us/replica-by-the-fireplace-eau-de-toilette-S33Y"
+   },
+   {
+    "url": "https://www.luckyscent.com/products/by-the-fireplace-by-maison-margiela-replica?src=plp.brand-maison-margiela-replica",
+    "error": "Client error '404 Not Found' for url 'https://www.luckyscent.com/products/by-the-fireplace-by-maison-margiela-replica?sr"
+   },
+   {
+    "url": "https://www.nordstrom.com/s/replica-by-the-fireplace-eau-de-toilette/4289852",
+    "error": "name not in page"
+   },
+   {
+    "url": "https://www.lookfantastic.com/p/maison-margiela-replica-by-the-fireplace-eau-de-toilette-30ml/13183499/?rctxt=default",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.cultbeauty.com/p/maison-margiela-replica-by-the-fireplace-eau-de-toilette-100ml/13183498/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.lookfantastic.com/p/maison-margiela-replica-by-the-fireplace-eau-de-toilette-100ml/13183498/?bvstate=pg%3A32%2Fct%3Ar",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.maisonmargiela-fragrances.us/gifts-and-sets/replica-by-the-fireplace-eau-de-toilette-gift-set/MM206.html",
+    "via": "chrome",
+    "found": true,
+    "kept": 3
+   }
+  ],
+  "source": "https://www.maisonmargiela-fragrances.us/gifts-and-sets/replica-by-the-fireplace-eau-de-toilette-gift-set/MM206.html",
+  "concentration": "",
+  "notes": {
+   "top": [],
+   "heart": [
+    "Chestnut",
+    "Cashmeran",
+    "Vanilla"
+   ],
+   "base": []
+  },
+  "family": [
+   "gourmand",
+   "woody",
+   "spicy"
+  ],
+  "description_ko": "따뜻하고 아늑한 은은한 향입니다."
+ },
+ "maison-margiela-replica-beach-walk": {
+  "id": "maison-margiela-replica-beach-walk",
+  "brand": "Maison Margiela",
+  "name": "Replica Beach Walk",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.maisonmargiela.com/en-us/replica-beach-walk-eau-de-toilette-S33YX0014S10931001.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.maisonmargiela.com/en-us/replica-beach-walk-eau-de-toilette-S33YX0014S"
+   },
+   {
+    "url": "https://www.lookfantastic.com/p/maison-margiela-replica-beach-walk-eau-de-toilette-30ml/13183508/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.lookfantastic.com/p/maison-margiela-replica-beach-walk-eau-de-toilette-100ml/13183507/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.nordstrom.com/s/replica-beach-walk-eau-de-toilette/4134881",
+    "error": "name not in page"
+   },
+   {
+    "url": "https://www.spacenk.com/us/fragrance/personal-fragrance/fragrance/beach-walk-eau-de-toilette-MUK200028401.html",
+    "found": true,
+    "kept": 3,
+    "dropped": 0
+   }
+  ],
+  "source": "https://www.spacenk.com/us/fragrance/personal-fragrance/fragrance/beach-walk-eau-de-toilette-MUK200028401.html",
+  "concentration": "",
+  "notes": {
+   "top": [
+    "bergamot"
+   ],
+   "heart": [
+    "coconut milk",
+    "ylang-ylang"
+   ],
+   "base": []
+  },
+  "family": [
+   "floral",
+   "fruity"
+  ],
+  "description_ko": "여름 날을 떠오르게 하는 향입니다.",
+  "dropped": 0
+ },
+ "maison-margiela-replica-when-the-rain-stops": {
+  "id": "maison-margiela-replica-when-the-rain-stops",
+  "brand": "Maison Margiela",
+  "name": "Replica When the Rain Stops",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.maisonmargiela.com/en-us/replica-when-the-rain-stops-eau-de-toilette-30ml-8054326990172.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.maisonmargiela.com/en-us/replica-when-the-rain-stops-eau-de-toilette-3"
+   },
+   {
+    "url": "https://www.lookfantastic.com/p/maison-margiela-replica-when-the-rain-stops-diffuser-185ml/14921386/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.cultbeauty.com/p/maison-margiela-replica-when-the-rain-stops-eau-de-toilette-30ml/13457833/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.lookfantastic.com/p/maison-margiela-replica-when-the-rain-stops-candle-165g/14872122/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.cultbeauty.com/p/maison-margiela-replica-when-the-rain-stops-candle-165g/14872122/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.maisonmargiela-fragrances.us/fragrances/replica-eau-de-toilette/replica-when-the-rain-stops/3614273612661.html",
+    "via": "chrome",
+    "found": true,
+    "kept": 3
+   }
+  ],
+  "source": "https://www.maisonmargiela-fragrances.us/fragrances/replica-eau-de-toilette/replica-when-the-rain-stops/3614273612661.html",
+  "concentration": "",
+  "notes": {
+   "top": [],
+   "heart": [
+    "AQUATIC ACCORD",
+    "ISPARTA ROSE PETAL"
+   ],
+   "base": [
+    "PATCHOULI BALI"
+   ]
+  },
+  "family": [
+   "aquatic",
+   "floral",
+   "woody"
+  ],
+  "description_ko": "비 오는 날의 향기를 담은 향수입니다."
+ },
+ "aesop-hwyl": {
+  "id": "aesop-hwyl",
+  "brand": "Aesop",
+  "name": "Hwyl",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.aesop.com/de/en/p/fragrance/woody/hwyl-eau-de-parfum/",
+    "error": "Client error '403 Forbidden' for url 'https://www.aesop.de/de/en/p/fragrance/woody/hwyl-eau-de-parfum/'\nFor more informa"
+   },
+   {
+    "url": "https://www.aesop.com/fragrance/woody/hwyl-eau-de-parfum/9319944012941.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.aesop.com/fragrance/woody/hwyl-eau-de-parfum/9319944012941.html'\nFor m"
+   },
+   {
+    "url": "https://www.aesop.com/uk/p/fragrance/woody/hwyl-eau-de-parfum/",
+    "error": "Client error '403 Forbidden' for url 'https://www.aesop.co.uk/uk/p/fragrance/woody/hwyl-eau-de-parfum/'\nFor more informa"
+   },
+   {
+    "url": "https://www.lookfantastic.com/p/12610862/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.luckyscent.com/products/silently-hwyl-by-aesop",
+    "found": true,
+    "kept": 10,
+    "dropped": 0
+   }
+  ],
+  "source": "https://www.luckyscent.com/products/silently-hwyl-by-aesop",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Thyme",
+    "Elemi",
+    "Pink Pepper"
+   ],
+   "heart": [
+    "Cypress",
+    "Suede",
+    "Geranium"
+   ],
+   "base": [
+    "Vetiver",
+    "Frankincense",
+    "Cedar",
+    "Hinoki"
+   ]
+  },
+  "family": [
+   "woody",
+   "spicy",
+   "green"
+  ],
+  "description_ko": "고요한 분위기의 우디 향수입니다.",
+  "dropped": 0
+ },
+ "aesop-tacit": {
+  "id": "aesop-tacit",
+  "brand": "Aesop",
+  "name": "Tacit",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.aesop.com/fragrance/fresh/tacit-eau-de-parfum/FR12.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.aesop.com/fragrance/fresh/tacit-eau-de-parfum/FR12.html'\nFor more info"
+   },
+   {
+    "url": "https://www.luckyscent.com/products/tacit-by-aesop",
+    "error": "Client error '404 Not Found' for url 'https://www.luckyscent.com/products/tacit-by-aesop'\nFor more information check: ht"
+   },
+   {
+    "url": "https://www.lookfantastic.com/p/aesop-tacit-eau-de-parfum-fragrance-50ml/11159037/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.aesop.com/fragrance/fresh/tacit-eau-de-parfum/FR12.html",
+    "via": "chrome",
+    "found": true,
+    "kept": 9
+   }
+  ],
+  "source": "https://www.aesop.com/fragrance/fresh/tacit-eau-de-parfum/FR12.html",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Yuzu",
+    "Basil Grand Vert",
+    "Clove"
+   ],
+   "heart": [
+    "Rosemary",
+    "Mint",
+    "Fennel"
+   ],
+   "base": [
+    "Cedarwood",
+    "Vetiver Heart",
+    "Amber"
+   ]
+  },
+  "family": [
+   "citrus",
+   "green",
+   "woody"
+  ],
+  "description_ko": "유자와 바질이 어우러진 향수입니다."
+ },
+ "aesop-marrakech-intense": {
+  "id": "aesop-marrakech-intense",
+  "brand": "Aesop",
+  "name": "Marrakech Intense",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.aesop.com/fragrance/marrakech-intense-eau-de-parfum/FR39.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.aesop.com/fragrance/marrakech-intense-eau-de-parfum/FR39.html'\nFor mor"
+   },
+   {
+    "url": "https://www.luckyscent.com/products/marrakech-intense-by-aesop",
+    "found": true,
+    "kept": 9,
+    "dropped": 0
+   }
+  ],
+  "source": "https://www.luckyscent.com/products/marrakech-intense-by-aesop",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Bergamot",
+    "Neroli",
+    "Jasmine"
+   ],
+   "heart": [
+    "Rose",
+    "Cardamom",
+    "Patchouli"
+   ],
+   "base": [
+    "Sandalwood",
+    "Cedarwood",
+    "Clove"
+   ]
+  },
+  "family": [
+   "floral",
+   "spicy",
+   "woody"
+  ],
+  "description_ko": "정열적인 자스민과 시트러스 향이 조화를 이룹니다.",
+  "dropped": 0
+ },
+ "aesop-eremia": {
+  "id": "aesop-eremia",
+  "brand": "Aesop",
+  "name": "Eremia",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.aesop.com/de/en/p/fragrance/fresh/er-mia-eau-de-parfum/",
+    "error": "Client error '403 Forbidden' for url 'https://www.aesop.de/de/en/p/fragrance/fresh/er-mia-eau-de-parfum/'\nFor more infor"
+   },
+   {
+    "url": "https://www.aesop.com/uk/p/fragrance/fresh/er-mia-eau-de-parfum/",
+    "error": "Client error '403 Forbidden' for url 'https://www.aesop.co.uk/uk/p/fragrance/fresh/er-mia-eau-de-parfum/'\nFor more infor"
+   },
+   {
+    "url": "https://www.aesop.com/fr/fr/p/fragrance/fresh/er-mia-eau-de-parfum/",
+    "error": "Client error '403 Forbidden' for url 'https://www.aesop.fr/fr/fr/p/fragrance/fresh/er-mia-eau-de-parfum/'\nFor more infor"
+   },
+   {
+    "url": "https://www.aesop.com/fr/es/p/fragrance/fresh/er-mia-eau-de-parfum/",
+    "error": "Client error '403 Forbidden' for url 'https://www.aesop.es/fr/es/p/fragrance/fresh/er-mia-eau-de-parfum/'\nFor more infor"
+   },
+   {
+    "url": "https://www.aesop.com/it/p/fragrance/fresh/er-mia-eau-de-parfum/",
+    "error": "Client error '403 Forbidden' for url 'https://www.aesop.it/it/p/fragrance/fresh/er-mia-eau-de-parfum/'\nFor more informat"
+   },
+   {
+    "url": "https://www.lookfantastic.com/p/aesop-eremia-eau-de-parfum-50ml/13301245/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.aesop.com/uk/p/fragrance/fresh/er-mia-eau-de-parfum/",
+    "via": "chrome",
+    "found": true,
+    "kept": 9
+   }
+  ],
+  "source": "https://www.aesop.com/uk/p/fragrance/fresh/er-mia-eau-de-parfum/",
+  "concentration": "eau de parfum",
+  "notes": {
+   "top": [
+    "Yuzu",
+    "Bergamot",
+    "Grapefruit"
+   ],
+   "heart": [
+    "Mimosa",
+    "Green Tea",
+    "Guaiacwood"
+   ],
+   "base": [
+    "Galbanum",
+    "Iris",
+    "Patchouli"
+   ]
+  },
+  "family": [
+   "citrus",
+   "floral",
+   "woody"
+  ],
+  "description_ko": "상큼하고 우아한 향이 조화를 이룬다."
+ },
+ "chanel-chance-eau-tendre": {
+  "id": "chanel-chance-eau-tendre",
+  "brand": "Chanel",
+  "name": "Chance Eau Tendre",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.chanel.com/us/fragrance/p/126310/chance-eau-tendre-eau-de-toilette-spray/",
+    "error": "Client error '403 Forbidden' for url 'https://www.chanel.com/us/fragrance/p/126310/chance-eau-tendre-eau-de-toilette-spr"
+   },
+   {
+    "url": "https://www.chanel.com/us/fragrance/p/126270/chance-eau-tendre-eau-de-parfum-spray/",
+    "error": "Client error '403 Forbidden' for url 'https://www.chanel.com/us/fragrance/p/126270/chance-eau-tendre-eau-de-parfum-spray"
+   },
+   {
+    "url": "https://www.chanel.com/us/fragrance/p/126290/chance-eau-tendre-eau-de-toilette-spray/",
+    "error": "Client error '403 Forbidden' for url 'https://www.chanel.com/us/fragrance/p/126290/chance-eau-tendre-eau-de-toilette-spr"
+   },
+   {
+    "url": "https://www.chanel.com/us/fragrance/p/126330/chance-eau-tendre-eau-de-toilette-spray/",
+    "error": "Client error '403 Forbidden' for url 'https://www.chanel.com/us/fragrance/p/126330/chance-eau-tendre-eau-de-toilette-spr"
+   },
+   {
+    "url": "https://www.chanel.com/us/fragrance/p/126320/chance-eau-tendre-eau-de-toilette-spray/",
+    "error": "Client error '403 Forbidden' for url 'https://www.chanel.com/us/fragrance/p/126320/chance-eau-tendre-eau-de-toilette-spr"
+   },
+   {
+    "url": "https://www.chanel.com/us/fragrance/p/126240/chance-eau-tendre-eau-de-parfum-spray/",
+    "error": "Client error '403 Forbidden' for url 'https://www.chanel.com/us/fragrance/p/126240/chance-eau-tendre-eau-de-parfum-spray"
+   },
+   {
+    "url": "https://www.chanel.com/us/fragrance/p/126330/chance-eau-tendre-eau-de-toilette-spray/",
+    "via": "chrome",
+    "found": true,
+    "kept": 4
+   }
+  ],
+  "source": "https://www.chanel.com/us/fragrance/p/126330/chance-eau-tendre-eau-de-toilette-spray/",
+  "concentration": "Eau de Toilette",
+  "notes": {
+   "top": [
+    "grapefruit",
+    "quince"
+   ],
+   "heart": [
+    "jasmine"
+   ],
+   "base": [
+    "white musk"
+   ]
+  },
+  "family": [
+   "fruity",
+   "floral",
+   "musk"
+  ],
+  "description_ko": "상큼하고 부드러운 향이 조화를 이룹니다."
+ },
+ "chanel-bleu-de-chanel": {
+  "id": "chanel-bleu-de-chanel",
+  "brand": "Chanel",
+  "name": "Bleu de Chanel",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.chanel.com/us/fragrance/p/107360/bleu-de-chanel-eau-de-parfum-spray/",
+    "error": "Client error '403 Forbidden' for url 'https://www.chanel.com/us/fragrance/p/107360/bleu-de-chanel-eau-de-parfum-spray/'\n"
+   },
+   {
+    "url": "https://www.chanel.com/us/fragrance/p/107350/bleu-de-chanel-eau-de-parfum-spray/",
+    "error": "Client error '403 Forbidden' for url 'https://www.chanel.com/us/fragrance/p/107350/bleu-de-chanel-eau-de-parfum-spray/'\n"
+   },
+   {
+    "url": "https://www.chanel.com/us/fragrance/p/107460/bleu-de-chanel-eau-de-toilette-spray/",
+    "error": "Client error '403 Forbidden' for url 'https://www.chanel.com/us/fragrance/p/107460/bleu-de-chanel-eau-de-toilette-spray/"
+   },
+   {
+    "url": "https://www.chanel.com/us/fragrance/p/107480/bleu-de-chanel-eau-de-toilette-spray/",
+    "error": "Client error '403 Forbidden' for url 'https://www.chanel.com/us/fragrance/p/107480/bleu-de-chanel-eau-de-toilette-spray/"
+   },
+   {
+    "url": "https://www.chanel.com/us/fragrance/p/107370/bleu-de-chanel-eau-de-parfum-spray/",
+    "error": "Client error '403 Forbidden' for url 'https://www.chanel.com/us/fragrance/p/107370/bleu-de-chanel-eau-de-parfum-spray/'\n"
+   },
+   {
+    "url": "https://www.chanel.com/us/fragrance/p/107190/bleu-de-chanel-parfum-spray/",
+    "error": "Client error '403 Forbidden' for url 'https://www.chanel.com/us/fragrance/p/107190/bleu-de-chanel-parfum-spray/'\nFor mor"
+   },
+   {
+    "url": "https://www.nordstrom.com/s/chanel-bleu-de-chanel-eau-de-toilette-spray/3118978",
+    "via": "chrome",
+    "found": true,
+    "kept": 3
+   }
+  ],
+  "source": "https://www.nordstrom.com/s/chanel-bleu-de-chanel-eau-de-toilette-spray/3118978",
+  "concentration": "Eau de Toilette",
+  "notes": {
+   "top": [
+    "Grapefruit"
+   ],
+   "heart": [],
+   "base": [
+    "dry cedar",
+    "sandalwood"
+   ]
+  },
+  "family": [
+   "woody",
+   "fruity"
+  ],
+  "description_ko": "상큼한 자몽과 우디 향의 조화입니다."
+ },
+ "dior-miss-dior": {
+  "id": "dior-miss-dior",
+  "brand": "Dior",
+  "name": "Miss Dior",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.dior.com/en_us/beauty/fragrance/discover-miss-dior-parfum.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.dior.com/en_us/beauty/fragrance/discover-miss-dior-parfum.html'\nFor mo"
+   },
+   {
+    "url": "https://www.dior.com/en_us/beauty/products/miss-dior-eau-de-parfum-E000001556.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.dior.com/en_us/beauty/products/miss-dior-eau-de-parfum-E000001556.html"
+   },
+   {
+    "url": "https://www.dior.com/en_us/beauty/products/miss-dior-eau-de-parfum-E000001555.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.dior.com/en_us/beauty/products/miss-dior-eau-de-parfum-E000001555.html"
+   },
+   {
+    "url": "https://www.dior.com/en_us/beauty/products/miss-dior-parfum-C099700899.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.dior.com/en_us/beauty/products/miss-dior-parfum-C099700899.html'\nFor m"
+   },
+   {
+    "url": "https://www.dior.com/en_us/beauty/products/miss-dior-Y0062202.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.dior.com/en_us/beauty/products/miss-dior-Y0062202.html'\nFor more infor"
+   },
+   {
+    "url": "https://www.dior.com/en_us/beauty/products/miss-dior-F006224909.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.dior.com/en_us/beauty/products/miss-dior-F006224909.html'\nFor more inf"
+   },
+   {
+    "url": "https://www.dior.com/en_us/beauty/products/miss-dior-eau-de-parfum-E000001556.html",
+    "via": "chrome",
+    "found": true,
+    "kept": 5
+   }
+  ],
+  "source": "https://www.dior.com/en_us/beauty/products/miss-dior-eau-de-parfum-E000001556.html",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [],
+   "heart": [
+    "Centifolia rose absolute",
+    "rosewood accords",
+    "Gourmand almond-toned vanilla notes"
+   ],
+   "base": [
+    "Creamy sandalwood",
+    "patchouli"
+   ]
+  },
+  "family": [
+   "floral",
+   "gourmand",
+   "woody"
+  ],
+  "description_ko": "달콤하고 우아한 장미 향이 매력적입니다."
+ },
+ "dior-j-adore": {
+  "id": "dior-j-adore",
+  "brand": "Dior",
+  "name": "J'adore",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.dior.com/en_us/beauty/products/Y4001064-j%E2%80%99adore-set-limited-edition-fragrance-set-eau-de-parfum-and-body-milk",
+    "error": "Client error '403 Forbidden' for url 'https://www.dior.com/en_us/beauty/products/Y4001064-j%E2%80%99adore-set-limited-ed"
+   },
+   {
+    "url": "https://www.dior.com/en_us/beauty/products/j%E2%80%99adore-eau-de-parfum-C099800245.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.dior.com/en_us/beauty/products/j%E2%80%99adore-eau-de-parfum-C09980024"
+   },
+   {
+    "url": "https://www.dior.com/en_us/beauty/products/jadore-parfum-deau-C099600981.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.dior.com/en_us/beauty/products/jadore-parfum-deau-C099600981.html'\nFor"
+   },
+   {
+    "url": "https://www.dior.com/en_us/beauty/products/jadore-eau-de-toilette-Y0615246.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.dior.com/en_us/beauty/products/jadore-eau-de-toilette-Y0615246.html'\nF"
+   },
+   {
+    "url": "https://www.dior.com/en_us/beauty/products/jadore-eau-de-toilette-F361522609.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.dior.com/en_us/beauty/products/jadore-eau-de-toilette-F361522609.html'"
+   },
+   {
+    "url": "https://www.dior.com/en_us/beauty/products/j%E2%80%99adore-eau-de-parfum-Y0998031.html",
+    "via": "chrome",
+    "found": true,
+    "kept": 4
+   }
+  ],
+  "source": "https://www.dior.com/en_us/beauty/products/j%E2%80%99adore-eau-de-parfum-Y0998031.html",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [],
+   "heart": [
+    "Ylang-ylang essence",
+    "Damascus rose essence",
+    "Jasmine grandiflorum",
+    "jasmine sambac"
+   ],
+   "base": []
+  },
+  "family": [
+   "floral"
+  ],
+  "description_ko": "플로럴 향의 우아한 매력을 지닌 향수입니다."
+ },
+ "hermes-un-jardin-sur-le-nil": {
+  "id": "hermes-un-jardin-sur-le-nil",
+  "brand": "Hermès",
+  "name": "Un Jardin sur le Nil",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.hermes.com/us/en/product/un-jardin-sur-le-nil-eau-de-toilette-V20396/",
+    "found": true,
+    "kept": 3,
+    "dropped": 0
+   }
+  ],
+  "source": "https://www.hermes.com/us/en/product/un-jardin-sur-le-nil-eau-de-toilette-V20396/",
+  "concentration": "Eau de toilette",
+  "notes": {
+   "top": [],
+   "heart": [
+    "green mango",
+    "lotus",
+    "sycamore"
+   ],
+   "base": []
+  },
+  "family": [
+   "fruity",
+   "floral",
+   "woody"
+  ],
+  "description_ko": "아스완의 정원을 떠올리게 하는 향수입니다.",
+  "dropped": 0
+ },
+ "hermes-terre-d-hermes": {
+  "id": "hermes-terre-d-hermes",
+  "brand": "Hermès",
+  "name": "Terre d'Hermès",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.hermes.com/us/en/content/101186-terre-d-hermes/",
+    "found": true,
+    "kept": 9,
+    "dropped": 0
+   }
+  ],
+  "source": "https://www.hermes.com/us/en/content/101186-terre-d-hermes/",
+  "concentration": "",
+  "notes": {
+   "top": [
+    "grapefruit",
+    "cedar",
+    "shiso"
+   ],
+   "heart": [
+    "vetiver",
+    "bergamot",
+    "Sichuan pepper",
+    "citron",
+    "juniper berry",
+    "Timut pepper"
+   ],
+   "base": []
+  },
+  "family": [
+   "woody",
+   "fruity"
+  ],
+  "description_ko": "자연과의 조화를 느낄 수 있는 향입니다.",
+  "dropped": 0
+ },
+ "hermes-twilly-d-hermes": {
+  "id": "hermes-twilly-d-hermes",
+  "brand": "Hermès",
+  "name": "Twilly d'Hermès",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.hermes.com/us/en/product/twilly-d-hermes-eau-de-parfum-V107263V0/",
+    "found": true,
+    "kept": 3,
+    "dropped": 0
+   }
+  ],
+  "source": "https://www.hermes.com/us/en/product/twilly-d-hermes-eau-de-parfum-V107263V0/",
+  "concentration": "eau de parfum",
+  "notes": {
+   "top": [],
+   "heart": [
+    "ginger",
+    "tuberose"
+   ],
+   "base": [
+    "sandalwood"
+   ]
+  },
+  "family": [
+   "floral",
+   "spicy"
+  ],
+  "description_ko": "대담한 젊음을 담은 향수입니다.",
+  "dropped": 0
+ },
+ "tom-ford-lost-cherry": {
+  "id": "tom-ford-lost-cherry",
+  "brand": "Tom Ford",
+  "name": "Lost Cherry",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.lookfantastic.com/p/tom-ford-lost-cherry-eau-de-parfum-spray-100ml/12709336/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.lookfantastic.com/p/tom-ford-lost-cherry-eau-de-parfum-spray-30ml/13956172/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.spacenk.com/us/fragrance/personal-fragrance/fragrance/lost-cherry-eau-de-parfum-MUK200028382.html",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.spacenk.com/us/fragrance/personal-fragrance/fragrance/lost-cherry-eau-de-parfum-UK200028383.html",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.lookfantastic.com/p/tom-ford-lost-cherry-eau-de-parfum-spray-50ml/12709335/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.lookfantastic.com/p/tom-ford-lost-cherry-eau-de-parfum-spray-10ml/13956171/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.tomfordbeauty.com/products/lost-cherry-eau-de-parfum",
+    "via": "chrome",
+    "found": true,
+    "kept": 6
+   }
+  ],
+  "source": "https://www.tomfordbeauty.com/products/lost-cherry-eau-de-parfum",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Black Cherry Accord",
+    "Bitter Almond"
+   ],
+   "heart": [
+    "Griotte Sirup Scenttrek®",
+    "Rose Absolute Orpur®"
+   ],
+   "base": [
+    "Peru Balsam",
+    "Roasted Tonka Orpur®"
+   ]
+  },
+  "family": [
+   "fruity",
+   "floral",
+   "gourmand"
+  ],
+  "description_ko": "체리 향이 매력적인 향수입니다."
+ },
+ "tom-ford-neroli-portofino": {
+  "id": "tom-ford-neroli-portofino",
+  "brand": "Tom Ford",
+  "name": "Neroli Portofino",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.tomford.com/products/neroli-portofino-eau-de-parfum-100ml/TF-100ML-NEP.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.tomford.com/products/neroli-portofino-eau-de-parfum-100ml/TF-100ML-NEP"
+   },
+   {
+    "url": "https://www.notino.com/tom-ford/neroli-portofino-eau-de-parfum-100ml/",
+    "error": "Client error '404 Not Found' for url 'https://www.notino.com/tom-ford/neroli-portofino-eau-de-parfum-100ml/'\nFor more in"
+   },
+   {
+    "url": "https://www.luckyscent.com/product/67404/neroli-portofino-travel-atomizer-by-tom-ford-private-blend",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.lookfantastic.com/p/tom-ford-neroli-portofino-eau-de-parfum-spray-100ml/12709318/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.lookfantastic.com/p/tom-ford-neroli-portofino-eau-de-parfum-spray-50ml/12709317/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.lookfantastic.com/p/tom-ford-neroli-portofino-eau-de-parfum-spray-30ml/13956167/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.tomfordbeauty.com/products/neroli-portofino-eau-de-parfum?variant=53026873376981",
+    "via": "chrome",
+    "found": true,
+    "kept": 5
+   }
+  ],
+  "source": "https://www.tomfordbeauty.com/products/neroli-portofino-eau-de-parfum?variant=53026873376981",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Tunisian Neroli",
+    "Italian Bergamot",
+    "Winter Yellow Mandarin"
+   ],
+   "heart": [
+    "Orange Flower",
+    "Lavender"
+   ],
+   "base": []
+  },
+  "family": [
+   "citrus",
+   "floral"
+  ],
+  "description_ko": "상큼한 citrus와 플로럴의 조화로운 향."
+ },
+ "tom-ford-tobacco-vanille": {
+  "id": "tom-ford-tobacco-vanille",
+  "brand": "Tom Ford",
+  "name": "Tobacco Vanille",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.tomfordbeauty.com/products/tobacco-vanille-eau-de-parfum",
+    "via": "chrome",
+    "found": true,
+    "kept": 6
+   }
+  ],
+  "error": "search: Unterminated string starting at: line 1 column 305 (char 304)",
+  "source": "https://www.tomfordbeauty.com/products/tobacco-vanille-eau-de-parfum",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [],
+   "heart": [
+    "Tobacco Leaf",
+    "Ginger",
+    "Spice Notes",
+    "Fruit Accord"
+   ],
+   "base": [
+    "Tonka Bean",
+    "Cocoa"
+   ]
+  },
+  "family": [
+   "spicy",
+   "gourmand"
+  ],
+  "description_ko": "담배와 바닐리의 매혹적인 조화입니다."
+ },
+ "acqua-di-parma-colonia": {
+  "id": "acqua-di-parma-colonia",
+  "brand": "Acqua di Parma",
+  "name": "Colonia",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.acquadiparma.com/en/us/colonia/COLONIAEDCRP.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.acquadiparma.com/en/us/colonia/COLONIAEDCRP.html'\nFor more information"
+   },
+   {
+    "url": "https://www.acquadiparma.com/en/gb/colonia---splash/COLONIAEDCSPLASH.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.acquadiparma.com/en/gb/colonia---splash/COLONIAEDCSPLASH.html'\nFor mor"
+   },
+   {
+    "url": "https://www.acquadiparma.com/en/us/colonia-il-profumo/COLONIAEDPSPRAY.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.acquadiparma.com/en/us/colonia-il-profumo/COLONIAEDPSPRAY.html'\nFor mo"
+   },
+   {
+    "url": "https://www.acquadiparma.com/en/us/note-di-colonia-i/NDCIEDC.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.acquadiparma.com/en/us/note-di-colonia-i/NDCIEDC.html'\nFor more inform"
+   },
+   {
+    "url": "https://www.acquadiparma.com/en/us/colonia-pura/eau-de-cologne-colonia-colonia-pura",
+    "error": "Client error '403 Forbidden' for url 'https://www.acquadiparma.com/en/us/colonia-pura/eau-de-cologne-colonia-colonia-pur"
+   },
+   {
+    "url": "https://www.nordstrom.com/s/colonia-eau-de-parfum/8284089",
+    "error": "name not in page"
+   },
+   {
+    "url": "https://www.acquadiparma.com/en/us/colonia/COLONIAEDCRP.html",
+    "via": "chrome",
+    "found": true,
+    "kept": 10
+   }
+  ],
+  "source": "https://www.acquadiparma.com/en/us/colonia/COLONIAEDCRP.html",
+  "concentration": "Eau de Cologne",
+  "notes": {
+   "top": [
+    "Lemon",
+    "Sweet Orange",
+    "Calabrian Bergamot"
+   ],
+   "heart": [
+    "Lavender",
+    "Rose",
+    "Verbena",
+    "Rosemary"
+   ],
+   "base": [
+    "Vetiver",
+    "Sandalwood",
+    "Patchouli"
+   ]
+  },
+  "family": [
+   "citrus"
+  ],
+  "description_ko": "시트러스 향이 신선하고 우아한 느낌입니다."
+ },
+ "acqua-di-parma-blu-mediterraneo-fico-di-amalfi": {
+  "id": "acqua-di-parma-blu-mediterraneo-fico-di-amalfi",
+  "brand": "Acqua di Parma",
+  "name": "Blu Mediterraneo Fico di Amalfi",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.acquadiparma.com/en/us/fico-di-amalfi/FICOEDTSPRAY.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.acquadiparma.com/en/us/fico-di-amalfi/FICOEDTSPRAY.html'\nFor more info"
+   },
+   {
+    "url": "https://www.acquadiparma.com/en/us/fico-di-amalfi/FICODIAMALFISUMMEREDT.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.acquadiparma.com/en/us/fico-di-amalfi/FICODIAMALFISUMMEREDT.html'\nFor "
+   },
+   {
+    "url": "https://www.acquadiparma.com/en/us/fico-di-amalfi/FICODIAMALFICITRUSOAP.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.acquadiparma.com/en/us/fico-di-amalfi/FICODIAMALFICITRUSOAP.html'\nFor "
+   },
+   {
+    "url": "https://www.acquadiparma.com/en/us/fico-di-amalfi/HOMECANDLEFICO.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.acquadiparma.com/en/us/fico-di-amalfi/HOMECANDLEFICO.html'\nFor more in"
+   },
+   {
+    "url": "https://www.lookfantastic.com/p/blu-mediterraneo-fico-di-amalfi-edt-100ml/17597037/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.lookfantastic.com/p/blu-mediterraneo-fico-di-amalfi-la-riserva-eau-de-parfum-100ml/17597044/",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.acquadiparma.com/en/us/fico-di-amalfi/FICOEDTSPRAY.html",
+    "via": "chrome",
+    "found": true,
+    "kept": 9
+   }
+  ],
+  "source": "https://www.acquadiparma.com/en/us/fico-di-amalfi/FICOEDTSPRAY.html",
+  "concentration": "Eau de Toilette",
+  "notes": {
+   "top": [
+    "Italian Lemon",
+    "Italian Bergamot",
+    "Grapefruit"
+   ],
+   "heart": [
+    "Fig Nectar",
+    "Pink Pepper",
+    "Jasmine Petals"
+   ],
+   "base": [
+    "Fig Wood",
+    "Cedarwood",
+    "Benzoin"
+   ]
+  },
+  "family": [
+   "woody",
+   "green"
+  ],
+  "description_ko": "상큼한 감귤과 무화과 향이 어우러진 향수입니다."
+ },
+ "yves-saint-laurent-libre": {
+  "id": "yves-saint-laurent-libre",
+  "brand": "Yves Saint Laurent",
+  "name": "Libre",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.yslbeauty.com/int/fragrance/fragrance-for-her/libre/libre-eau-de-parfum/WW-50424YSL.html",
+    "error": "Client error '403 Forbidden' for url 'https://www.yslbeautykr.com/'\nFor more information check: https://developer.mozill"
+   },
+   {
+    "url": "https://www.notino.com/ysl/libre-eau-de-parfum/",
+    "error": "Client error '404 Not Found' for url 'https://www.notino.com/ysl/libre-eau-de-parfum/'\nFor more information check: https"
+   },
+   {
+    "url": "https://www.luckyscent.com/product/758019/libre-by-ysl",
+    "error": "name not in page"
+   },
+   {
+    "url": "https://www.mecca.com.au/ysl/libre-eau-de-parfum/I-027019.html",
+    "error": "name not in page"
+   },
+   {
+    "url": "https://www.douglas.de/de/p/3001048019",
+    "error": "Client error '400 Bad Request' for url 'https://www.douglas.de/de/p/3001048019'\nFor more information check: https://deve"
+   },
+   {
+    "url": "https://www.lookfantastic.com/ysl-libre-eau-de-parfum-90ml/11801994.html",
+    "error": "Client error '404 Not Found' for url 'https://www.lookfantastic.com/p/ysl-libre-eau-de-parfum-90ml/11801994/'\nFor more i"
+   },
+   {
+    "url": "https://www.yslbeautyus.com/fragrance/womens-fragrances/libre/libre-eau-de-parfum/109YSL.html",
+    "via": "chrome",
+    "found": true,
+    "kept": 4
+   }
+  ],
+  "source": "https://www.yslbeautyus.com/fragrance/womens-fragrances/libre/libre-eau-de-parfum/109YSL.html",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "lavender",
+    "orange blossom"
+   ],
+   "heart": [],
+   "base": [
+    "musk accord",
+    "vanilla"
+   ]
+  },
+  "family": [
+   "floral"
+  ],
+  "description_ko": "라벤더와 오렌지 블라썸의 플로럴 향기입니다."
+ },
+ "yves-saint-laurent-black-opium": {
+  "id": "yves-saint-laurent-black-opium",
+  "brand": "Yves Saint Laurent",
+  "name": "Black Opium",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.lookfantastic.com/p/yves-saint-laurent-black-opium-eau-de-parfum-150ml/11791425/?variation=11791422",
+    "found": false,
+    "kept": 0,
+    "dropped": 0
+   },
+   {
+    "url": "https://www.nordstrom.com/s/yves-saint-laurent-black-opium-eau-de-parfum-womens-fragrance/4079855?phia=1",
+    "error": "name not in page"
+   },
+   {
+    "url": "https://www.yslbeautyus.com/fragrance/womens-fragrances/black-opium/black-opium-eau-de-parfum/252YSL.html",
+    "via": "chrome",
+    "found": true,
+    "kept": 3
+   }
+  ],
+  "source": "https://www.yslbeautyus.com/fragrance/womens-fragrances/black-opium/black-opium-eau-de-parfum/252YSL.html",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [],
+   "heart": [
+    "Coffee",
+    "White Flowers"
+   ],
+   "base": [
+    "Vanilla"
+   ]
+  },
+  "family": [
+   "spicy",
+   "gourmand",
+   "floral"
+  ],
+  "description_ko": "따뜻하고 매력적인 향입니다."
+ },
+ "creed-aventus": {
+  "id": "creed-aventus",
+  "brand": "Creed",
+  "name": "Aventus",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.luckyscent.com/products/aventus-by-creed",
+    "found": true,
+    "kept": 12,
+    "dropped": 0
+   }
+  ],
+  "source": "https://www.luckyscent.com/products/aventus-by-creed",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Bergamot",
+    "Blackcurrant Leaves",
+    "Apple",
+    "Pineapple",
+    "Pinkberries"
+   ],
+   "heart": [
+    "Birch",
+    "Patchouli",
+    "Jasmine"
+   ],
+   "base": [
+    "Musk",
+    "Oakmoss",
+    "Ambergris",
+    "Vanilla"
+   ]
+  },
+  "family": [
+   "fruity",
+   "amber",
+   "floral"
+  ],
+  "description_ko": "상징적인 과일 향의 세련된 조화입니다.",
+  "dropped": 0
+ },
+ "creed-silver-mountain-water": {
+  "id": "creed-silver-mountain-water",
+  "brand": "Creed",
+  "name": "Silver Mountain Water",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.luckyscent.com/products/silver-mountain-water-by-creed",
+    "found": true,
+    "kept": 7,
+    "dropped": 0
+   }
+  ],
+  "source": "https://www.luckyscent.com/products/silver-mountain-water-by-creed",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Bergamot",
+    "Mandarin",
+    "Neroli"
+   ],
+   "heart": [
+    "Green Tea",
+    "Blackcurrant Bud"
+   ],
+   "base": [
+    "Sandalwood",
+    "Musk"
+   ]
+  },
+  "family": [
+   "citrus",
+   "fruity",
+   "green"
+  ],
+  "description_ko": "상쾌하고 알프스 같은 향기가 돋보입니다.",
+  "dropped": 0
+ },
+ "kilian-love-don-t-be-shy": {
+  "id": "kilian-love-don-t-be-shy",
+  "brand": "Kilian",
+  "name": "Love, Don't Be Shy",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.luckyscent.com/products/love-dont-be-shy-by-by-kilian",
+    "found": true,
+    "kept": 14,
+    "dropped": 0
+   }
+  ],
+  "source": "https://www.luckyscent.com/products/love-dont-be-shy-by-by-kilian",
+  "concentration": "Eau de Parfum",
+  "notes": {
+   "top": [
+    "Bergamot Calabria",
+    "Tunisian Neroli",
+    "Pink Pepper Berries"
+   ],
+   "heart": [
+    "Coriander",
+    "Honeysuckle",
+    "Orange Flower",
+    "Orange Water",
+    "Egyptian Jasmine Absolute",
+    "Bulgarian Rose",
+    "Iris Butter Absolute"
+   ],
+   "base": [
+    "Caramelized Sugar",
+    "Vanilla Absolute",
+    "Labdanum",
+    "White Musk"
+   ]
+  },
+  "family": [
+   "gourmand",
+   "floral",
+   "fruity"
+  ],
+  "description_ko": "부드럽고 달콤한 향수가 매력적입니다.",
+  "dropped": 0
+ },
+ "penhaligon-s-luna": {
+  "id": "penhaligon-s-luna",
+  "brand": "Penhaligon's",
+  "name": "Luna",
+  "status": "ok",
+  "tried": [
+   {
+    "url": "https://www.penhaligons.com/us/en/p/luna-eau-de-toilette-100ml--000000000065223840",
+    "error": "name not in page"
+   },
+   {
+    "url": "https://www.luckyscent.com/products/luna-by-penhaligons",
+    "found": true,
+    "kept": 9,
+    "dropped": 0
+   }
+  ],
+  "source": "https://www.luckyscent.com/products/luna-by-penhaligons",
+  "concentration": "Eau de Toilette",
+  "notes": {
+   "top": [
+    "Lemon",
+    "Bergamot",
+    "Bitter Orange"
+   ],
+   "heart": [
+    "Rose",
+    "Juniper Berries",
+    "Jasmine"
+   ],
+   "base": [
+    "Balsam Fir",
+    "Musk",
+    "Ambergris"
+   ]
+  },
+  "family": [
+   "citrus",
+   "floral"
+  ],
+  "description_ko": "상큼하고 부드러운 향입니다.",
+  "dropped": 0
+ }
+}

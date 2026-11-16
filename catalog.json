@@ -1,0 +1,9 @@
+[
+  {"id":"tam-dao","brand":"DIPTYQUE","name":"Tam Dao Eau de Parfum","notes":["샌달우드","시더","사이프러스"],"families":["forest"],"sweet":false,"airy":false,"description":"부드러운 샌달우드에 시더와 사이프러스가 더해진 숲의 향.","url":"https://diptyqueparis.com/en-re/products/eau-de-parfum-tam-dao-tamdaop75cv1"},
+  {"id":"philosykos","brand":"DIPTYQUE","name":"Philosykos","notes":["무화과 잎","무화과","나무"],"families":["forest"],"sweet":true,"airy":true,"description":"무화과 잎의 초록빛과 나무의 결, 열매의 크리미함.","url":"https://us.diptyqueparis.com/en-us/pages/philosykos-collection"},
+  {"id":"wood-sage","brand":"JO MALONE LONDON","name":"Wood Sage & Sea Salt","notes":["암브레트","바다 소금","세이지"],"families":["marine","forest"],"sweet":false,"airy":true,"description":"소금기 어린 바람 뒤에 부드러운 세이지가 남아요.","url":"https://www.jomalone.com/scents/woody/wood-sage-sea-salt"},
+  {"id":"lime-basil","brand":"JO MALONE LONDON","name":"Lime Basil & Mandarin","notes":["만다린","바질","앰버우드"],"families":["citrus","forest"],"sweet":false,"airy":true,"description":"밝은 감귤에 바질의 허브 향을 얹은 조합.","url":"https://www.jomalone.com/scents/citrus/lime-basil-mandarin"},
+  {"id":"english-pear","brand":"JO MALONE LONDON","name":"English Pear & Freesia","notes":["서양 배","프리지아","파촐리"],"families":["floral"],"sweet":true,"airy":true,"description":"잘 익은 배와 흰 프리지아가 어우러지는 과일 꽃향.","url":"https://www.jomalone.com/seasonal-edit"},
+  {"id":"fireplace","brand":"MAISON MARGIELA","name":"By the Fireplace","notes":["구운 밤","나무","바닐라"],"families":["amber","forest"],"sweet":true,"airy":false,"description":"난롯가의 타닥이는 나무와 구운 밤을 떠올리게 하는 향.","url":"https://www.maisonmargiela-fragrances.us/replica-memory-box/3614273668811.html"},
+  {"id":"lazy-sunday","brand":"MAISON MARGIELA","name":"Lazy Sunday Morning","notes":["은방울꽃","아이리스","화이트 머스크"],"families":["linen","floral"],"sweet":false,"airy":true,"description":"잘 마른 린넨처럼 부드러운 흰 꽃과 머스크.","url":"https://www.maisonmargiela-fragrances.us/replica-memory-box/3614273668811.html"}
+]
