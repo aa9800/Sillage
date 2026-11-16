@@ -63,6 +63,14 @@ KO = {
 }
 NOTE_FAMILY = {"citrus": {"citrus"}, "marine": {"aquatic"}, "forest": {"woody", "green"},
                "floral": {"floral", "fruity"}, "linen": {"musk"}, "amber": {"amber", "gourmand", "spicy"}}
+# 단맛이 두드러지는 노트(이 중 하나라도 있거나 gourmand 계열이면 '달콤한 향수'로 본다)
+SWEET_WORDS = ["vanilla", "tonka", "caramel", "praline", "honey", "coconut", "cherry", "sugar", "chocolate",
+               "cocoa", "almond", "benzoin", "marshmallow", "candy", "liquorice", "licorice", "cotton candy"]
+
+
+def is_sweet(p):
+    text = " ".join(n.lower() for st in ("top", "heart", "base") for n in p["notes"][st])
+    return "gourmand" in p["family"] or any(re.search(r"\b" + re.escape(w) + r"\b", text) for w in SWEET_WORDS)
 
 
 def note_ids(note):
@@ -87,6 +95,7 @@ def load_perfumes():
         p["ids_by_stage"] = {st: set().union(*(note_ids(n) for n in p["notes"][st])) if p["notes"][st] else set()
                              for st in ("top", "heart", "base")}
         p["ids"] = set().union(*p["ids_by_stage"].values())
+        p["sweet"] = is_sweet(p)
     return perfumes
 
 
@@ -138,9 +147,12 @@ def cosine(a, b):
     return dot / (math.sqrt(sum(x * x for x in a)) * math.sqrt(sum(y * y for y in b)) + 1e-9)
 
 
-def score(p, selected, qvec=None):
-    """selected: {stage: [노트 dict]}  →  (점수, 겹친 우리 노트 id 목록)"""
+def score(p, selected, qvec=None, family=None):
+    """selected: {stage: [노트 dict]}  →  (점수, 겹친 우리 노트 id 목록)
+    family: 대화에서 읽은 전체 분위기(forest, marine ...). 맞는 향수에 가산점을 준다."""
     total, matched = 0.0, []
+    if family and NOTE_FAMILY.get(family, set()) & set(p["family"]):
+        total += 1.5
     for stage, notes in selected.items():
         for n in notes:
             if n["id"] in p["ids_by_stage"].get(stage, ()):
@@ -156,10 +168,13 @@ def score(p, selected, qvec=None):
     return total, matched
 
 
-def retrieve(perfumes, selected, qvec=None, k=8):
+def retrieve(perfumes, selected, qvec=None, k=8, avoid_sweet=False, family=None):
+    """avoid_sweet=True면 달콤한 향수(바닐라, 통카, 꿀, 체리 등)는 후보에서 뺀다."""
     ranked = []
     for p in perfumes:
-        s, matched = score(p, selected, qvec)
+        if avoid_sweet and p["sweet"]:
+            continue
+        s, matched = score(p, selected, qvec, family)
         if s > 0:
             ranked.append((s, matched, p))
     ranked.sort(key=lambda r: -r[0])

@@ -789,3 +789,69 @@ html[data-dark="1"] .grid-lines, html[data-dark="1"] .grid-lines i { border-colo
 .key-actions button { height: 32px; padding: 0 14px; border: 0; border-radius: 999px; cursor: pointer; font: 500 12px var(--sans); background: rgba(28, 27, 24, .06); }
 .key-actions button[type="submit"] { background: var(--ink); color: var(--paper); }
 .mode-note b { font-weight: 600; }
+
+/* ───────── 11/16 개선: 대비·모바일 헤더·도구 기록·저장·카드·효과음 안내 ───────── */
+/* 상담 화면은 셰이더 배경 위라 작은 회색 글씨가 잘 안 읽혔다. 한 단계 진하게(대비 약 5:1). 스토리 화면은 그대로 둔다. */
+.studio-layout { --ink-mute: #66615a; --ink-soft: #3f3c36; }
+
+@media (max-width: 900px) {
+  /* 고정 헤더 아래로 내용이 지나가며 글자가 겹치던 문제: 헤더에 불투명한 유리 바탕을 깐다 */
+  .studio-head { background: rgba(239, 235, 228, .9); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--hair); }
+  .key-toggle span { font-size: 13px; }
+}
+
+.tool-trail { list-style: none; margin: 2px 0 0 17px; padding: 0; display: grid; gap: 5px; }
+.tool-trail li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; font: 400 12px/1.5 var(--sans); color: var(--ink-soft);
+  animation: rise .6s var(--ease-out) both; }
+.tool-trail .tool-tag { font: 600 9.5px var(--sans); letter-spacing: .12em; padding: 2px 6px; border-radius: 999px;
+  background: rgba(28, 27, 24, .07); color: var(--ink-mute); }
+.tool-trail b { font-weight: 600; color: var(--ink); }
+.tool-trail em { font-style: normal; color: var(--ink-soft); }
+
+.products li { position: relative; }
+.product { padding-right: 44px; }
+.like { position: absolute; right: 0; bottom: 18px; width: 34px; height: 34px; border: 0; border-radius: 50%;
+  background: rgba(255, 255, 255, .5); color: var(--ink-soft); font-size: 16px; cursor: pointer;
+  transition: background .3s ease, color .3s ease, transform .3s var(--ease-out); }
+.like:hover { background: rgba(255, 255, 255, .9); transform: scale(1.06); }
+.like.on { color: #a3374f; background: rgba(255, 255, 255, .85); }
+.share-card { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 14px;
+  border: 1px solid var(--hair); border-radius: 999px; background: rgba(255, 255, 255, .45); font: 500 12px var(--sans);
+  color: var(--ink); cursor: pointer; transition: background .3s ease, border-color .3s ease; }
+.share-card:hover { background: rgba(255, 255, 255, .85); border-color: var(--ink); }
+
+.shelf { margin-top: 56px; }
+.shelf-note { margin: 0 0 12px; font: 400 12.5px/1.6 var(--sans); color: var(--ink-mute); }
+.shelf ul { list-style: none; margin: 0; padding: 0; }
+.shelf li { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 10px;
+  padding: 14px 0; border-top: 1px solid var(--hair); }
+.shelf li:last-child { border-bottom: 1px solid var(--hair); }
+.shelf a { color: inherit; text-decoration: none; min-width: 0; }
+.shelf .brand { display: block; font: 600 10.5px var(--sans); letter-spacing: .12em; color: var(--ink-mute); }
+.shelf strong { display: block; font: 400 22px/1.2 var(--serif-lat); color: var(--ink); overflow-wrap: anywhere; }
+.shelf-ask { height: 30px; padding: 0 12px; border: 1px solid var(--hair); border-radius: 999px; background: rgba(255, 255, 255, .45);
+  font: 500 12px var(--sans); color: var(--ink); cursor: pointer; }
+.shelf-ask:hover:not(:disabled) { border-color: var(--ink); background: rgba(255, 255, 255, .85); }
+.shelf-ask:disabled { opacity: .5; cursor: default; }
+.shelf-remove { width: 30px; height: 30px; border: 0; border-radius: 50%; background: none; color: var(--ink-mute); font-size: 18px; cursor: pointer; }
+.shelf-remove:hover { color: var(--ink); background: rgba(28, 27, 24, .06); }
+
+.sound-hint { position: fixed; z-index: 30; top: 84px; right: var(--gutter); display: flex; align-items: center; gap: 10px;
+  max-width: min(420px, calc(100vw - 32px)); padding: 10px 10px 10px 16px; border-radius: 999px;
+  background: rgba(250, 248, 243, .92); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 18px 40px -22px rgba(0, 0, 0, .35), inset 0 0 0 1px rgba(255, 255, 255, .7);
+  font: 400 12.5px/1.4 var(--sans); color: var(--ink); animation: rise .6s 2.2s var(--ease-out) both; }
+.sound-hint button { flex: none; height: 28px; padding: 0 12px; border: 0; border-radius: 999px; cursor: pointer; font: 500 12px var(--sans);
+  background: var(--ink); color: var(--paper); }
+.sound-hint button[aria-label] { padding: 0; width: 28px; background: none; color: var(--ink-mute); font-size: 16px; }
+@media (max-width: 900px) { .sound-hint { top: 70px; right: 16px; left: 16px; max-width: none; border-radius: 18px; } }
+
+/* 키 상태는 한국어 문구라 산세리프로, 좁은 화면에서는 머리글을 더 촘촘하게 */
+.key-toggle span { font: 500 12px var(--sans); font-style: normal; letter-spacing: 0; }
+@media (max-width: 900px) {
+  .head-right { gap: 8px; }
+  .ghost { padding: 0 11px; }
+  .ghost-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .studio-head .wordmark { font-size: 26px; }
+}

@@ -12,7 +12,10 @@
 | 스크롤 스토리 | 노트란? → 탑·미들·베이스 → 향의 계열 → 향료 → 농도 → 시향하는 법을 순서대로 배워요. 스크롤에 맞춰 글과 병, 배경 색이 움직여요. |
 | 노트 블렌딩 | 단계별 10개, 총 30개 노트(실사 재료 사진)에서 단계마다 최대 3개를 골라 섞어요. 색은 OKLab 공간에서 섞여 병 속에 층을 이뤄요. |
 | AI 큐레이션 (RAG) | 실제 상품 페이지에서 검증한 향수 55종 DB에서 노트가 겹치는 후보를 찾고, LLM이 그 후보 안에서만 3개를 골라 이유를 써요. 겹치는 노트는 코드가 계산해요. |
-| 대화로 노트 바꾸기 | "너무 달아요, 비 온 뒤 숲처럼"이라고 말하면 LLM이 지금 선택을 짚고 노트를 직접 바꿔요. 실제 변경은 −/+ 표시로 보여 줘요. |
+| 대화로 노트 바꾸기 | "너무 달아요, 비 온 뒤 숲처럼"이라고 말하면 LLM이 지금 선택을 짚고 노트를 직접 바꿔요. 실제 변경은 −/+ 표시로 보여 줘요. "달지 않게" 같은 바람은 AI 큐레이션에도 그대로 넘어가 단 향수(바닐라·통카·꿀 등)를 뺀 추천이 나와요. |
+| MCP 도구 | 상담 LLM이 **MCP 서버**(`mcp_server.py`)의 도구를 불러 실제 정보를 확인해요. 오늘 날씨에 맞는 향(Open-Meteo), "탐다오 같은 향으로"(향수 DB에서 실제 노트를 찾아 블렌드를 채움), 두 향수 비교, 노트 설명. 확인한 내용은 대화 아래에 *MCP* 표시로 남아요. 키가 없는 체험 모드에서도 날씨와 향수 조회는 같은 MCP 도구로 동작해요. |
+| 저장한 향수 | 추천 카드의 ♡로 마음에 든 향수를 저장해요(이 브라우저에만 보관). 상담과 AI 큐레이션이 저장한 취향을 참고하고, '이 향처럼 블렌드'로 바로 따라 만들 수 있어요. |
+| 블렌드 카드 | 내 블렌드와 추천 향수를 1080×1350 PNG 카드로 내려받아요. 브라우저에서 바로 그리고, 서버로 보내지 않아요. |
 | 사진으로 향 찾기 | 사진을 올리면 장면의 색, 빛, 계절을 읽어 노트를 골라요. 사진은 저장하지 않아요. |
 | 효과음 | 실제 녹음한 유리잔, 크리스털, 물소리. 기본은 꺼짐이고 오른쪽 위 *Sound* 버튼으로 켜요. |
 
@@ -52,11 +55,42 @@ macOS·Linux에서는 `sh run.sh`를 실행해요.
   ├─ /api/blend      규칙 점수로 즉시 추천
   ├─ /api/recommend  RAG: rag.py가 노트 겹침(단계 가중) + 계열 + 임베딩 유사도로 후보 8개
   │                  → gpt-4o-mini가 후보 id 안에서만 3개 선택 + 이유(JSON 스키마 enum으로 강제)
-  └─ /api/chat       대화·사진 → gpt-4o-mini가 노트 변경(changes)을 구조화 출력 → 서버가 적용
+  └─ /api/chat       대화·사진 → gpt-4o-mini가 필요하면 MCP 도구를 부르고(최대 3번)
+                     → 노트 변경(changes)을 구조화 출력 → 서버가 적용
+       │   MCP 클라이언트 (mcp 2.x, 같은 프로세스 안에서 연결)
+       ▼
+[mcp_server.py]  MCP 서버 — search_perfumes · find_perfume · describe_note · get_weather
        │
        ▼
-[data/perfumes.json]  검증된 향수 55종 (노트마다 출처 URL)
+[data/perfumes.json]  검증된 향수 55종 (노트마다 출처 URL)   ·   Open-Meteo 날씨 API (키 없음)
 ```
+
+LLM이 노트를 지어내지 않도록, 사실은 코드가 확인해요.
+- "○○ 같은 향"이면 서버가 그 향수의 실제 노트로 블렌드를 채우고, 답변도 그 결과대로 써요.
+- 날씨를 확인했는데 빈 단계가 있으면 날씨에 맞는 노트로 채워요.
+- "달지 않게"는 사용자가 실제로 그렇게 말했을 때만 켜져요(LLM이 취향을 지어내는 것을 막음).
+
+## MCP 서버 따로 쓰기
+
+`mcp_server.py`는 표준 MCP(stdio) 서버라서 Claude Desktop, Claude Code 같은 MCP 클라이언트에 그대로 연결할 수 있어요.
+
+```json
+{
+  "mcpServers": {
+    "sillage": {
+      "command": "C:/경로/Sillage/.venv/Scripts/python.exe",
+      "args": ["C:/경로/Sillage/mcp_server.py"]
+    }
+  }
+}
+```
+
+| 도구 | 하는 일 |
+| --- | --- |
+| `search_perfumes(notes, avoid_sweet, family, limit)` | 노트 조합과 겹치는 향수를 검증된 DB에서 찾아요. |
+| `find_perfume(name)` | 향수 이름(영어 또는 '탐다오' 같은 한국어 통칭)으로 실제 노트 피라미드와 그에 해당하는 우리 노트를 돌려줘요. |
+| `describe_note(note)` | 노트의 느낌, 계열, 그 노트가 들어간 향수를 알려 줘요. |
+| `get_weather(city)` | Open-Meteo로 현재 날씨를 받아 어울리는 향의 방향과 노트를 제안해요. |
 
 **향수 DB를 만든 방법** (`scripts/build_catalog.py`)
 1. 웹 검색으로 각 향수의 공식(또는 대형 판매처) 상품 페이지를 찾아요.
@@ -68,7 +102,8 @@ macOS·Linux에서는 `sh run.sh`를 실행해요.
 ## 폴더 구조
 
 ```
-server.py            FastAPI 서버 (API + 빌드된 화면 제공)
+server.py            FastAPI 서버 (API + 빌드된 화면 제공, MCP 클라이언트)
+mcp_server.py        MCP 서버 (향수 검색·조회, 노트 설명, 날씨 도구)
 rag.py               향수 검색: 노트 사전, 점수, 임베딩
 blend-notes.json     노트 30개 (이름, 느낌, 색, 계열)
 data/perfumes.json   검증된 향수 55종
@@ -84,11 +119,12 @@ dist/                빌드된 화면 (npm run build 결과)
 
 ## 자료 출처와 라이선스
 
-- **노트 재료 사진 30장**: Wikimedia Commons (CC0, 퍼블릭 도메인, CC BY, CC BY-SA). 배경 제거, 자르기, 크기 조정을 했어요. 사진별 저작자와 라이선스는 `public/notes/CREDITS.json`과 상담 화면 맨 아래 '재료 사진 출처'에서 볼 수 있어요.
+- **노트 재료 사진 30장**: Wikimedia Commons (CC0, 퍼블릭 도메인, CC BY, CC BY-SA). 아이리스, 통카 빈, 무화과 잎, 바다 소금, 프리지아는 실제 재료에 더 가까운 사진으로 바꿨어요. 배경 제거, 자르기, 크기 조정을 했어요. 사진별 저작자와 라이선스는 `public/notes/CREDITS.json`과 상담 화면 맨 아래 '재료 사진 출처'에서 볼 수 있어요.
 - **효과음 4개**: Freesound, 모두 CC0 1.0. 목록은 `public/sounds/CREDITS.json`에 있어요.
 - **향수 노트 정보**: 각 브랜드 공식 사이트와 판매처 상품 페이지. 향수마다 출처 URL을 `data/perfumes.json`의 `source`에 남겼어요. 브랜드명과 향수명은 각 브랜드의 상표예요.
 - **폰트**: Cormorant Garamond, Noto Serif KR (Google Fonts, OFL), Pretendard (OFL).
-- **라이브러리**: React, Vite, GSAP, Lenis, lottie-web, Meta Astryx(입력창·버튼), FastAPI.
+- **날씨**: Open-Meteo (키 필요 없음, CC BY 4.0).
+- **라이브러리**: React, Vite, GSAP, Lenis, lottie-web, Meta Astryx(입력창·버튼), FastAPI, MCP Python SDK.
 
 ## 알려진 한계
 

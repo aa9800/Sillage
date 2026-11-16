@@ -9,7 +9,7 @@
   {"id":"green-tea","stage":"top","name":"녹차","english":"Green Tea","feel":"맑게 우린 찻잎의 싱그러움","family":"forest","color":"#a8c47a","matches":["녹차","그린티"],"image":true},
   {"id":"mandarin","stage":"top","name":"만다린","english":"Mandarin","feel":"달콤하게 터지는 귤껍질","family":"citrus","color":"#f2a646","matches":["만다린","탠저린"],"image":true},
   {"id":"cardamom","stage":"top","name":"카다멈","english":"Cardamom","feel":"서늘하게 톡 쏘는 향신료","family":"amber","color":"#b7c286","matches":["카다멈"],"image":true},
-  {"id":"freesia","stage":"heart","name":"프리지아","english":"Freesia","feel":"맑은 봄날의 흰 꽃","family":"floral","color":"#f4b9b8","matches":["프리지아"],"image":true},
+  {"id":"freesia","stage":"heart","name":"프리지아","english":"Freesia","feel":"맑은 봄날의 흰 꽃","family":"floral","color":"#efe4bd","matches":["프리지아"],"image":true},
   {"id":"sage","stage":"heart","name":"세이지","english":"Sage","feel":"바닷가의 마른 허브","family":"marine","color":"#65a9ac","matches":["세이지"],"image":true},
   {"id":"cypress","stage":"heart","name":"사이프러스","english":"Cypress","feel":"서늘한 침엽수 향","family":"forest","color":"#56a87c","matches":["사이프러스","시더"],"image":true},
   {"id":"iris","stage":"heart","name":"아이리스","english":"Iris","feel":"보송한 꽃가루","family":"linen","color":"#a99dc9","matches":["아이리스","은방울꽃"],"image":true},

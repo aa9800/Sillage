@@ -30,13 +30,19 @@ function api(url, options = {}) {
   const headers = { ...(options.headers || {}), ...(key ? { 'X-OpenAI-Key': key } : {}) };
   return fetch(url, { ...options, headers });
 }
+// 저장한 향수(취향 기억). 이 브라우저에만(localStorage) 보관하고, 상담과 추천에 id만 보낸다.
+const LIKED_STORE = 'sillage-liked';
+const readLiked = () => { try { const list = JSON.parse(localStorage.getItem(LIKED_STORE) || '[]'); return Array.isArray(list) ? list : []; } catch { return []; } };
+const writeLiked = list => { try { localStorage.setItem(LIKED_STORE, JSON.stringify(list)); } catch { /* 저장 못 해도 화면에는 반영 */ } };
+const HINT_STORE = 'sillage-sound-hint';
+const hintSeen = () => { try { return localStorage.getItem(HINT_STORE) === '1'; } catch { return true; } };
 const byId = Object.fromEntries(notesCatalog.map(note => [note.id, note]));
 const MAX_PER_STAGE = 3;
 
 /* ───────── 데이터 ───────── */
 
 const welcome = { role: 'assistant', content: '어떤 향을 찾고 계세요? 좋아하는 노트나, 향으로 기억하고 싶은 장면을 들려주세요.' };
-const examples = ['비 온 뒤 숲, 달지 않게', '햇볕에 마른 셔츠', '차갑고 투명한 바닷바람', '따뜻한 바닐라와 장작'];
+const examples = ['비 온 뒤 숲, 달지 않게', '오늘 서울 날씨에 맞는 향', '탐다오 같은 향으로 만들어 줘', '상탈 33이랑 어나더 13 비교해 줘', '햇볕에 마른 셔츠'];
 const startingPalette = { base: '#8c806c', highlight: '#f4e8d0', shadow: '#5b6360', family: 'violet', label: '향을 기다리는 중' };
 const empty = { palette: startingPalette, notes: [], products: [], level: 0, ready: false };
 const noSelection = { top: [], heart: [], base: [] };
@@ -534,8 +540,9 @@ function NotePicker({ selection, choose, disabled, tones, focus }) {
   </section>;
 }
 
-function Products({ results, curation, curating }) {
+function Products({ results, curation, curating, liked, onLike, onShare }) {
   const products = curation?.picks?.length ? curation.picks : results.products;
+  const likedIds = new Set(liked.map(item => item.id));
   const ready = curation ? curation.ready : results.ready;
   if (!products.length && !ready && !curating) return null;
   return <section className="products" aria-busy={curating}>
@@ -544,6 +551,8 @@ function Products({ results, curation, curating }) {
       {curation?.ai && <span className="ai-badge">AI 큐레이션</span>}
       {curating && <span className="curating">조합을 읽고 어울리는 향수를 고르는 중<i /><i /><i /></span>}
       {!curating && curation?.summary && <p className="curation-summary">{curation.summary}</p>}
+      {!curating && products.length > 0 && <button type="button" className="share-card" onClick={() => onShare(products, curation?.summary)}>
+        <span aria-hidden="true">↓</span> 블렌드 카드 저장</button>}
     </div>
     {products.length ? <ol className={curating ? 'dim' : ''}>{products.map((item, index) => (
       <li key={item.id} style={{ '--delay': `${120 + index * 100}ms` }}>
@@ -556,8 +565,78 @@ function Products({ results, curation, curating }) {
             <span className="source">노트 출처 보기</span></div>
           <span aria-hidden="true" className="external">↗</span>
         </a>
+        <button type="button" className={`like${likedIds.has(item.id) ? ' on' : ''}`} aria-pressed={likedIds.has(item.id)}
+          aria-label={likedIds.has(item.id) ? `${item.name} 저장 취소` : `${item.name} 저장`} title={likedIds.has(item.id) ? '저장 취소' : '마음에 들면 저장'}
+          onClick={() => onLike(item)}>{likedIds.has(item.id) ? '♥' : '♡'}</button>
       </li>))}</ol> : !curating && <p className="error">고른 노트와 겹치는 향수를 DB에서 찾지 못했어요. 다른 노트를 더해 보세요.</p>}
   </section>;
+}
+
+// 저장한 향수(취향 기억). 상담과 추천이 이 목록을 참고한다.
+function Shelf({ liked, onRemove, onAsk, disabled }) {
+  if (!liked.length) return null;
+  return <section className="shelf" aria-labelledby="shelf-title">
+    <div className="section-label"><span>IV.</span><h2 id="shelf-title"><b lang="en">My shelf</b>저장한 향수</h2></div>
+    <p className="shelf-note">이 브라우저에만 저장돼요. 상담과 AI 큐레이션이 이 취향을 참고해요.</p>
+    <ul>{liked.map(item => <li key={item.id}>
+      <a href={item.url} target="_blank" rel="noreferrer"><span className="brand">{item.brand}</span><strong>{item.name}</strong></a>
+      <button type="button" className="shelf-ask" disabled={disabled} onClick={() => onAsk(item)}>이 향처럼 블렌드</button>
+      <button type="button" className="shelf-remove" aria-label={`${item.name} 저장 취소`} onClick={() => onRemove(item)}>×</button>
+    </li>)}</ul>
+  </section>;
+}
+
+// 내 블렌드를 1080×1350 PNG 카드로 그린다(공유·보관용). 서버로 보내지 않고 브라우저에서 바로 내려받는다.
+async function drawShareCard({ selection, tones, products, summary }) {
+  await document.fonts?.ready;
+  const W = 1080, H = 1350, c = document.createElement('canvas');
+  c.width = W; c.height = H;
+  const g = c.getContext('2d');
+  g.fillStyle = '#efebe4'; g.fillRect(0, 0, W, H);
+  tones.forEach((tone, i) => {   // 노트 색이 번지는 배경
+    const r = g.createRadialGradient(W * [.25, .75, .5][i], H * [.25, .4, .7][i], 0, W * [.25, .75, .5][i], H * [.25, .4, .7][i], 620);
+    r.addColorStop(0, tone + 'aa'); r.addColorStop(1, tone + '00');
+    g.fillStyle = r; g.fillRect(0, 0, W, H);
+  });
+  g.fillStyle = 'rgba(239,235,228,.55)'; g.fillRect(60, 60, W - 120, H - 120);
+  g.fillStyle = '#1c1b18'; g.textBaseline = 'alphabetic';
+  g.font = 'italic 300 64px "Cormorant Garamond", serif'; g.fillText('Sillage', 110, 180);
+  g.font = '400 26px "Pretendard Variable", Pretendard, sans-serif'; g.fillStyle = '#4a4740'; g.fillText('나의 블렌드 · 향의 아틀리에', 112, 228);
+  let y = 330;
+  stages.forEach((stage, i) => {
+    const ids = selection[stage.id];
+    g.fillStyle = '#857f73'; g.font = '600 20px "Pretendard Variable", Pretendard, sans-serif'; g.fillText(stage.en.toUpperCase(), 112, y);
+    g.fillStyle = ids.length ? tones[i] : 'rgba(28,27,24,.08)';
+    g.beginPath(); g.roundRect(250, y - 26, 720, 34, 17); g.fill();
+    g.fillStyle = '#1c1b18'; g.font = 'italic 400 40px "Cormorant Garamond", serif';
+    g.fillText(ids.length ? ids.map(n => byId[n].english).join(', ') : '—', 112, y + 62);
+    g.font = '400 24px "Pretendard Variable", Pretendard, sans-serif'; g.fillStyle = '#4a4740';
+    g.fillText(ids.map(n => byId[n].name).join(' · '), 112, y + 100);
+    y += 190;
+  });
+  if (summary) { g.font = '400 26px "Pretendard Variable", Pretendard, sans-serif'; g.fillStyle = '#1c1b18'; g.fillText(summary.slice(0, 40), 112, y + 10); y += 60; }
+  g.fillStyle = '#857f73'; g.font = '600 20px "Pretendard Variable", Pretendard, sans-serif'; g.fillText('시향해 볼 향수', 112, y + 20);
+  products.slice(0, 3).forEach((item, i) => {
+    g.fillStyle = '#857f73'; g.font = '500 18px "Pretendard Variable", Pretendard, sans-serif'; g.fillText(item.brand, 112, y + 70 + i * 74);
+    g.fillStyle = '#1c1b18'; g.font = '400 34px "Cormorant Garamond", serif'; g.fillText(item.name, 112, y + 106 + i * 74);
+  });
+  g.fillStyle = '#857f73'; g.font = '400 18px "Pretendard Variable", Pretendard, sans-serif';
+  g.fillText(new Date().toLocaleDateString('ko-KR'), 112, H - 100);
+  const blob = await new Promise(resolve => c.toBlob(resolve, 'image/png'));
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob); link.download = 'sillage-blend.png';
+  document.body.append(link); link.click(); link.remove();
+  setTimeout(() => URL.revokeObjectURL(link.href), 4000);
+}
+
+// 대화 중 MCP 도구로 확인한 정보(날씨, 향수 조회 등). 실패한 호출과 중복은 숨긴다.
+function ToolTrail({ tools }) {
+  const seen = new Set();
+  const shown = (tools || []).filter(t => t.label !== '확인 실패' && !seen.has(t.label + t.detail) && seen.add(t.label + t.detail)).slice(0, 4);
+  if (!shown.length) return null;
+  return <ul className="tool-trail" aria-label="확인한 정보">{shown.map((t, i) => <li key={i}>
+    <span className="tool-tag" lang="en">MCP</span><b>{t.label}</b>{t.detail && <em>{t.detail}</em>}
+  </li>)}</ul>;
 }
 
 // 재료 사진 출처 (Wikimedia Commons, 각 라이선스에 따라 배경 제거·자르기)
@@ -596,7 +675,7 @@ function shrinkImage(file) {
 function KeyPanel({ status, onChange }) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(readKey());
-  const label = status?.key === 'user' ? 'My key' : status?.key === 'server' ? 'Server key' : 'Demo';
+  const label = status?.key === 'user' ? '내 키로 AI 연결' : status?.key === 'server' ? 'AI 연결됨' : '체험 모드';
   function save(event) {
     event.preventDefault();
     try { value.trim() ? sessionStorage.setItem(KEY_STORE, value.trim()) : sessionStorage.removeItem(KEY_STORE); } catch { /* 저장 못 해도 이번 요청엔 무관 */ }
@@ -605,7 +684,7 @@ function KeyPanel({ status, onChange }) {
   }
   return <span className="key-panel">
     <button type="button" className={`key-toggle k-${status?.key ?? 'demo'}`} onClick={() => setOpen(v => !v)} aria-expanded={open}>
-      <i aria-hidden="true" /><span lang="en">{label}</span>
+      <i aria-hidden="true" /><span>{label}</span>
     </button>
     {open && <form className="key-pop" onSubmit={save}>
       <strong>OpenAI API 키</strong>
@@ -648,6 +727,9 @@ function App() {
   const [focusStage, setFocusStage] = useState(null);
   const [photo, setPhoto] = useState(null);
   const [dragging, setDragging] = useState(false);
+  const [intent, setIntent] = useState(null);
+  const [liked, setLiked] = useState(readLiked);
+  const [soundHint, setSoundHint] = useState(() => !sound.enabled && !hintSeen());
   const photoInput = useRef(null);
   const controller = useRef(null);
   const blendController = useRef(null);
@@ -693,7 +775,7 @@ function App() {
   }, [view]);
 
   // 노트 조합이 바뀌고 잠시 멈추면 검증된 향수 DB + LLM 큐레이션을 불러온다
-  const blendKey = JSON.stringify(compact(selection));
+  const blendKey = JSON.stringify([compact(selection), intent, liked.map(item => item.id)]);
   useEffect(() => {
     if (view !== 'studio' || !countOf(selection)) { setCuration(null); setCurating(false); return; }
     const request = new AbortController();
@@ -701,7 +783,7 @@ function App() {
     const timer = setTimeout(() => {
       api('/api/recommend', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: request.signal,
-        body: JSON.stringify({ blend: compact(selection) }),
+        body: JSON.stringify({ blend: compact(selection), intent, liked: liked.map(item => item.id) }),
       }).then(response => response.ok ? response.json() : Promise.reject(response))
         .then(data => { setCuration({ ...data, key: blendKey }); setCurating(false); if (data.ai) sound.arrive(); })
         .catch(() => { if (!request.signal.aborted) setCurating(false); });
@@ -792,7 +874,8 @@ function App() {
     try {
       const response = await api('/api/chat', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: request.signal,
-        body: JSON.stringify({ messages: next.slice(-15).map(({ role, content }) => ({ role, content })), blend: compact(selection), image }),
+        body: JSON.stringify({ messages: next.slice(-15).map(({ role, content }) => ({ role, content })), blend: compact(selection), image,
+          liked: liked.map(item => item.id) }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(typeof data.detail === 'string' ? data.detail : '입력 내용을 확인해 주세요.');
@@ -802,7 +885,8 @@ function App() {
       chatResult.current = countOf(blend) ? empty : data;
       present(data);
       setMode(data.demo ? 'demo' : 'llm');
-      setMessages([...next, { role: 'assistant', content: data.reply, changes: data.changes ?? [] }]);
+      if (data.intent) setIntent(data.intent);
+      setMessages([...next, { role: 'assistant', content: data.reply, changes: data.changes ?? [], tools: data.tools ?? [] }]);
       if (data.changes?.length) { setFocusStage(data.changes[data.changes.length - 1].stage); sound.pour(); }
       if (matchMedia('(max-width: 900px)').matches && stage.current.getBoundingClientRect().top < -100) {
         stage.current.scrollIntoView({ behavior: reduceMotion() ? 'instant' : 'smooth' });
@@ -823,6 +907,20 @@ function App() {
     }
   }
 
+  function toggleLike(item) {
+    setLiked(list => {
+      const next = list.some(x => x.id === item.id) ? list.filter(x => x.id !== item.id)
+        : [...list, { id: item.id, brand: item.brand, name: item.name, url: item.url }].slice(-20);
+      writeLiked(next);
+      return next;
+    });
+  }
+
+  function dismissHint() {
+    setSoundHint(false);
+    try { localStorage.setItem(HINT_STORE, '1'); } catch { /* 다시 보여도 무방 */ }
+  }
+
   function reset() {
     controller.current?.abort();
     blendController.current?.abort();
@@ -830,7 +928,7 @@ function App() {
     blendController.current = null;
     chatResult.current = empty;
     setSelection(noSelection);
-    setMessages([welcome]); setResult(empty); setInput(''); setError(''); setBusy(false); setPulse(value => value + 1);
+    setMessages([welcome]); setResult(empty); setInput(''); setError(''); setBusy(false); setPulse(value => value + 1); setIntent(null);
     composer.current?.focus({ preventScroll: true });
   }
 
@@ -853,8 +951,13 @@ function App() {
       <header className="site-head studio-head">
         <a className="wordmark" href="/" aria-label="Sillage 처음으로">Sillage</a>
         <span className="head-meta">L’atelier — 향의 아틀리에</span>
-        <span className="head-right"><KeyPanel status={keyStatus} onChange={refreshStatus} /><SoundToggle /><button className="ghost" type="button" onClick={reset}><span aria-hidden="true">↺</span> 새로 시작</button></span>
+        <span className="head-right"><KeyPanel status={keyStatus} onChange={refreshStatus} /><SoundToggle /><button className="ghost" type="button" onClick={reset}><span aria-hidden="true">↺</span><span className="ghost-label"> 새로 시작</span></button></span>
       </header>
+      {soundHint && view === 'studio' && <div className="sound-hint" role="status">
+        <span>효과음을 켜면 노트를 고를 때 유리잔 소리가 나요</span>
+        <button type="button" onClick={() => { if (!sound.enabled) sound.toggle(); dismissHint(); }}>켜기</button>
+        <button type="button" aria-label="안내 닫기" onClick={dismissHint}>×</button>
+      </div>}
       <div className="studio" ref={stage}>
         <Scene result={result} pulse={pulse} tones={tones} accents={accents} bottle={bottle} origin={origin} selection={selection} />
         <section className="consult" aria-labelledby="page-title">
@@ -874,6 +977,7 @@ function App() {
                   {change.removed.map(name => <s key={name}>{name}</s>)}
                   {change.added.map(name => <b key={name}>{name}</b>)}
                 </li>)}</ul>}
+                {message.tools?.length > 0 && <ToolTrail tools={message.tools} />}
               </div>)}
               {busy && <div className="message assistant"><p className="working">향을 떠올리는 중<span>…</span></p></div>}
               {error && <p className="error">{error}</p>}
@@ -896,10 +1000,12 @@ function App() {
               <Button label="보내기" type="submit" variant="primary" size="md" isIconOnly
                 icon={<span aria-hidden="true">↑</span>} isDisabled={!input.trim() && !photo} isLoading={busy} />
             </form>
-            {mode === 'demo' && <p className="mode-note">데모 모드예요. 오른쪽 위 <b>Demo</b>를 눌러 OpenAI 키를 넣으면 LLM 상담과 AI 큐레이션이 켜져요.</p>}
+            {mode === 'demo' && <p className="mode-note">체험 모드예요. 날씨와 향수 조회는 그대로 되고, 오른쪽 위 <b>체험 모드</b>를 눌러 OpenAI 키를 넣으면 AI 상담과 AI 큐레이션이 켜져요.</p>}
             {mode === 'incomplete' && <p className="mode-note">LLM 연결 설정을 완료하면 상담을 시작할 수 있어요.</p>}
           </section>
-          <Products results={result} curation={curation?.key === blendKey ? curation : null} curating={curating} />
+          <Products results={result} curation={curation?.key === blendKey ? curation : null} curating={curating}
+            liked={liked} onLike={toggleLike} onShare={(products, summary) => drawShareCard({ selection, tones, products, summary })} />
+          <Shelf liked={liked} disabled={busy} onRemove={toggleLike} onAsk={item => send(`${item.name} 같은 향으로 만들어 줘`)} />
           <ImageCredits />
         </section>
       </div>

@@ -1,7 +1,12 @@
 import os
 import re
 import json
+import mimetypes
 from pathlib import Path
+
+# Windows 레지스트리에 webp 형식이 없으면 이미지가 application/octet-stream으로 나가 브라우저가 못 그릴 수 있다
+mimetypes.add_type("image/webp", ".webp")
+mimetypes.add_type("text/javascript", ".js")
 from typing import Literal
 
 import httpx
@@ -9,6 +14,9 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
+from mcp import Client as MCPClient
+
+import mcp_server
 
 ROOT = Path(__file__).parent
 load_dotenv(ROOT / ".env")
@@ -65,6 +73,8 @@ IMAGE_DATA_URL = r"^data:image/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$"
 
 class Chat(Blend):
     messages: list[Turn] = Field(min_length=1, max_length=15)
+    # 사용자가 '저장'한 향수 id(브라우저에만 보관). 취향 참고용으로 LLM에 알려 준다.
+    liked: list[str] = Field(default_factory=list, max_length=20)
     # 마지막 사용자 메시지와 함께 보낸 사진(브라우저에서 1024px 이하로 줄인 data URL). 서버에 저장하지 않는다.
     image: str | None = Field(default=None, max_length=3_000_000, pattern=IMAGE_DATA_URL)
 
@@ -101,11 +111,18 @@ def chat_schema():
         },
     }
 
+FAMILY_WORDS = {"forest": "숲·나무·풀·흙", "marine": "바다·물·바람", "amber": "따뜻함·수지·향신료·단맛",
+                "floral": "꽃·과일", "linen": "깨끗함·비누·파우더", "citrus": "상큼함·햇살"}
+
 def note_menu():
     lines = []
     for stage in ("top", "heart", "base"):
-        items = [f"{n['id']}({n['name']}: {n['feel']})" for n in blend_notes.values() if n["stage"] == stage]
+        items = [f"{n['id']}({n['name']}·{n['family']}: {n['feel']})" for n in blend_notes.values() if n["stage"] == stage]
         lines.append(f"{STAGE_KO[stage]}[{stage}]: " + ", ".join(items))
+    lines.append("계열별 노트(분위기를 노트로 옮길 때 참고):")
+    for family, words in FAMILY_WORDS.items():
+        ids = [f"{n['id']}({STAGE_KO[n['stage']]})" for n in blend_notes.values() if n["family"] == family]
+        lines.append(f"- {family}({words}): " + ", ".join(ids))
     return "\n".join(lines)
 
 def diff_blend(before, after):
@@ -270,29 +287,10 @@ async def chat(body: Chat, request: Request):
     selected = selected_notes(Blend(blend=updated))
     config = llm_config(request)
     before = normalized(body.blend)
+    tools_used, tool_data = [], []
     if all(config):
         url, model, key = config
-        current = ", ".join(f"{STAGE_KO[st]}={'+'.join(n['name'] for n in notes)}" for st, notes in selected.items()) or "아직 없음"
-        prompt = (
-            "너는 한국어로 상담하는 조향사이고, 사용자 화면의 노트 선택을 직접 바꿀 수 있다.\n"
-            f"지금 화면에서 선택된 노트: {current}\n"
-            f"고를 수 있는 노트(단계[stage]: id(이름: 느낌)):\n{note_menu()}\n"
-            "규칙:\n"
-            "1) 사용자의 최신 메시지(분위기, 장면, 계절, 싫은 향, 원하는 강도)를 지금 선택과 비교해라. 어울리지 않는 노트는 remove하거나 "
-            "replace하고, 어울리는 노트는 add해라. 단계마다 최대 3개, 위 목록의 id만, 그 단계의 노트만 쓴다. 바꿀 이유가 없으면 changes=[]. 특정 노트만 바꿀 때는 remove와 add를 쓰고, replace는 그 단계 전체를 새로 정할 때만 써라.\n"
-            "2) 선택이 비어 있으면 요청에 맞게 단계마다 1~2개씩 골라 add해서 채워라.\n"
-            "3) reply는 2~3문장. 바꿀 때는 먼저 지금 선택을 짧게 짚고, changes에 넣은 모든 변경(빼는 노트와 더하는 노트)을 빠짐없이 말하고 이유를 붙여라. "
-            "예: '지금 베이스가 바닐라라 꽤 달콤한 편이에요. 달지 않은 숲 느낌을 원하시니 베티버로 바꿔 볼게요.' "
-            "향수 상품명은 쓰지 말고, 질문은 많아야 하나만 해라.\n"
-            "4) notes에는 대화에서 드러난 향의 인상을 짧은 한국어 단어로 넣어라. 차갑거나 따뜻함은 temperature, 단맛 회피는 avoid_sweet에 반영해라. "
-            "방향이 충분하거나 추천을 원하면 ready=true. 아직 방향이 없으면 family=violet."
-        )
-        if body.image:
-            prompt += (
-                "\n5) 사용자가 사진을 보냈다. 사진 속 장면의 색, 빛, 계절, 온도, 습도, 사물과 재질, 분위기를 읽어 향으로 번역해라. "
-                "reply 첫 문장에서 사진에서 읽은 것을 구체적으로 짧게 말하고(예: '해 질 녘 젖은 돌길과 따뜻한 가로등 빛이 보여요'), "
-                "그 인상에 맞는 노트를 단계별로 changes에 넣어라. 사진 속 사람의 신원이나 외모는 평가하지 마라."
-            )
+        prompt = chat_prompt(selected, body)
         try:
             turns = [turn.model_dump() for turn in body.messages]
             responses_api = httpx.URL(url).path.rstrip("/").endswith("/responses")
@@ -304,25 +302,20 @@ async def chat(body: Chat, request: Request):
                     if responses_api else
                     [{"type": "text", "text": last}, {"type": "image_url", "image_url": {"url": body.image, "detail": "low"}}]
                 )}
-            payload = (
-                {"model": model, "input": [{"role": "developer", "content": prompt}, *turns], "store": False,
-                 "max_output_tokens": 800, "text": {"format": {"type": "json_schema", "name": "consult", "schema": chat_schema(), "strict": True}}}
-                if responses_api else
-                {"model": model, "messages": [{"role": "system", "content": prompt + "\nJSON만 출력: " + json.dumps(chat_schema(), ensure_ascii=False)}, *turns],
-                 "response_format": {"type": "json_object"}}
-            )
-            async with httpx.AsyncClient(timeout=25) as client:
-                result = await client.post(url, headers={"Authorization": f"Bearer {key}"}, json=payload)
-                result.raise_for_status()
-                data = result.json()
-                content = (
-                    "".join(part["text"] for item in data["output"] if item.get("type") == "message"
-                            for part in item["content"] if part.get("type") == "output_text")
-                    if responses_api else data["choices"][0]["message"]["content"]
-                ).strip()
-                if content.startswith("```"):
-                    content = content.split("\n", 1)[1].rsplit("```", 1)[0]
-                direction = Direction.model_validate_json(content)
+            if responses_api:
+                content, tools_used, tool_data = await consult_with_tools(url, model, key, prompt, turns)
+            else:
+                # Chat Completions 호환 API: 도구 없이 JSON만 받는다
+                async with httpx.AsyncClient(timeout=25) as client:
+                    result = await client.post(url, headers={"Authorization": f"Bearer {key}"}, json={
+                        "model": model, "response_format": {"type": "json_object"},
+                        "messages": [{"role": "system", "content": prompt + "\nJSON만 출력: " + json.dumps(chat_schema(), ensure_ascii=False)}, *turns],
+                    })
+                    result.raise_for_status()
+                    content = result.json()["choices"][0]["message"]["content"].strip()
+            if content.startswith("```"):
+                content = content.split("\n", 1)[1].rsplit("```", 1)[0]
+            direction = Direction.model_validate_json(content)
         except httpx.HTTPStatusError as error:
             detail = {
                 401: "LLM API 키가 인증되지 않았어요. 서버 설정의 키를 확인해 주세요.",
@@ -332,26 +325,247 @@ async def chat(body: Chat, request: Request):
             raise HTTPException(502, detail) from error
         except (httpx.HTTPError, ValueError, KeyError, IndexError, AttributeError, TypeError):
             raise HTTPException(502, "향을 해석하는 중 연결이 끊겼어요. 잠시 뒤 다시 시도해 주세요.")
-        # LLM이 정한 노트 변경을 적용한다. 단계를 잘못 지정한 노트는 버리지 않고 그 노트의 원래 단계로 옮긴다.
-        for change in direction.changes:
-            stage, action = change.get("stage"), change.get("action")
-            ids = [i for i in change.get("notes", []) if i in blend_notes]
-            right = [i for i in ids if blend_notes[i]["stage"] == stage]
-            if stage in STAGE_KO and right:
-                updated = apply_updates(updated, {stage: ({"replace": "set"}.get(action, action), right)})
-            for i in ids:
-                if blend_notes[i]["stage"] != stage:
-                    own = blend_notes[i]["stage"]
-                    updated = apply_updates(updated, {own: ("remove" if action == "remove" else "add", [i])})
+        # 사용자가 실제로 단 향을 싫다고 말했을 때만 단맛 회피를 켠다(LLM이 취향을 지어내는 것을 막는다)
+        direction.avoid_sweet = any(SWEET_AVOID.search(text) for text in user_texts)
+        updated = apply_llm_changes(updated, direction.changes)
+        updated, copied = apply_tool_results(updated, tool_data, user_texts[-1])
+        if copied:
+            # '○○ 같은 향': 실제 노트로 채운 결과를 그대로 말한다(LLM 문장 대신 사실만)
+            names = " · ".join(f"{STAGE_KO[st]} {', '.join(blend_notes[i]['name'] for i in ids)}" for st, ids in updated.items())
+            missing = [rag.ko_name(n) for st in ("top", "heart", "base") for n in copied["notes"][st] if not rag.note_ids(n)]
+            direction.reply = (f"{copied['brand']} {copied['name']}의 실제 노트 중 우리 노트와 같은 것으로 블렌드를 채웠어요: {names}."
+                               + (f" 우리 목록에 없는 {', '.join(missing[:4])}{josa(missing[min(3, len(missing) - 1)], '은', '는')} 빠졌어요." if missing else "")
+                               + " 여기서 더 가볍게, 더 따뜻하게처럼 말해 주시면 조정할게요.")
+            direction.changes = [{"stage": st} for st in updated]
+        else:
+            updated = fill_empty_stages(updated, direction)
         selected = selected_notes(Blend(blend=updated))
     elif any(config):
         raise HTTPException(503, "LLM 연결 설정을 확인해 주세요.")
     else:
-        direction = demo_direction(user_texts)
+        direction, updated, tools_used = await demo_with_tools(user_texts, updated)
+        selected = selected_notes(Blend(blend=updated))
 
     after = normalized(updated)
     return {**present(direction, len(user_texts), selected), "blend": after, "changes": diff_blend(before, after),
-            "demo": not all(config)}
+            "tools": tools_used, "demo": not all(config)}
+
+
+def chat_prompt(selected, body):
+    current = ", ".join(f"{STAGE_KO[st]}={'+'.join(n['name'] for n in notes)}" for st, notes in selected.items()) or "아직 없음"
+    liked = [f"{p['brand']} {p['name']}" for p in PERFUMES if p["id"] in set(body.liked)]
+    prompt = (
+        "너는 한국어로 상담하는 조향사다. 사용자 화면의 노트 선택을 changes로 직접 바꿀 수 있고, MCP 도구로 실제 정보를 확인할 수 있다.\n"
+        f"지금 화면에서 선택된 노트: {current}\n"
+        f"고를 수 있는 노트(단계[stage]: id(이름·계열: 느낌)):\n{note_menu()}\n"
+        "도구 쓰는 법:\n"
+        "- 향수 이름이 나오면(예: '탐다오 같은 향', '상탈 33이랑 비교') find_perfume을 영어 이름으로 호출해라. 결과의 실제 노트만 근거로 말하고, "
+        "'같은 향', '비슷하게'를 원하면 our_notes가 그대로 화면에 적용되니 reply에서는 our_notes_ko의 노트를 말해라. 두 향수를 비교하면 각각 호출해 공통점과 차이를 말해라.\n"
+        "- 날씨, 오늘, 출근길, 계절 날씨가 나오면 get_weather(영어 도시 이름, 말하지 않으면 Seoul)를 호출해라. reply 첫 문장에 도시, 기온, 하늘을 말하고 "
+        "suggested_notes를 바탕으로 단계마다 replace해라.\n"
+        "- describe_note는 사용자가 노트의 뜻을 직접 물었을 때만 한 번 호출해라. 노트를 고를 때는 위 목록의 느낌으로 충분하니 부르지 마라.\n"
+        "- 도구 결과에 없는 향수 정보(노트, 출시, 가격)는 지어내지 마라.\n"
+        "- 비교나 노트 설명처럼 질문만 했으면 선택을 바꾸지 마라(changes=[], ready=false).\n"
+        "규칙:\n"
+        "1) 장면이나 분위기를 말하면 탑·미들·베이스 세 단계 모두에 그 분위기에 맞는 노트가 1개 이상 있게 해라. 빈 단계는 반드시 채워라. "
+        "계열별 노트 목록을 참고해 분위기에 맞는 계열에서 골라라(예: 숲이면 forest 노트, 상쾌한 숲이면 forest+citrus).\n"
+        "2) 이미 고른 노트가 요청과 어긋나면(예: 숲을 원하는데 바다 소금, '달지 않게'인데 바닐라·통카·코코넛) remove하고 이유를 말해라. "
+        "어울리는 노트는 그대로 둔다.\n"
+        "3) 단계마다 최대 3개, 위 목록의 id만, 그 단계의 노트만 쓴다. 특정 노트만 바꿀 때는 remove와 add, 단계 전체를 새로 정할 때만 replace. 바꿀 이유가 없으면 changes=[].\n"
+        "4) reply는 2~4문장. 지금 선택을 짧게 짚고, changes의 모든 변경(빼는 노트와 더하는 노트)을 빠짐없이 이유와 함께 말해라. "
+        "예: '지금 베이스가 바닐라라 꽤 달콤한 편이에요. 달지 않은 숲 느낌을 원하시니 베티버로 바꿔 볼게요.' 질문은 많아야 하나. 시향할 향수 추천은 화면 아래 'AI 큐레이션'이 따로 보여 주니 reply에서는 향수를 추천하지 마라. 향수 이름은 사용자가 향수를 직접 말했을 때만, 도구 결과에 나온 것만 쓴다. "
+        "reply에서 노트는 영어 id(fig-leaf 등)가 아니라 한국어 이름(무화과 잎 등)으로 말해라.\n"
+        "5) family는 전체 분위기, temperature는 차가움/따뜻함, airy는 가볍고 투명하면 true, avoid_sweet는 단 향을 피하면 true(대화 전체 기준). "
+        "avoid_sweet는 사용자가 단 향을 싫다고 직접 말했을 때만 true로 하고, 사용자가 말하지 않은 취향을 지어내지 마라. "
+        "notes에는 향의 인상을 짧은 한국어 단어로 넣어라. 방향이 잡혔거나 추천을 원하면 ready=true. 아직 방향이 없으면 family=violet."
+    )
+    if liked:
+        prompt += f"\n참고: 사용자가 마음에 들어 저장한 향수는 {', '.join(liked)}이다. 취향을 짐작하는 데만 쓰고 억지로 맞추지 마라."
+    if body.image:
+        prompt += (
+            "\n6) 사용자가 사진을 보냈다. 사진 속 장면의 색, 빛, 계절, 온도, 습도, 사물과 재질, 분위기를 읽어 향으로 번역해라. "
+            "reply 첫 문장에서 사진에서 읽은 것을 구체적으로 짧게 말하고(예: '해 질 녘 젖은 돌길과 따뜻한 가로등 빛이 보여요'), "
+            "그 인상에 맞는 노트를 단계별로 changes에 넣어라. 사진 속 사람의 신원이나 외모는 평가하지 마라."
+        )
+    return prompt
+
+
+def response_text(data):
+    return "".join(part["text"] for item in data["output"] if item.get("type") == "message"
+                   for part in item["content"] if part.get("type") == "output_text").strip()
+
+
+async def consult_with_tools(url, model, key, prompt, turns, max_rounds=3):
+    """Responses API + MCP 도구. MCP 서버에서 도구 목록을 받아 LLM에 주고, LLM이 부른 도구를 MCP로 실행해 결과를 돌려준다."""
+    inputs = [{"role": "developer", "content": prompt}, *turns]
+    used, raw = [], []
+    async with MCPClient(mcp_server.mcp) as mcp_client, httpx.AsyncClient(timeout=30) as client:
+        listed = await mcp_client.list_tools()
+        tools = [{"type": "function", "name": t.name, "description": t.description or "",
+                  "parameters": t.input_schema, "strict": False} for t in listed.tools]
+        for round_no in range(max_rounds + 1):
+            payload = {"model": model, "input": inputs, "store": False, "max_output_tokens": 900,
+                       "text": {"format": {"type": "json_schema", "name": "consult", "schema": chat_schema(), "strict": True}}}
+            if round_no < max_rounds:
+                payload["tools"] = tools
+            result = await client.post(url, headers={"Authorization": f"Bearer {key}"}, json=payload)
+            result.raise_for_status()
+            data = result.json()
+            calls = [item for item in data["output"] if item.get("type") == "function_call"]
+            if not calls:
+                return response_text(data), used, raw
+            for call in calls:
+                try:
+                    args = json.loads(call.get("arguments") or "{}")
+                    called = await mcp_client.call_tool(call["name"], args)
+                    output = "".join(getattr(part, "text", "") for part in called.content)
+                except Exception as error:  # 도구가 실패해도 대화는 이어 간다
+                    args, output = {}, json.dumps({"error": f"도구 실행 실패: {type(error).__name__}"}, ensure_ascii=False)
+                inputs.append({"type": "function_call", "call_id": call["call_id"], "name": call["name"],
+                               "arguments": call.get("arguments") or "{}"})
+                inputs.append({"type": "function_call_output", "call_id": call["call_id"], "output": output})
+                used.append(tool_label(call["name"], args, output))
+                try:
+                    raw.append((call["name"], json.loads(output)))
+                except ValueError:
+                    pass
+    raise ValueError("도구 호출이 끝나지 않았어요.")
+
+
+def tool_label(name, args, output):
+    """화면에 보여 줄 도구 사용 기록(무엇을 확인했는지)."""
+    try:
+        data = json.loads(output)
+    except ValueError:
+        data = {}
+    if data.get("error"):
+        return {"tool": name, "label": "확인 실패", "detail": data["error"]}
+    if name == "get_weather":
+        return {"tool": name, "label": "날씨", "detail": f"{data.get('city')} {data.get('temperature_c')}°C · {data.get('sky')} · 습도 {data.get('humidity')}%"}
+    if name == "find_perfume":
+        return {"tool": name, "label": "향수 조회", "detail": data.get("perfume") or f"'{args.get('name', '')}' 없음"}
+    if name == "search_perfumes":
+        names = [r["perfume"] for r in data.get("results", [])][:3]
+        return {"tool": name, "label": "DB 검색", "detail": ", ".join(names) or "결과 없음"}
+    if name == "describe_note":
+        return {"tool": name, "label": "노트 설명", "detail": f"{data.get('name')} · 향수 {data.get('count', 0)}종에 들어 있음"}
+    return {"tool": name, "label": name, "detail": ""}
+
+
+def apply_llm_changes(updated, changes):
+    """LLM이 정한 노트 변경을 적용한다. 단계를 잘못 지정한 노트는 버리지 않고 그 노트의 원래 단계로 옮긴다."""
+    for change in changes:
+        stage, action = change.get("stage"), change.get("action")
+        ids = [i for i in change.get("notes", []) if i in blend_notes]
+        right = [i for i in ids if blend_notes[i]["stage"] == stage]
+        if stage in STAGE_KO and right:
+            updated = apply_updates(updated, {stage: ({"replace": "set"}.get(action, action), right)})
+        for i in ids:
+            if blend_notes[i]["stage"] != stage:
+                own = blend_notes[i]["stage"]
+                updated = apply_updates(updated, {own: ("remove" if action == "remove" else "add", [i])})
+    return updated
+
+
+SWEET_AVOID = re.compile(r"(달|단\s?향|단맛|달콤|달달|바닐라|구르망).{0,10}(싫|않|말고|빼|없|별로|부담|피해|과하)|안\s?달|달지\s?않|덜\s?달")
+SIMILAR = re.compile(r"같은|같이|비슷|처럼|느낌으로|만들어|따라|닮은")
+
+
+def apply_tool_results(updated, tool_data, message):
+    """도구 결과를 화면 선택에 확실히 반영한다(LLM이 빠뜨려도).
+    - '○○ 같은 향'이면 그 향수의 실제 노트(우리 노트와 같은 것)로 단계마다 바꾼다.
+    - 날씨를 확인했으면 비어 있는 단계를 날씨 제안 노트로 채운다."""
+    result, copied = normalized(updated), None
+    found = [d for name, d in tool_data if name == "find_perfume" and d.get("found")]
+    if len({d["id"] for d in found}) == 1 and SIMILAR.search(message):
+        ours = found[-1]["our_notes"]
+        if any(ours.values()):
+            result = {st: ids[:MAX_PER_STAGE] for st, ids in ours.items() if ids}
+            copied = next(p for p in PERFUMES if p["id"] == found[-1]["id"])
+    for name, data in tool_data:
+        if name == "get_weather" and not data.get("error"):
+            for stage, ids in data.get("suggested_notes", {}).items():
+                if ids and not result.get(stage):
+                    result[stage] = ids[:MAX_PER_STAGE]
+    return result, copied
+
+
+def fill_empty_stages(updated, direction):
+    """분위기가 잡혔는데 비어 있는 단계가 남으면, 그 분위기 계열의 노트로 하나 채운다(달지 않게면 단 노트는 피한다)."""
+    if direction.family == "violet" or not (direction.ready or direction.changes):
+        return updated
+    sweet = {"vanilla", "tonka", "coconut", "amber", "pear", "mandarin"}
+    result = normalized(updated)
+    for stage in ("top", "heart", "base"):
+        if result.get(stage):
+            continue
+        options = [n["id"] for n in blend_notes.values() if n["stage"] == stage and n["family"] == direction.family
+                   and not (direction.avoid_sweet and n["id"] in sweet)]
+        if options:
+            result[stage] = [options[0]]
+    return result
+
+
+CITY_WORDS = sorted(mcp_server.CITY_EN, key=len, reverse=True)
+
+async def demo_with_tools(user_texts, updated):
+    """키 없는 데모 모드에서도 날씨와 향수 이름은 MCP 도구로 실제로 확인한다. 그 밖에는 키워드 규칙."""
+    last = user_texts[-1]
+    async with MCPClient(mcp_server.mcp) as mcp_client:
+        if re.search(r"날씨|오늘|기온|비 오|비와|눈 오", last) and re.search(r"날씨|기온|오늘", last):
+            city = next((c for c in CITY_WORDS if c in last), "서울")
+            called = await mcp_client.call_tool("get_weather", {"city": city})
+            output = "".join(getattr(part, "text", "") for part in called.content)
+            data = json.loads(output)
+            if not data.get("error"):
+                blend = {st: ids for st, ids in data["suggested_notes"].items() if ids}
+                names = ", ".join(blend_notes[i]["name"] for ids in blend.values() for i in ids)
+                reply = (f"{data['city']}{josa(data['city'], '은', '는')} 지금 {data['temperature_c']}°C, {data['sky']}{josa(data['sky'], '이에요', '예요')}. {data['why']} "
+                         f"그래서 {names}{josa(names, '을', '를')} 골라 봤어요.")
+                direction = Direction(family=data["suggested_family"], temperature=data["suggested_temperature"],
+                                      airy=data["suggested_family"] in {"marine", "citrus"}, avoid_sweet=False,
+                                      notes=[blend_notes[i]["name"] for ids in blend.values() for i in ids][:5],
+                                      ready=True, reply=reply)
+                return direction, blend, [tool_label("get_weather", {"city": city}, output)]
+        mentioned = mcp_server.perfumes_in(last)
+        if len(mentioned) >= 2 and re.search(r"비교|차이|다른 점|vs", last, re.IGNORECASE):
+            a, b = mentioned[:2]
+            tools, notes = [], []
+            for p in (a, b):
+                called = await mcp_client.call_tool("find_perfume", {"name": p["name"]})
+                output = "".join(getattr(part, "text", "") for part in called.content)
+                tools.append(tool_label("find_perfume", {"name": p["name"]}, output))
+                notes.append({rag.ko_name(n) for st in ("top", "heart", "base") for n in p["notes"][st]})
+            both, only_a, only_b = notes[0] & notes[1], notes[0] - notes[1], notes[1] - notes[0]
+            own_a, own_b = ", ".join(sorted(only_a)[:4]) or "없음", ", ".join(sorted(only_b)[:4]) or "없음"
+            reply = (f"{a['name']}에만 있는 노트는 {own_a}, {b['name']}에만 있는 노트는 {own_b}{josa(own_b, '이에요', '예요')}. "
+                     + (f"둘 다 {', '.join(sorted(both)[:3])}{josa(sorted(both)[min(2, len(both) - 1)], '이', '가')} 들어 있어요. " if both else "겹치는 노트는 없어요. ")
+                     + "한쪽처럼 블렌드를 만들고 싶으면 '○○ 같은 향으로'라고 말해 주세요.")
+            direction = Direction(family="violet", temperature="neutral", airy=False, avoid_sweet=False, notes=[],
+                                  ready=False, reply=reply)
+            return direction, updated, tools
+        hit = mentioned[0] if mentioned else None
+        if hit:
+            called = await mcp_client.call_tool("find_perfume", {"name": hit["name"]})
+            output = "".join(getattr(part, "text", "") for part in called.content)
+            data = json.loads(output)
+            blend = {st: ids[:MAX_PER_STAGE] for st, ids in data["our_notes"].items() if ids}
+            names = ", ".join(blend_notes[i]["name"] for ids in blend.values() for i in ids)
+            family = blend_family(selected_notes(Blend(blend=blend))) if blend else "violet"
+            reply = (f"{data['perfume']}의 실제 노트 중 우리 노트와 같은 {names}{josa(names, '을', '를')} 블렌드에 담았어요."
+                     if blend else f"{data['perfume']}의 노트는 우리 노트 목록과 겹치는 게 없어요.")
+            direction = Direction(family=family, temperature="neutral", airy=False, avoid_sweet=False,
+                                  notes=[], ready=bool(blend), reply=reply)
+            return direction, blend or updated, [tool_label("find_perfume", {"name": hit["name"]}, output)]
+    return demo_direction(user_texts), updated, []
+
+
+def josa(word, with_final, without_final):
+    """마지막 글자에 받침이 있으면 with_final, 없으면 without_final."""
+    if not word:
+        return with_final
+    code = ord(word[-1]) - 0xAC00
+    return with_final if 0 <= code < 11172 and code % 28 else without_final
 
 
 def present_products(direction, selected):
@@ -363,7 +577,8 @@ def present_products(direction, selected):
     query = {**selected, **({"any": extra} if extra else {})}
     if not query:
         return []
-    return db_cards(query)
+    family = direction.family if direction.family != "violet" else None
+    return db_cards(query, avoid_sweet=direction.avoid_sweet, family=family)
 
 def present(direction, turns, selected):
     family = blend_family(selected) if direction.family == "violet" else direction.family
@@ -398,6 +613,9 @@ def present(direction, turns, selected):
         "level": 88 if ready else level,
         "palette": {"label": label, "base": base, "highlight": highlight, "shadow": shadow,
                     "family": family, "temperature": direction.temperature, "airy": direction.airy},
+        # 대화에서 읽은 의도. 화면이 AI 큐레이션(/api/recommend)에 그대로 넘겨 추천에 반영한다.
+        "intent": {"family": None if family == "violet" else family, "temperature": direction.temperature,
+                   "airy": direction.airy, "avoid_sweet": direction.avoid_sweet, "mood": direction.notes[:5]},
         "products": present_products(direction, selected) or [item for _, _, item in products[:3]],
     }
 
@@ -409,8 +627,8 @@ rag.ensure_embeddings(PERFUMES)
 recommend_cache = {}
 NOTE_NAMES = {nid: note["name"] for nid, note in blend_notes.items()}
 
-def db_cards(selected, qvec=None, k=3):
-    ranked = rag.retrieve(PERFUMES, selected, qvec, k=k)
+def db_cards(selected, qvec=None, k=3, avoid_sweet=False, family=None):
+    ranked = rag.retrieve(PERFUMES, selected, qvec, k=k, avoid_sweet=avoid_sweet, family=family)
     return [rag.card(p, matched, NOTE_NAMES) for _, matched, p in ranked]
 
 def notes_from_words(words):
@@ -422,26 +640,56 @@ def notes_from_words(words):
                 found.append(note)
     return list({n["id"]: n for n in found}.values())
 
+class Intent(BaseModel):
+    family: Literal["forest", "marine", "amber", "floral", "linen", "citrus"] | None = None
+    temperature: Literal["cool", "warm", "neutral"] = "neutral"
+    airy: bool = False
+    avoid_sweet: bool = False
+    mood: list[str] = Field(default_factory=list, max_length=5)
+
 class Recommend(BaseModel):
     blend: dict[Stage, list[str] | str] = Field(default_factory=dict, max_length=3)
+    intent: Intent | None = None
+    liked: list[str] = Field(default_factory=list, max_length=20)
+
+def intent_text(intent):
+    """대화에서 읽은 의도를 큐레이션 프롬프트와 임베딩 질의에 붙일 한국어 문장으로 만든다."""
+    if not intent:
+        return ""
+    parts = []
+    if intent.family:
+        parts.append(f"원하는 분위기: {FAMILY_WORDS[intent.family]}")
+    if intent.temperature != "neutral":
+        parts.append("차갑고 서늘한 느낌" if intent.temperature == "cool" else "따뜻하고 포근한 느낌")
+    if intent.airy:
+        parts.append("가볍고 투명하게")
+    if intent.avoid_sweet:
+        parts.append("단 향은 싫어함")
+    if intent.mood:
+        parts.append("인상: " + ", ".join(m[:12] for m in intent.mood))
+    return " / ".join(parts)
 
 @app.post("/api/recommend")
 async def recommend(body: Recommend, request: Request):
     selected = selected_notes(Blend(blend=body.blend))
     if not selected:
         raise HTTPException(422, "노트를 하나 이상 골라 주세요.")
-    key_id = json.dumps(normalized(body.blend), sort_keys=True)
+    intent = body.intent
+    key_id = json.dumps([normalized(body.blend), intent.model_dump() if intent else None, sorted(body.liked)],
+                        sort_keys=True, ensure_ascii=False)
     if key_id in recommend_cache:
         return recommend_cache[key_id]
     url, model, key = llm_config(request)
     labels = {"top": "탑", "heart": "미들", "base": "베이스"}
     blend_text = " / ".join(f"{labels[st]}: {', '.join(n['name'] + '(' + n['english'] + ')' for n in notes)}"
                             for st, notes in selected.items())
+    wish = intent_text(intent)
     try:
-        qvec = await rag.aembed(blend_text, key) if key else None
+        qvec = await rag.aembed(blend_text + (" / " + wish if wish else ""), key) if key else None
     except httpx.HTTPError:
         qvec = None
-    ranked = rag.retrieve(PERFUMES, selected, qvec, k=8)
+    ranked = rag.retrieve(PERFUMES, selected, qvec, k=8, avoid_sweet=bool(intent and intent.avoid_sweet),
+                          family=intent.family if intent else None)
     if not ranked:
         return {"summary": "", "picks": [], "ai": False, "ready": len(selected) == 3}
     if not all((url, model, key)) or not httpx.URL(url).path.rstrip("/").endswith("/responses"):
@@ -468,6 +716,11 @@ async def recommend(body: Recommend, request: Request):
         "사용자가 고른 노트와 어떻게 이어지는지 말해라. summary는 사용자의 조합이 어떤 인상인지 한국어 한 문장(40자 내외)."
         f"\n사용자 조합: {blend_text}\n후보: {json.dumps(candidates, ensure_ascii=False)}"
     )
+    if wish:
+        prompt += f"\n대화에서 드러난 사용자의 바람: {wish}. 이 바람에 맞는 후보를 우선하고, 이유에도 반영해라."
+    liked = [f"{p['brand']} {p['name']}" for p in PERFUMES if p["id"] in set(body.liked)]
+    if liked:
+        prompt += f"\n사용자가 저장해 둔(마음에 든) 향수: {', '.join(liked)}. 취향 참고용이며 이미 저장한 향수는 되도록 다시 고르지 마라."
     try:
         async with httpx.AsyncClient(timeout=30) as client:
             result = await client.post(url, headers={"Authorization": f"Bearer {key}"}, json={
