@@ -855,3 +855,23 @@ html[data-dark="1"] .grid-lines, html[data-dark="1"] .grid-lines i { border-colo
   .ghost-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .studio-head .wordmark { font-size: 26px; }
 }
+
+/* ───────── 병을 배경에 녹이기 (11/16 사용자 피드백: 병이 배경 위에 '빡' 떠 보이고, 지나가는 반짝임이 너무 튐) ───────── */
+/* 1) 8초마다 병을 가로지르던 흰 반짝임을 없앤다 */
+.crystal-light { display: none; }
+/* 2) 유리를 살짝 투명하게 해 뒤 배경색이 비치게 한다(예전 시안의 .91과 같은 결) */
+.crystal { opacity: .9; }
+/* 3) 짧고 진한 회색 그림자 대신, 액체 색이 묻은 넓고 옅은 그림자 */
+.bottle {
+  filter: drop-shadow(0 36px 56px color-mix(in srgb, var(--t2), transparent 74%))
+          drop-shadow(0 4px 18px color-mix(in srgb, var(--t1), transparent 80%));
+}
+/* 4) 병 뒤에 노트 색 빛 번짐을 깔아 유리 가장자리와 배경 사이 경계를 흐린다 */
+.vessel::before {
+  content: ""; position: absolute; z-index: 0; inset: 6% -38% -4%; pointer-events: none;
+  background: radial-gradient(ellipse at 50% 58%, color-mix(in srgb, var(--t0), #fff 35%) 0,
+              color-mix(in srgb, var(--t1), transparent 50%) 34%, transparent 68%);
+  filter: blur(30px); opacity: .5; mix-blend-mode: screen; transition: background 1.2s ease;
+}
+.vessel .bottle { z-index: 1; }
+.vessel-shadow { opacity: .4; filter: blur(18px); }
