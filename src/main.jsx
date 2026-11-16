@@ -10,6 +10,7 @@ import { neutralTheme } from '@astryxdesign/theme-neutral/built';
 import '@astryxdesign/core/astryx.css';
 import '@astryxdesign/theme-neutral/theme.css';
 import { Liquid, mixHex } from './fluid';
+import { Bottle3D, canUse3D } from './bottle3d';
 import { Backdrop } from './backdrop';
 import { NoteIcon } from './note-icons';
 import { blendColors, mixColors } from './color';
@@ -214,8 +215,16 @@ function chooseBottle() {
 
 /* ───────── 병 ───────── */
 
+// 3D로 그릴 수 있으면 3D 병, 아니면(WebGL 없음, ?flat=1) 이미지 병
+const use3D = canUse3D();
+
 function Vessel({ bottle, tones, level, pulse, origin, accents }) {
+  const [flat, setFlat] = useState(!use3D);
   const image = `/atelier/${bottle.id}.webp`;
+  if (!flat) return <div className="vessel is-3d" ref={origin} style={{ '--ratio': bottle.ratio, '--t0': tones[0], '--t1': tones[1], '--t2': tones[2] }} aria-hidden="true">
+    <div className="vessel-shadow" />
+    <Bottle3D design={bottle.id} tones={tones} level={level} pulse={pulse} onFail={() => setFlat(true)} />
+  </div>;
   return <div className="vessel" ref={origin} style={{ '--ratio': bottle.ratio, '--t0': tones[0], '--t1': tones[1], '--t2': tones[2] }} aria-hidden="true">
     <div className="vessel-shadow" />
     <div className="bottle" data-vessel={bottle.id} style={{ '--vessel': `url(${image})`, '--fill': `${Math.max(8, level * .8)}%` }}>
@@ -729,7 +738,14 @@ async function renderShareCard({ selection, tones, products, bottle }) {
   const halo = g.createRadialGradient(W / 2, by + bh * .58, 0, W / 2, by + bh * .58, bw * 1.1);
   halo.addColorStop(0, 'rgba(255,255,255,.5)'); halo.addColorStop(1, 'rgba(255,255,255,0)');
   g.fillStyle = halo; g.fillRect(0, 0, W, H);
-  try {
+  const solid = document.querySelector('.scene canvas.bottle3d');
+  if (solid?.width) {
+    // 3D 병: 지금 화면의 병(유리·액체·마개)을 그대로 옮긴다
+    const ratio = solid.width / solid.height, dh = 720, dw = Math.min(W - 160, dh * ratio);
+    const fh = dw / ratio;
+    g.save(); g.shadowColor = tones[2] + '55'; g.shadowBlur = 60; g.shadowOffsetY = 30;
+    g.drawImage(solid, (W - dw) / 2, 70 + (dh - fh) / 2, dw, fh); g.restore();
+  } else try {
     const im = await loadImage(`/atelier/${bottle.id}.webp`);
     g.save(); g.shadowColor = tones[2] + '55'; g.shadowBlur = 60; g.shadowOffsetY = 30;
     g.globalAlpha = .92; g.drawImage(im, bx, by, bw, bh); g.restore();
