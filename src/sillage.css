@@ -934,3 +934,8 @@ html[data-dark="1"] .grid-lines, html[data-dark="1"] .grid-lines i { border-colo
   /* 좁은 화면: 키 창이 화면 왼쪽 밖으로 나가지 않게 화면 폭에 맞춘다 */
   .key-pop { position: fixed; left: 16px; right: 16px; top: 68px; width: auto; }
 }
+
+/* 기준 향수 배지, 비슷한 노트 줄 */
+.anchor-badge { display: inline-block; margin: 0 8px 4px 0; padding: 2px 9px; border-radius: 999px; background: var(--ink); color: var(--paper);
+  font: 600 10px var(--sans); letter-spacing: .06em; vertical-align: middle; }
+.product .match.near { color: var(--ink-mute); }

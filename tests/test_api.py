@@ -18,7 +18,7 @@ def test_status_is_demo_without_key():
 
 def test_similar_perfume_fills_blend_with_real_notes():
     data = chat("탐다오 같은 향으로 만들어 줘")
-    assert data["blend"]["top"] == ["lime"]
+    assert data["blend"]["top"][0] == "lime"  # 같은 노트가 먼저, 그 뒤에 비슷한 노트(고수 씨 ≈ 카다멈)
     assert "sandalwood" in data["blend"]["base"]
     assert data["tools"][0]["label"] == "향수 조회"
 

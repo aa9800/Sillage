@@ -37,7 +37,7 @@ Stage = Literal["top", "heart", "base"]
 KEYWORDS = {
     "forest": r"숲|이끼|풀잎|나무|우디|그린|흙|사이프러스|삼나무|샌달우드",
     "marine": r"바다|바닷|소금|물결|아쿠아|마린|파도",
-    "amber": r"달콤|달달|바닐라|앰버|장작|난로|스모키",
+    "amber": r"달콤|달달|바닐라|앰버|장작|난로|스모키|담배|타바코|생강",
     "floral": r"꽃|장미|플로럴|프리지아|자스민|재스민|작약",
     "linen": r"린넨|셔츠|비누|코튼|머스크|깨끗|빨래|파우더",
     "citrus": r"시트러스|레몬|라임|상큼|귤|베르가못|오렌지",
@@ -91,7 +91,7 @@ class Direction(BaseModel):
 STAGE_KO = {"top": "탑", "heart": "미들", "base": "베이스"}
 
 def chat_schema():
-    """대화 응답 스키마. changes로 화면의 노트 선택을 직접 바꾼다(우리 24개 노트 id만 허용)."""
+    """대화 응답 스키마. changes로 화면의 노트 선택을 직접 바꾼다(blend-notes.json의 노트 id만 허용)."""
     return {
         "type": "object", "additionalProperties": False,
         "required": ["family", "temperature", "airy", "avoid_sweet", "notes", "ready", "reply", "changes"],
@@ -304,9 +304,13 @@ async def chat(body: Chat, request: Request):
                 )}
             if responses_api:
                 content, tools_used, tool_data = await consult_with_tools(url, model, key, prompt, turns)
-                # 화면에는 사용자가 직접 말한 향수의 조회만 남긴다(AI가 혼자 찾아본 향수는 숨김)
+                # 화면에는 사용자가 직접 말한 향수의 조회만 남긴다(AI가 혼자 찾아본 향수, 못 찾은 조회는 숨김)
                 if not mcp_server.perfumes_in(user_texts[-1]):
                     tools_used = [t for t in tools_used if t["tool"] != "find_perfume"]
+                # 사용자가 날씨를 말하지 않았는데 AI가 날씨를 본 경우: 표시하지 않고 블렌드에도 쓰지 않는다
+                if not re.search(r"날씨|기온|오늘|비\s?오|눈\s?오|더운|추운|덥|춥", user_texts[-1]):
+                    tools_used = [t for t in tools_used if t["tool"] != "get_weather"]
+                    tool_data = [(name, d) for name, d in tool_data if name != "get_weather"]
             else:
                 # Chat Completions 호환 API: 도구 없이 JSON만 받는다
                 async with httpx.AsyncClient(timeout=25) as client:
@@ -339,6 +343,10 @@ async def chat(body: Chat, request: Request):
         if copied:
             # '○○ 같은 향': 실제 노트로 채운 결과를 그대로 말한다(LLM 문장 대신 사실만)
             direction.reply = copy_reply(copied)
+            tools_used = [{**t, "copied": True, "id": copied["id"]} if t["tool"] == "find_perfume" and t["detail"] == copied["perfume"] else t
+                          for t in tools_used]
+            if not any(t.get("copied") for t in tools_used):
+                tools_used.append({"tool": "find_perfume", "label": "향수 조회", "detail": copied["perfume"], "copied": True, "id": copied["id"]})
             direction.changes = [{"stage": st} for st in updated]
         else:
             updated = fill_empty_stages(updated, direction)
@@ -353,8 +361,9 @@ async def chat(body: Chat, request: Request):
             direction.reply = " ".join(change_sentence(c) for c in changed)
 
     after = normalized(updated)
+    anchor = next((t.get("id") for t in tools_used if t["tool"] == "find_perfume" and t.get("copied")), None)
     return {**present(direction, len(user_texts), selected), "blend": after, "changes": diff_blend(before, after),
-            "tools": tools_used, "demo": not all(config)}
+            "tools": tools_used, "demo": not all(config), "anchor": anchor}
 
 
 def chat_prompt(selected, body):
@@ -451,7 +460,9 @@ def tool_label(name, args, output):
     if name == "get_weather":
         return {"tool": name, "label": "날씨", "detail": f"{data.get('city')} {data.get('temperature_c')}°C · {data.get('sky')} · 습도 {data.get('humidity')}%"}
     if name == "find_perfume":
-        return {"tool": name, "label": "향수 조회", "detail": data.get("perfume") or f"'{args.get('name', '')}' 없음"}
+        if not data.get("found"):
+            return {"tool": name, "label": "확인 실패", "detail": f"'{args.get('name', '')}' 없음"}
+        return {"tool": name, "label": "향수 조회", "detail": data.get("perfume"), "id": data.get("id")}
     if name == "search_perfumes":
         names = [r["perfume"] for r in data.get("results", [])][:3]
         return {"tool": name, "label": "DB 검색", "detail": ", ".join(names) or "결과 없음"}
@@ -502,26 +513,35 @@ def apply_tool_results(updated, tool_data, message):
 
 def copy_blend(data):
     """find_perfume 결과로 블렌드를 만든다: 같은 노트를 먼저, 같은 노트가 없는 단계는 계열이 가까운 노트로."""
-    exact, approx = data.get("our_notes", {}), data.get("approx_notes", {})
-    return {st: (exact.get(st) or approx.get(st) or [])[:MAX_PER_STAGE]
-            for st in ("top", "heart", "base") if exact.get(st) or approx.get(st)}
+    exact, near, approx = data.get("our_notes", {}), data.get("near_notes", {}), data.get("approx_notes", {})
+    blend = {}
+    for st in ("top", "heart", "base"):
+        ids = list(dict.fromkeys(exact.get(st, []) + near.get(st, []))) or approx.get(st, [])
+        if ids:
+            blend[st] = ids[:MAX_PER_STAGE]
+    return blend
 
 
 def copy_reply(data):
     """'○○ 같은 향'의 답변. 같은 노트와 비슷하게 고른 노트를 나눠 사실대로 말한다."""
     exact, approx = data.get("our_notes", {}), data.get("approx_notes", {})
+    blend = copy_blend(data)
     same = [blend_notes[i]["name"] for st in ("top", "heart", "base") for i in exact.get(st, [])]
-    near = [f"{STAGE_KO[st]} {blend_notes[i]['name']}" for st in ("top", "heart", "base")
-            if not exact.get(st) for i in approx.get(st, [])]
-    official = [n for ns in data.get("pyramid", {}).values() for n in ns]
+    near = [f"{p['from']} ≈ {p['to']}" for p in data.get("near_pairs", [])
+            if p["to"] in {blend_notes[i]["name"] for i in blend.get(p["stage"], [])}]
+    family = [f"{STAGE_KO[st]} {blend_notes[i]['name']}" for st, ids in approx.items() for i in ids if ids == blend.get(st)]
     perfume = data["perfume"]
+    parts = []
     if same:
-        text = f"{perfume}의 공식 노트 중 우리 노트와 같은 {', '.join(same)}{josa(same[-1], '을', '를')} 담았어요."
+        parts.append(f"{perfume}의 공식 노트 중 우리 노트와 같은 {', '.join(same)}{josa(same[-1], '을', '를')} 담았어요.")
     else:
-        text = f"{perfume}의 공식 노트({', '.join(official[:4])})는 우리 노트 30개와 똑같은 게 없어요."
+        parts.append(f"{perfume}의 공식 노트는 우리 노트와 똑같은 게 없어요.")
     if near:
-        text += f" 같은 노트가 없는 단계는 이 향수의 계열에 가까운 노트로 비슷하게 채웠어요: {', '.join(near)}."
-    return text + " 더 가볍게, 더 따뜻하게처럼 말해 주시면 조정할게요."
+        parts.append(f"우리 목록에 없는 노트는 가장 가까운 노트로 옮겼어요: {', '.join(near)}.")
+    if family:
+        parts.append(f"그래도 빈 단계는 이 향수의 계열에 맞춰 채웠어요: {', '.join(family)}.")
+    parts.append("아래 추천 맨 앞에 이 향수를 기준으로 두었어요. 더 가볍게, 더 따뜻하게처럼 말해 주시면 조정할게요.")
+    return " ".join(parts)
 
 
 def fill_empty_stages(updated, direction):
@@ -590,7 +610,8 @@ async def demo_with_tools(user_texts, updated):
             reply = copy_reply(data)
             direction = Direction(family=family, temperature="neutral", airy=False, avoid_sweet=False,
                                   notes=[], ready=bool(blend), reply=reply)
-            return direction, blend or updated, [tool_label("find_perfume", {"name": hit["name"]}, output)]
+            return direction, blend or updated, [{**tool_label("find_perfume", {"name": hit["name"]}, output),
+                                                  "copied": bool(blend), "id": data["id"]}]
     return demo_direction(user_texts), updated, []
 
 
@@ -694,6 +715,7 @@ class Intent(BaseModel):
 class Recommend(BaseModel):
     blend: dict[Stage, list[str] | str] = Field(default_factory=dict, max_length=3)
     intent: Intent | None = None
+    anchor: str | None = Field(default=None, max_length=80)  # '○○ 같은 향'으로 만든 블렌드의 기준 향수 id
     liked: list[str] = Field(default_factory=list, max_length=20)
 
 def intent_text(intent):
@@ -720,7 +742,7 @@ async def recommend(body: Recommend, request: Request):
         raise HTTPException(422, "노트를 하나 이상 골라 주세요.")
     intent = body.intent
     url, model, key = llm_config(request)
-    key_id = json.dumps([normalized(body.blend), intent.model_dump() if intent else None, sorted(body.liked), bool(key)],
+    key_id = json.dumps([normalized(body.blend), intent.model_dump() if intent else None, sorted(body.liked), bool(key), body.anchor],
                         sort_keys=True, ensure_ascii=False)
     if key_id in recommend_cache:
         return recommend_cache[key_id]
@@ -732,17 +754,29 @@ async def recommend(body: Recommend, request: Request):
         qvec = await rag.aembed(blend_text + (" / " + wish if wish else ""), key) if key else None
     except (httpx.HTTPError, ValueError, KeyError, IndexError):
         qvec = None
-    ranked = rag.retrieve(PERFUMES, selected, qvec, k=8, avoid_sweet=bool(intent and intent.avoid_sweet),
+    ranked = rag.retrieve(PERFUMES, selected, qvec, k=9, avoid_sweet=bool(intent and intent.avoid_sweet),
                           family=intent.family if intent else None)
+    base = next((p for p in PERFUMES if p["id"] == body.anchor), None)
+    anchor_card = None
+    if base:
+        # 기준 향수는 맨 앞에 고정하고, 나머지 후보에서 비슷한 향수 2개를 고른다
+        chosen_ids = {i for ids in normalized(body.blend).values() for i in ids}
+        anchor_card = {**rag.card({**base, "near_matched": [raw for nid, raw in base["near"] if nid in chosen_ids]}, [i for ids in normalized(body.blend).values() for i in ids if i in base["ids"]], NOTE_NAMES,
+                                  why="이 향수를 바탕으로 만든 블렌드예요. 아래는 이 블렌드와 비슷한 향수예요."), "anchor": True}
+        ranked = [r for r in ranked if r[2]["id"] != base["id"]]
+    ranked = ranked[:8]
+    want = 2 if anchor_card else 3
+    lead = [anchor_card] if anchor_card else []
     if not ranked:
-        return {"summary": "", "picks": [], "ai": False, "ready": len(selected) == 3}
+        return {"summary": "", "picks": lead, "ai": False, "ready": len(selected) == 3}
     if not all((url, model, key)) or not httpx.URL(url).path.rstrip("/").endswith("/responses"):
-        picks = [rag.card(p, m, NOTE_NAMES) for _, m, p in ranked[:3]]
+        picks = lead + [rag.card(p, m, NOTE_NAMES) for _, m, p in ranked[:want]]
         return {"summary": "", "picks": picks, "ai": False, "ready": len(selected) == 3}
     candidates = [{
         "id": p["id"], "perfume": f"{p['brand']} {p['name']}",
         "top": p["notes"]["top"], "heart": p["notes"]["heart"], "base": p["notes"]["base"],
         "shared_with_user": [NOTE_NAMES[i] for i in dict.fromkeys(m)],
+        "similar_to_user": [rag.ko_name(n) for n in dict.fromkeys(p.get("near_matched", []))],
     } for _, m, p in ranked]
     schema = {
         "type": "object", "additionalProperties": False, "required": ["summary", "picks"],
@@ -755,7 +789,8 @@ async def recommend(body: Recommend, request: Request):
     }
     prompt = (
         "너는 한국어로 답하는 향수 큐레이터다. 사용자가 고른 노트 조합과, 실제 상품 페이지에서 확인한 노트만 담긴 후보 향수 목록을 받는다. "
-        "후보 중에서 이 조합과 가장 잘 어울리는 향수 3개를 골라라(후보가 3개보다 적으면 있는 만큼). "
+        f"후보 중에서 이 조합과 가장 잘 어울리는 향수 {want}개를 골라라(후보가 {want}개보다 적으면 있는 만큼). "
+        "similar_to_user는 사용자가 고른 노트와 같지는 않지만 비슷한 노트다. 이유에서 '같다'고 말하지 말고 '비슷하다'고 말해라. "
         "후보 목록 밖의 향수나 노트를 말하지 마라. 각 이유(why)는 후보에 적힌 실제 노트만 근거로 한국어 한두 문장(70자 내외)으로 쓰고, "
         "사용자가 고른 노트와 어떻게 이어지는지 말해라. summary는 사용자의 조합이 어떤 인상인지 한국어 한 문장(40자 내외)."
         f"\n사용자 조합: {blend_text}\n후보: {json.dumps(candidates, ensure_ascii=False)}"
@@ -777,7 +812,7 @@ async def recommend(body: Recommend, request: Request):
                        for part in item["content"] if part.get("type") == "output_text")
         curation = json.loads(text)
     except (httpx.HTTPError, ValueError, KeyError, TypeError):
-        picks = [rag.card(p, m, NOTE_NAMES) for _, m, p in ranked[:3]]
+        picks = lead + [rag.card(p, m, NOTE_NAMES) for _, m, p in ranked[:want]]
         return {"summary": "", "picks": picks, "ai": False, "ready": len(selected) == 3}
     by_id = {p["id"]: (m, p) for _, m, p in ranked}
     picks, used = [], set()
@@ -787,12 +822,12 @@ async def recommend(body: Recommend, request: Request):
             m, p = by_id[pick["id"]]
             picks.append(rag.card(p, m, NOTE_NAMES, why=pick["why"]))
     for _, m, p in ranked:  # LLM이 3개를 못 채우면 점수 순으로 채운다
-        if len(picks) >= 3:
+        if len(picks) >= want:
             break
         if p["id"] not in used:
             used.add(p["id"])
             picks.append(rag.card(p, m, NOTE_NAMES))
-    response = {"summary": curation.get("summary", ""), "picks": picks[:3], "ai": True, "ready": len(selected) == 3}
+    response = {"summary": curation.get("summary", ""), "picks": lead + picks[:want], "ai": True, "ready": len(selected) == 3}
     if len(recommend_cache) > 300:
         recommend_cache.clear()
     recommend_cache[key_id] = response

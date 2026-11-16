@@ -602,10 +602,11 @@ function Products({ results, curation, curating, liked, onLike, onShare }) {
       <li key={item.id} style={{ '--delay': `${120 + index * 100}ms` }}>
         <a className="product" href={item.url} target="_blank" rel="noreferrer">
           <span className="product-no">{String(index + 1).padStart(2, '0')}</span>
-          <div><span className="brand">{item.brand}{item.concentration && <em> · {item.concentration}</em>}</span><strong>{item.name}</strong>
+          <div>{item.anchor && <span className="anchor-badge">기준 향수</span>}<span className="brand">{item.brand}{item.concentration && <em> · {item.concentration}</em>}</span><strong>{item.name}</strong>
             {item.why ? <p className="why">{item.why}</p> : <p>{item.description}</p>}
             <span className="product-notes">{(item.notes ?? []).join(' · ')}</span>
             {item.matching_notes?.length > 0 && <span className="match">선택한 노트와 겹침 · {item.matching_notes.join(' · ')}</span>}
+            {item.near_notes?.length > 0 && <span className="match near">비슷한 노트 · {item.near_notes.join(' · ')}</span>}
             <span className="source">노트 출처 보기</span></div>
           <span aria-hidden="true" className="external">↗</span>
         </a>
@@ -961,6 +962,7 @@ function App() {
   const [intent, setIntent] = useState(null);
   const [shareData, setShareData] = useState(null);
   const [keyAsk, setKeyAsk] = useState(0);
+  const [anchor, setAnchor] = useState(null);  // '○○ 같은 향'으로 만든 블렌드의 기준 향수 id
   const [liked, setLiked] = useState(readLiked);
   const [soundHint, setSoundHint] = useState(() => !sound.enabled && !hintSeen());
   const photoInput = useRef(null);
@@ -1008,7 +1010,7 @@ function App() {
   }, [view]);
 
   // 노트 조합이 바뀌고 잠시 멈추면 검증된 향수 DB + LLM 큐레이션을 불러온다
-  const blendKey = JSON.stringify([compact(selection), intent]);
+  const blendKey = JSON.stringify([compact(selection), intent, anchor]);
   useEffect(() => {
     if (view !== 'studio' || !countOf(selection)) { setCuration(null); setCurating(false); return; }
     const request = new AbortController();
@@ -1016,7 +1018,7 @@ function App() {
     const timer = setTimeout(() => {
       api('/api/recommend', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: request.signal,
-        body: JSON.stringify({ blend: compact(selection), intent, liked: liked.map(item => item.id) }),
+        body: JSON.stringify({ blend: compact(selection), intent, anchor, liked: liked.map(item => item.id) }),
       }).then(response => response.ok ? response.json() : Promise.reject(response))
         .then(data => { setCuration({ ...data, key: blendKey }); setCurating(false); if (data.ai) sound.arrive(); })
         .catch(() => { if (!request.signal.aborted) setCurating(false); });
@@ -1130,6 +1132,7 @@ function App() {
       present(data);
       setMode(data.demo ? 'demo' : 'llm');
       if (data.intent) setIntent(data.intent);
+      setAnchor(data.anchor ?? null);
       setMessages([...next, { role: 'assistant', content: data.reply, changes: data.changes ?? [], tools: data.tools ?? [] }]);
       if (data.changes?.length) { setFocusStage({ stage: data.changes[data.changes.length - 1].stage, at: Date.now() }); sound.pour(); }
       if (matchMedia('(max-width: 900px)').matches && stage.current.getBoundingClientRect().top < -100) {
@@ -1172,7 +1175,7 @@ function App() {
     blendController.current = null;
     chatResult.current = empty;
     setSelection(noSelection);
-    setMessages([welcome]); setResult(empty); setInput(''); setError(''); setBusy(false); setPulse(value => value + 1); setIntent(null);
+    setMessages([welcome]); setResult(empty); setInput(''); setError(''); setBusy(false); setPulse(value => value + 1); setIntent(null); setAnchor(null);
     setFromLink(false);
     if (location.search) history.replaceState(null, '', location.pathname);
     composer.current?.focus({ preventScroll: true });

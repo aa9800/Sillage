@@ -208,5 +208,40 @@
   "license": "CC BY-SA 4.0",
   "author": "Ivar Leidus",
   "edit": "배경 제거, 자르기, 크기 조정"
+ },
+ "lemon": {
+  "title": "File:Lemon-Whole-Split.jpg",
+  "source": "https://commons.wikimedia.org/wiki/File:Lemon-Whole-Split.jpg",
+  "license": "Public domain",
+  "author": "Evan-Amos",
+  "edit": "배경 제거, 자르기, 크기 조정"
+ },
+ "ginger": {
+  "title": "File:Liat Portal for Foodie Disorder - Fresh Ginger Root.jpg",
+  "source": "https://commons.wikimedia.org/wiki/File:Liat_Portal_for_Foodie_Disorder_-_Fresh_Ginger_Root.jpg",
+  "license": "CC BY-SA 4.0",
+  "author": "HaJunkiyada",
+  "edit": "배경 제거, 자르기, 크기 조정"
+ },
+ "blackcurrant": {
+  "title": "File:Ribes nigrum a1.JPG",
+  "source": "https://commons.wikimedia.org/wiki/File:Ribes_nigrum_a1.JPG",
+  "license": "CC BY-SA 3.0",
+  "author": "Jerzy Opioła",
+  "edit": "배경 제거, 자르기, 크기 조정"
+ },
+ "peony": {
+  "title": "File:Paeonia lactiflora 2025.jpg",
+  "source": "https://commons.wikimedia.org/wiki/File:Paeonia_lactiflora_2025.jpg",
+  "license": "CC0",
+  "author": "Refriedbeans52",
+  "edit": "배경 제거, 자르기, 크기 조정"
+ },
+ "tobacco": {
+  "title": "File:Nicotiana tabacum 006.JPG",
+  "source": "https://commons.wikimedia.org/wiki/File:Nicotiana_tabacum_006.JPG",
+  "license": "CC BY-SA 3.0",
+  "author": "H. Zell",
+  "edit": "배경 제거, 자르기, 크기 조정"
  }
 }

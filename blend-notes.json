@@ -9,6 +9,9 @@
   {"id":"green-tea","stage":"top","name":"녹차","english":"Green Tea","feel":"맑게 우린 찻잎의 싱그러움","family":"forest","color":"#a8c47a","matches":["녹차","그린티"],"image":true},
   {"id":"mandarin","stage":"top","name":"만다린","english":"Mandarin","feel":"달콤하게 터지는 귤껍질","family":"citrus","color":"#f2a646","matches":["만다린","탠저린"],"image":true},
   {"id":"cardamom","stage":"top","name":"카다멈","english":"Cardamom","feel":"서늘하게 톡 쏘는 향신료","family":"amber","color":"#b7c286","matches":["카다멈"],"image":true},
+  {"id":"lemon","stage":"top","name":"레몬","english":"Lemon","feel":"밝고 새콤한 껍질의 즙","family":"citrus","color":"#f3d84a","matches":["레몬"],"image":true},
+  {"id":"ginger","stage":"top","name":"생강","english":"Ginger","feel":"맵싸하고 따뜻한 뿌리","family":"amber","color":"#e6cfa3","matches":["생강"],"image":true},
+  {"id":"blackcurrant","stage":"top","name":"블랙커런트","english":"Blackcurrant","feel":"새콤하고 짙은 검은 베리","family":"floral","color":"#6e5a8a","matches":["블랙커런트","카시스"],"image":true},
   {"id":"freesia","stage":"heart","name":"프리지아","english":"Freesia","feel":"맑은 봄날의 흰 꽃","family":"floral","color":"#efe4bd","matches":["프리지아"],"image":true},
   {"id":"sage","stage":"heart","name":"세이지","english":"Sage","feel":"서늘하고 마른 허브","family":"forest","color":"#65a9ac","matches":["세이지"],"image":true},
   {"id":"cypress","stage":"heart","name":"사이프러스","english":"Cypress","feel":"서늘한 침엽수 향","family":"forest","color":"#56a87c","matches":["사이프러스","시더"],"image":true},
@@ -19,6 +22,7 @@
   {"id":"neroli","stage":"heart","name":"네롤리","english":"Neroli","feel":"오렌지 꽃의 맑은 쌉쌀함","family":"citrus","color":"#f5dfae","matches":["네롤리","오렌지 블로섬"],"image":true},
   {"id":"violet","stage":"heart","name":"바이올렛","english":"Violet","feel":"파우더리한 제비꽃","family":"linen","color":"#8e7dc2","matches":["바이올렛","제비꽃"],"image":true},
   {"id":"tuberose","stage":"heart","name":"튜베로즈","english":"Tuberose","feel":"크리미하고 진한 흰 꽃","family":"floral","color":"#efe2c6","matches":["튜베로즈"],"image":true},
+  {"id":"peony","stage":"heart","name":"작약","english":"Peony","feel":"물기 머금은 분홍 꽃잎","family":"floral","color":"#ebb8c6","matches":["작약","피오니"],"image":true},
   {"id":"sandalwood","stage":"base","name":"샌달우드","english":"Sandalwood","feel":"부드럽고 크리미한 나무","family":"forest","color":"#94674b","matches":["샌달우드"],"image":true},
   {"id":"musk","stage":"base","name":"화이트 머스크","english":"White Musk","feel":"갓 마른 셔츠 같은 잔향","family":"linen","color":"#9093b5","matches":["화이트 머스크","암브레트"],"image":true},
   {"id":"vanilla","stage":"base","name":"바닐라","english":"Vanilla","feel":"달고 따뜻한 잔향","family":"amber","color":"#ce743b","matches":["바닐라"],"image":true},
@@ -28,5 +32,6 @@
   {"id":"cedarwood","stage":"base","name":"시더우드","english":"Cedarwood","feel":"연필을 깎은 듯 건조한 나무","family":"forest","color":"#b3876a","matches":["시더우드","시더"],"image":true},
   {"id":"tonka","stage":"base","name":"통카 빈","english":"Tonka Bean","feel":"아몬드와 캐러멜 같은 단향","family":"amber","color":"#8e5d3f","matches":["통카 빈","통카"],"image":true},
   {"id":"incense","stage":"base","name":"인센스","english":"Incense","feel":"성당에 번지는 연기","family":"amber","color":"#8b7f70","matches":["인센스","유향"],"image":true},
-  {"id":"coconut","stage":"base","name":"코코넛","english":"Coconut","feel":"부드럽고 크리미한 열대","family":"amber","color":"#ece0cc","matches":["코코넛"],"image":true}
+  {"id":"coconut","stage":"base","name":"코코넛","english":"Coconut","feel":"부드럽고 크리미한 열대","family":"amber","color":"#ece0cc","matches":["코코넛"],"image":true},
+  {"id":"tobacco","stage":"base","name":"담배잎","english":"Tobacco Leaf","feel":"말린 잎의 달큰하고 스모키한 결","family":"amber","color":"#a87b45","matches":["담배","담배잎","타바코"],"image":true}
 ]

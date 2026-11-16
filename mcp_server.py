@@ -32,7 +32,7 @@ FAMILY_KO = {"forest": "숲·우디", "marine": "바다", "amber": "앰버·스�
 mcp = MCPServer(
     "sillage",
     instructions="Sillage 향수 아틀리에의 도구. 검증된 향수 DB 검색, 향수 이름 조회, 노트 설명, 날씨 기반 향 제안을 제공한다. "
-                 "노트 id는 blend-notes.json의 30개(lime, salt, fig-leaf, ... coconut)다.",
+                 "노트 id는 blend-notes.json에 있는 35개(lime, salt, fig-leaf, ... tobacco)다.",
 )
 
 
@@ -159,8 +159,8 @@ FILL_DEFAULT = {"top": "bergamot", "heart": "freesia", "base": "musk"}
 @mcp.tool()
 def find_perfume(name: str) -> str:
     """향수 이름(브랜드 포함 가능, 영어 또는 한국어 통칭)으로 DB에서 찾아 실제 노트와, 그에 해당하는 우리 노트 id를 단계별로 돌려준다.
-    사용자가 '○○ 같은 향'을 원하면 our_notes로 블렌드를 채울 수 있다. 같은 노트가 없는 단계는
-    approx_notes(향수 계열에 가까운 우리 노트)로 채우되, 비슷하게 고른 것이라고 밝혀야 한다."""
+    사용자가 '○○ 같은 향'을 원하면 our_notes(같은 노트)와 near_notes(가장 가까운 우리 노트, near_pairs에 원래 노트)로
+    블렌드를 채운다. 그래도 빈 단계는 approx_notes(향수 계열에 가까운 노트)로 채운다. 같은 것과 비슷한 것을 구분해 말해야 한다."""
     name = resolve_alias(name) or name
     q = _norm(name)
     if len(q) < 2:
@@ -186,11 +186,22 @@ def find_perfume(name: str) -> str:
                 stage = NOTES[i]["stage"] if i in NOTES else None
                 if stage and i not in ours[stage] and len(ours[stage]) < 3:
                     ours[stage].append(i)
+    # 같은 노트가 없는 원래 노트는 가장 가까운 우리 노트로(예: 망고 ≈ 서양 배). 단계마다 합쳐서 최대 3개.
+    near, near_pairs = {"top": [], "heart": [], "base": []}, []
+    for nid, raw in best["near"]:
+        if nid not in NOTES:
+            continue
+        stage = NOTES[nid]["stage"]
+        if nid not in ours[stage] and nid not in near[stage] and len(ours[stage]) + len(near[stage]) < 3:
+            near[stage].append(nid)
+            near_pairs.append({"from": rag.ko_name(raw), "to": NOTES[nid]["name"], "stage": stage})
     approx = {}
     for st in ("top", "heart", "base"):
-        if not ours[st]:
+        if not ours[st] and not near[st]:
             approx[st] = [next((FAMILY_FILL[st][f] for f in best["family"] if f in FAMILY_FILL[st]), FILL_DEFAULT[st])]
-    return json.dumps({"found": True, **_summary(best), "our_notes": ours, "approx_notes": approx,
+    return json.dumps({"found": True, **_summary(best), "our_notes": ours,
+                       "near_notes": {st: ids for st, ids in near.items() if ids}, "near_pairs": near_pairs,
+                       "approx_notes": approx,
                        "our_notes_ko": {STAGE_KO[st]: [NOTES[i]["name"] for i in ids] for st, ids in ours.items()}},
                       ensure_ascii=False)
 

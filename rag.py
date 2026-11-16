@@ -1,7 +1,7 @@
 """향수 DB 검색(RAG).
 
 - data/perfumes.json: build_catalog.py가 실제 페이지에서 확인한 노트만 담은 향수 목록
-- 사용자가 고른 노트(우리 24개 노트 id)와 향수의 실제 노트를 사전(LEXICON)으로 맞춰 겹침을 계산한다.
+- 사용자가 고른 노트(우리 노트 id)와 향수의 실제 노트를 사전(LEXICON)으로 맞춰 겹침을 계산한다.
 - 임베딩(text-embedding-3-small, 제공된 키 사용)으로 분위기 유사도를 더한다.
 - 겹치는 노트는 코드가 계산하므로 LLM이 지어낼 수 없다. LLM은 이 후보 안에서 고르고 이유만 쓴다.
 """
@@ -31,7 +31,56 @@ LEXICON = {
     "cedarwood": ["cedar", "cedarwood"], "tonka": ["tonka"],
     "mandarin": ["mandarin", "tangerine"], "cardamom": ["cardamom"], "violet": ["violet"],
     "tuberose": ["tuberose"], "incense": ["incense", "olibanum", "frankincense"], "coconut": ["coconut"],
+    "lemon": ["lemon", "italian lemon"], "ginger": ["ginger"], "peony": ["peony", "peonies"],
+    "blackcurrant": ["blackcurrant", "black currant", "cassis", "blackcurrant bud", "blackcurrant leaves"],
+    "tobacco": ["tobacco", "tobacco leaf", "tobacco leaves"],
 }
+
+# 우리 노트에 똑같은 게 없는 향수 노트 → 향이 가장 가까운 우리 노트(조향에서 흔히 같은 갈래로 묶는 것).
+# '같은 노트'가 아니라 '비슷한 노트'로만 쓰고, 화면과 답변에서 그렇게 밝힌다.
+NEAR = [
+    # 시트러스
+    ("yuzu", "grapefruit"), ("citron", "lemon"), ("verbena", "lemon"), ("bitter orange", "mandarin"),
+    ("sweet orange", "mandarin"), ("orange water", "neroli"), ("petitgrain", "neroli"),
+    # 과일
+    ("green mango", "pear"), ("mango", "pear"), ("apple", "pear"), ("peach", "pear"), ("pineapple", "pear"),
+    ("quince", "pear"), ("litchi", "pear"), ("lychee", "pear"), ("naseberry", "pear"), ("fruit accord", "pear"),
+    ("blackberry", "blackcurrant"), ("raspberry", "blackcurrant"), ("buchu", "blackcurrant"),
+    ("fig", "fig-leaf"), ("galbanum", "fig-leaf"), ("artichoke", "fig-leaf"), ("african marigold", "fig-leaf"),
+    # 꽃
+    ("lotus", "freesia"), ("cyclamen", "freesia"), ("lily of the valley", "freesia"),
+    ("magnolia", "jasmine"), ("honeysuckle", "jasmine"), ("white flowers", "jasmine"),
+    ("ylang", "tuberose"), ("geranium", "rose"), ("mimosa", "violet"),
+    # 허브·향신료
+    ("basil", "sage"), ("bay lea", "sage"), ("rosemary", "sage"), ("thyme", "sage"), ("angelica", "sage"),
+    ("shiso", "sage"), ("chamomile", "lavender"), ("aspic", "lavender"), ("mint", "green-tea"),
+    ("clove", "cardamom"), ("coriander", "cardamom"), ("nutmeg", "cardamom"), ("cumin", "cardamom"),
+    ("fennel", "cardamom"), ("pepper", "pink-pepper"), ("spice", "pink-pepper"),
+    # 나무·초록 숲
+    ("juniper", "cypress"), ("hinoki", "cypress"), ("pine", "cypress"), ("fir", "cypress"),
+    ("sycamore", "cedarwood"), ("guaiac", "cedarwood"), ("gaïac", "cedarwood"), ("rosewood", "sandalwood"),
+    ("papyrus", "vetiver"), ("oakmoss", "patchouli"), ("moss", "patchouli"), ("wood", "cedarwood"),
+    # 수지·스모키
+    ("myrrh", "incense"), ("elemi", "incense"), ("birch", "incense"), ("oud", "incense"), ("leather", "incense"),
+    ("ambergris", "amber"), ("amberwood", "amber"), ("ambery", "amber"), ("cistus", "amber"),
+    ("styrax", "amber"), ("peru balsam", "amber"),
+    # 머스크·파우더
+    ("ambroxan", "musk"), ("ambroxyde", "musk"), ("cashmeran", "musk"), ("ambrette", "musk"),
+    ("aldehyde", "musk"), ("suede", "musk"), ("aquatic", "salt"),
+    # 달콤함
+    ("honey", "tonka"), ("bitter almond", "tonka"), ("chestnut", "tonka"), ("rum", "tonka"), ("coffee", "tonka"),
+    ("cocoa", "vanilla"), ("caramel", "vanilla"),
+]
+
+
+def near_id(note):
+    """같은 노트가 없을 때 가장 가까운 우리 노트 id(없으면 None)."""
+    n = note.lower()
+    for word, nid in NEAR:
+        if re.search(rf"\b{re.escape(word)}", n):
+            return nid
+    return None
+
 # 화면에 보여 줄 한국어 이름(자주 나오는 노트)
 KO = {
     "lemon": "레몬", "mandarin": "만다린", "orange": "오렌지", "yuzu": "유자", "basil": "바질", "mint": "민트",
@@ -95,6 +144,10 @@ def load_perfumes():
         p["ids_by_stage"] = {st: set().union(*(note_ids(n) for n in p["notes"][st])) if p["notes"][st] else set()
                              for st in ("top", "heart", "base")}
         p["ids"] = set().union(*p["ids_by_stage"].values())
+        # 비슷한 노트: (우리 노트 id, 원래 노트) — 같은 노트로 이미 잡힌 원래 노트는 제외
+        p["near"] = [(near_id(n), n) for st in ("top", "heart", "base") for n in p["notes"][st]
+                     if not note_ids(n) and near_id(n)]
+        p["near_ids"] = {nid for nid, _ in p["near"]} - p["ids"]
         p["sweet"] = is_sweet(p)
     return perfumes
 
@@ -150,7 +203,7 @@ def cosine(a, b):
 def score(p, selected, qvec=None, family=None):
     """selected: {stage: [노트 dict]}  →  (점수, 겹친 우리 노트 id 목록)
     family: 대화에서 읽은 전체 분위기(forest, marine ...). 맞는 향수에 가산점을 준다."""
-    total, matched = 0.0, []
+    total, matched, near = 0.0, [], []
     if family and NOTE_FAMILY.get(family, set()) & set(p["family"]):
         total += 1.5
     for stage, notes in selected.items():
@@ -161,11 +214,14 @@ def score(p, selected, qvec=None, family=None):
             elif n["id"] in p["ids"]:
                 total += 2.0
                 matched.append(n["id"])
+            elif n["id"] in p["near_ids"]:
+                total += 1.0  # 비슷한 노트는 같은 노트보다 낮게
+                near.extend(raw for nid, raw in p["near"] if nid == n["id"])
             if NOTE_FAMILY.get(n["family"], set()) & set(p["family"]):
                 total += .5
     if qvec is not None and p.get("vector"):
         total += 4.0 * max(0.0, cosine(qvec, p["vector"]) - .2)
-    return total, matched
+    return total, matched, near
 
 
 def retrieve(perfumes, selected, qvec=None, k=8, avoid_sweet=False, family=None):
@@ -174,9 +230,9 @@ def retrieve(perfumes, selected, qvec=None, k=8, avoid_sweet=False, family=None)
     for p in perfumes:
         if avoid_sweet and p["sweet"]:
             continue
-        s, matched = score(p, selected, qvec, family)
+        s, matched, near = score(p, selected, qvec, family)
         if s > 0:
-            ranked.append((s, matched, p))
+            ranked.append((s, matched, {**p, "near_matched": near}))
     ranked.sort(key=lambda r: -r[0])
     return ranked[:k]
 
@@ -193,5 +249,7 @@ def card(p, matched_ids, names, why=""):
         "id": p["id"], "brand": p["brand"].upper(), "name": p["name"], "concentration": p.get("concentration", ""),
         "description": p["description_ko"], "notes": display[:8], "url": p["source"],
         "matching_notes": [names[i] for i in dict.fromkeys(matched_ids) if i in names], "why": why,
+        # 비슷한 노트: 향수의 원래 노트 ≈ 사용자가 고른 우리 노트 (예: 유자 ≈ 자몽)
+        "near_notes": [f"{ko_name(raw)} ≈ {names.get(near_id(raw), '')}" for raw in dict.fromkeys(p.get("near_matched", []))][:3],
         "pyramid": {st: [ko_name(n) for n in p["notes"][st]] for st in ("top", "heart", "base")},
     }

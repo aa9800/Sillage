@@ -35,14 +35,31 @@ def chat(text, blend=None):
     return r.json()
 
 
-def test_similar_perfume_without_exact_notes_uses_family(fake_llm):
-    """운자르댕처럼 우리 노트와 같은 노트가 없어도 계열로 세 단계를 채우고, 답변은 사실대로 쓴다."""
+def test_similar_perfume_without_exact_notes_uses_near_notes(fake_llm):
+    """운자르댕처럼 같은 노트가 없어도 가장 가까운 노트로 세 단계를 채우고, 답변은 사실대로 쓴다."""
     data = json.loads(mcp_server.find_perfume("운자르댕"))
     fake_llm["reply"] = direction(reply="프리지아를 유지할게요.")  # LLM이 사실과 다른 말을 해도
     fake_llm["data"] = [("find_perfume", data)]
     out = chat("운자르댕 같은 향으로 만들어 줘")
     assert out["blend"] == {"top": ["pear"], "heart": ["freesia"], "base": ["cedarwood"]}
-    assert "똑같은 게 없어요" in out["reply"] and "프리지아를 유지" not in out["reply"]
+    assert "망고 ≈ 서양 배" in out["reply"] and "프리지아를 유지" not in out["reply"]
+    assert out["anchor"] == "hermes-un-jardin-sur-le-nil"
+
+
+def test_recommend_pins_anchor_first():
+    blend = {"top": ["pear"], "heart": ["freesia"], "base": ["cedarwood"]}
+    data = client.post("/api/recommend", json={"blend": blend, "anchor": "hermes-un-jardin-sur-le-nil"}).json()
+    assert data["picks"][0]["id"] == "hermes-un-jardin-sur-le-nil" and data["picks"][0]["anchor"] is True
+    assert len(data["picks"]) == 3 and len({p["id"] for p in data["picks"]}) == 3
+
+
+def test_near_notes_cover_almost_everything():
+    import rag
+    ps = rag.load_perfumes()
+    raw = [n for p in ps for st in ("top", "heart", "base") for n in p["notes"][st]]
+    left = [n for n in raw if not rag.note_ids(n) and not rag.near_id(n)]
+    assert len(left) <= 3  # 체리처럼 가까운 노트가 마땅치 않은 것만 남는다
+    assert all(p["ids"] or p["near_ids"] for p in ps)
 
 
 def test_avoid_sweet_only_when_user_said_it(fake_llm):
