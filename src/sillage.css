@@ -875,3 +875,38 @@ html[data-dark="1"] .grid-lines, html[data-dark="1"] .grid-lines i { border-colo
 }
 .vessel .bottle { z-index: 1; }
 .vessel-shadow { opacity: .4; filter: blur(18px); }
+
+/* ───────── 결과 카드 창(공유·저장) ───────── */
+.share-dialog { padding: 0; border: 0; background: none; max-width: none; max-height: none; width: 100%; height: 100%;
+  display: grid; place-items: center; overflow: auto; }
+.share-dialog::backdrop { background: rgba(28, 27, 24, .32); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  animation: fade-in .4s ease both; }
+.share-panel { position: relative; width: min(460px, calc(100vw - 32px)); margin: 24px 0; padding: 28px 28px 22px; border-radius: 26px;
+  background: rgba(250, 248, 243, .94); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 40px 90px -40px rgba(0, 0, 0, .5), inset 0 0 0 1px rgba(255, 255, 255, .75);
+  color: var(--ink); animation: rise .6s var(--ease-out) both; }
+.share-panel .index { margin: 0; font: 500 10.5px var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--ink-mute); }
+.share-panel .index span { color: var(--ink); }
+.share-panel h2 { margin: 10px 0 0; font: 300 46px/1 var(--serif-lat); letter-spacing: -.01em; color: var(--ink); }
+.share-panel h2 em { font-style: italic; }
+.share-panel .title-ko { margin: 8px 0 18px; font: 400 13px var(--sans); color: var(--ink-soft); }
+.share-close { position: absolute; top: 16px; right: 16px; width: 36px; height: 36px; border: 0; border-radius: 50%;
+  background: rgba(28, 27, 24, .05); font-size: 20px; color: var(--ink-soft); cursor: pointer; }
+.share-close:hover { background: rgba(28, 27, 24, .1); color: var(--ink); }
+.share-preview { display: grid; place-items: center; aspect-ratio: 4 / 5; border-radius: 16px; overflow: hidden;
+  background: rgba(28, 27, 24, .04); box-shadow: 0 24px 50px -30px rgba(0, 0, 0, .45); }
+.share-preview img { width: 100%; height: 100%; object-fit: cover; display: block; animation: fade-in .6s ease both; }
+.share-loading { font: 400 13px var(--sans); color: var(--ink-mute); }
+.share-loading i { display: inline-block; width: 4px; height: 4px; margin-left: 3px; border-radius: 50%; background: currentColor;
+  animation: blink 1s ease-in-out infinite alternate; }
+.share-loading i:nth-child(2) { animation-delay: .2s; } .share-loading i:nth-child(3) { animation-delay: .4s; }
+.share-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 18px; }
+.share-actions button { height: 48px; border-radius: 999px; font: 500 14px var(--sans); cursor: pointer;
+  transition: background .3s ease, border-color .3s ease, transform .3s var(--ease-out); }
+.share-actions button:hover:not(:disabled) { transform: translateY(-1px); }
+.share-actions button:disabled { opacity: .45; cursor: default; }
+.share-primary { border: 0; background: var(--ink); color: var(--paper); }
+.share-secondary { border: 1px solid var(--hair); background: rgba(255, 255, 255, .6); color: var(--ink); }
+.share-secondary:hover:not(:disabled) { border-color: var(--ink); background: #fff; }
+.share-note { min-height: 18px; margin: 12px 2px 0; font: 400 12px/1.5 var(--sans); color: var(--ink-soft); }
+@media (max-width: 480px) { .share-panel { padding: 22px 18px 16px; } .share-panel h2 { font-size: 38px; } }

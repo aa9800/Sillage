@@ -575,7 +575,7 @@ function Products({ results, curation, curating, liked, onLike, onShare }) {
       {curating && <span className="curating">조합을 읽고 어울리는 향수를 고르는 중<i /><i /><i /></span>}
       {!curating && curation?.summary && <p className="curation-summary">{curation.summary}</p>}
       {!curating && products.length > 0 && <button type="button" className="share-card" onClick={() => onShare(products, curation?.summary)}>
-        <span aria-hidden="true">↓</span> 블렌드 카드 저장</button>}
+        <span aria-hidden="true">✦</span> 결과 카드 만들기</button>}
     </div>
     {products.length ? <ol className={curating ? 'dim' : ''}>{products.map((item, index) => (
       <li key={item.id} style={{ '--delay': `${120 + index * 100}ms` }}>
@@ -609,47 +609,185 @@ function Shelf({ liked, onRemove, onAsk, disabled }) {
   </section>;
 }
 
-// 내 블렌드를 1080×1350 PNG 카드로 그린다(공유·보관용). 서버로 보내지 않고 브라우저에서 바로 내려받는다.
-async function drawShareCard({ selection, tones, products, summary }) {
+// 내 블렌드를 1080×1350 카드 이미지로 그린다(공유·보관용). 서버로 보내지 않고 브라우저 안에서만 만든다.
+// 상담 화면 병 속에 지금 보이는 층진 액체를 그대로 옮겨 담고, 아래에 탑·미들·베이스와 시향해 볼 향수를 적는다.
+const loadImage = src => new Promise((resolve, reject) => { const im = new Image(); im.onload = () => resolve(im); im.onerror = reject; im.src = src; });
+const SANS = '"Pretendard Variable", Pretendard, "Noto Sans KR", sans-serif';
+const SERIF = '"Cormorant Garamond", "Times New Roman", serif';
+
+// CSS inset 값(1~4개, %)을 병 상자 안의 사각형으로 바꾼다
+function insetBox(inset, x, y, w, h) {
+  const v = inset.trim().split(/\s+/).map(n => Number.parseFloat(n) / 100);
+  const [t, r, b, l] = v.length === 1 ? [v[0], v[0], v[0], v[0]] : v.length === 2 ? [v[0], v[1], v[0], v[1]]
+    : v.length === 3 ? [v[0], v[1], v[2], v[1]] : v;
+  return { x: x + w * l, y: y + h * t, w: w * (1 - l - r), h: h * (1 - t - b) };
+}
+
+// 병마다 정의한 액체 마스크(clip-path의 polygon 또는 inset round)를 캔버스 경로로 만든다
+function maskPath(mask, { x, y, w, h }) {
+  const path = new Path2D();
+  const poly = mask.match(/^polygon\((.*)\)$/);
+  if (poly) {
+    poly[1].split(',').forEach((pair, i) => {
+      const [px, py] = pair.trim().split(/\s+/).map(n => (n === '0' ? 0 : Number.parseFloat(n) / 100));
+      const X = x + w * px, Y = y + h * py;
+      if (i) path.lineTo(X, Y); else path.moveTo(X, Y);
+    });
+    path.closePath();
+    return path;
+  }
+  const round = mask.match(/round\s+([^/]+)\/\s*(.+)\)$/);
+  if (round) {
+    const [tl, tr, br, bl] = round[1].trim().split(/\s+/).map(n => w * Number.parseFloat(n) / 100);
+    const [vtl, vtr, vbr, vbl] = round[2].trim().split(/\s+/).map(n => h * Number.parseFloat(n) / 100);
+    path.moveTo(x + tl, y);
+    path.lineTo(x + w - tr, y); path.ellipse(x + w - tr, y + vtr, tr, vtr, 0, -Math.PI / 2, 0);
+    path.lineTo(x + w, y + h - vbr); path.ellipse(x + w - br, y + h - vbr, br, vbr, 0, 0, Math.PI / 2);
+    path.lineTo(x + bl, y + h); path.ellipse(x + bl, y + h - vbl, bl, vbl, 0, Math.PI / 2, Math.PI);
+    path.lineTo(x, y + vtl); path.ellipse(x + tl, y + vtl, tl, vtl, 0, Math.PI, Math.PI * 1.5);
+    path.closePath();
+    return path;
+  }
+  path.rect(x, y, w, h);
+  return path;
+}
+
+async function renderShareCard({ selection, tones, products, bottle }) {
   await document.fonts?.ready;
   const W = 1080, H = 1350, c = document.createElement('canvas');
   c.width = W; c.height = H;
   const g = c.getContext('2d');
+  const ink = '#1c1b18', soft = '#3f3c36', mute = '#66615a', hair = 'rgba(28,27,24,.16)';
+
+  // 바탕: 종이색 위에 세 층의 색이 병 뒤에서 번진다(사이트 배경과 같은 결)
   g.fillStyle = '#efebe4'; g.fillRect(0, 0, W, H);
-  tones.forEach((tone, i) => {   // 노트 색이 번지는 배경
-    const r = g.createRadialGradient(W * [.25, .75, .5][i], H * [.25, .4, .7][i], 0, W * [.25, .75, .5][i], H * [.25, .4, .7][i], 620);
-    r.addColorStop(0, tone + 'aa'); r.addColorStop(1, tone + '00');
-    g.fillStyle = r; g.fillRect(0, 0, W, H);
+  [[.5, .26, 620, 'b8'], [.18, .5, 560, '90'], [.84, .56, 560, '90'], [.5, .72, 700, '60']].forEach(([x, y, r, a], i) => {
+    const tone = tones[[0, 1, 1, 2][i]];
+    const grad = g.createRadialGradient(W * x, H * y, 0, W * x, H * y, r);
+    grad.addColorStop(0, tone + a); grad.addColorStop(1, tone + '00');
+    g.fillStyle = grad; g.fillRect(0, 0, W, H);
   });
-  g.fillStyle = 'rgba(239,235,228,.55)'; g.fillRect(60, 60, W - 120, H - 120);
-  g.fillStyle = '#1c1b18'; g.textBaseline = 'alphabetic';
-  g.font = 'italic 300 64px "Cormorant Garamond", serif'; g.fillText('Sillage', 110, 180);
-  g.font = '400 26px "Pretendard Variable", Pretendard, sans-serif'; g.fillStyle = '#4a4740'; g.fillText('나의 블렌드 · 향의 아틀리에', 112, 228);
-  let y = 330;
-  stages.forEach((stage, i) => {
+  // 아래쪽 글 영역은 종이색으로 살짝 덮어 읽기 쉽게
+  const fade = g.createLinearGradient(0, 760, 0, 940);
+  fade.addColorStop(0, 'rgba(239,235,228,0)'); fade.addColorStop(1, 'rgba(239,235,228,.72)');
+  g.fillStyle = fade; g.fillRect(0, 760, W, H - 760);
+
+  // 병 + 지금 화면의 층진 액체
+  const bh = 700, bw = bh * bottle.ratio, bx = (W - bw) / 2, by = 84;
+  const halo = g.createRadialGradient(W / 2, by + bh * .58, 0, W / 2, by + bh * .58, bw * 1.1);
+  halo.addColorStop(0, 'rgba(255,255,255,.5)'); halo.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = halo; g.fillRect(0, 0, W, H);
+  try {
+    const im = await loadImage(`/atelier/${bottle.id}.webp`);
+    g.save(); g.shadowColor = tones[2] + '55'; g.shadowBlur = 60; g.shadowOffsetY = 30;
+    g.globalAlpha = .92; g.drawImage(im, bx, by, bw, bh); g.restore();
+    const liquid = document.querySelector('.scene .liquid-chamber canvas');
+    if (liquid?.width) {
+      const box = insetBox(bottle.inset, bx, by, bw, bh);
+      g.save(); g.clip(maskPath(bottle.mask, box)); g.globalCompositeOperation = 'multiply';
+      g.drawImage(liquid, box.x, box.y, box.w, box.h); g.restore();
+    }
+  } catch { /* 병 이미지를 못 불러와도 카드는 만든다 */ }
+
+  g.textBaseline = 'alphabetic';
+  g.fillStyle = ink; g.font = `italic 300 46px ${SERIF}`; g.fillText('Sillage', 72, 104);
+  g.textAlign = 'right'; g.fillStyle = mute; g.font = `400 18px ${SANS}`;
+  g.fillText(new Date().toLocaleDateString('ko-KR'), W - 72, 100); g.textAlign = 'left';
+
+  // Votre parfum — 탑·미들·베이스
+  let y = 818;
+  g.strokeStyle = ink; g.lineWidth = 1.5; g.beginPath(); g.moveTo(72, y - 6); g.lineTo(120, y - 6); g.stroke();
+  g.fillStyle = mute; g.font = `500 17px ${SANS}`; g.fillText('VOTRE PARFUM', 136, y);
+  y += 26;
+  stages.filter(s => selection[s.id].length).forEach((stage, i, list) => {
     const ids = selection[stage.id];
-    g.fillStyle = '#857f73'; g.font = '600 20px "Pretendard Variable", Pretendard, sans-serif'; g.fillText(stage.en.toUpperCase(), 112, y);
-    g.fillStyle = ids.length ? tones[i] : 'rgba(28,27,24,.08)';
-    g.beginPath(); g.roundRect(250, y - 26, 720, 34, 17); g.fill();
-    g.fillStyle = '#1c1b18'; g.font = 'italic 400 40px "Cormorant Garamond", serif';
-    g.fillText(ids.length ? ids.map(n => byId[n].english).join(', ') : '—', 112, y + 62);
-    g.font = '400 24px "Pretendard Variable", Pretendard, sans-serif'; g.fillStyle = '#4a4740';
-    g.fillText(ids.map(n => byId[n].name).join(' · '), 112, y + 100);
-    y += 190;
+    g.strokeStyle = hair; g.lineWidth = 1; g.beginPath(); g.moveTo(72, y); g.lineTo(W - 72, y); g.stroke();
+    g.fillStyle = mute; g.font = `500 16px ${SANS}`; g.fillText(stage.en.toUpperCase(), 72, y + 58);
+    g.fillStyle = ink; g.font = `italic 400 42px ${SERIF}`;
+    g.fillText(ids.map(n => byId[n].english).join(', ').replace(/, ([^,]*)$/, ' & $1'), 196, y + 58, W - 268);
+    g.fillStyle = soft; g.font = `400 19px ${SANS}`; g.fillText(ids.map(n => byId[n].name).join(' · '), 198, y + 90, W - 270);
+    y += 112;
+    if (i === list.length - 1) { g.beginPath(); g.moveTo(72, y); g.lineTo(W - 72, y); g.stroke(); }
   });
-  if (summary) { g.font = '400 26px "Pretendard Variable", Pretendard, sans-serif'; g.fillStyle = '#1c1b18'; g.fillText(summary.slice(0, 40), 112, y + 10); y += 60; }
-  g.fillStyle = '#857f73'; g.font = '600 20px "Pretendard Variable", Pretendard, sans-serif'; g.fillText('시향해 볼 향수', 112, y + 20);
-  products.slice(0, 3).forEach((item, i) => {
-    g.fillStyle = '#857f73'; g.font = '500 18px "Pretendard Variable", Pretendard, sans-serif'; g.fillText(item.brand, 112, y + 70 + i * 74);
-    g.fillStyle = '#1c1b18'; g.font = '400 34px "Cormorant Garamond", serif'; g.fillText(item.name, 112, y + 106 + i * 74);
-  });
-  g.fillStyle = '#857f73'; g.font = '400 18px "Pretendard Variable", Pretendard, sans-serif';
-  g.fillText(new Date().toLocaleDateString('ko-KR'), 112, H - 100);
-  const blob = await new Promise(resolve => c.toBlob(resolve, 'image/png'));
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob); link.download = 'sillage-blend.png';
-  document.body.append(link); link.click(); link.remove();
-  setTimeout(() => URL.revokeObjectURL(link.href), 4000);
+
+  // 시향해 볼 향수
+  if (products.length) {
+    const top = Math.max(y + 54, 1180);
+    g.fillStyle = mute; g.font = `500 16px ${SANS}`; g.fillText('TO TRY  ·  시향해 볼 향수', 72, top);
+    products.slice(0, 3).forEach((item, i) => {
+      const x = 72 + i * 316;
+      g.fillStyle = mute; g.font = `500 14px ${SANS}`; g.fillText(item.brand, x, top + 40, 296);
+      g.fillStyle = ink; g.font = `400 28px ${SERIF}`; g.fillText(item.name, x, top + 76, 296);
+    });
+  }
+  return new Promise(resolve => c.toBlob(resolve, 'image/png'));
+}
+
+function shareText({ selection, products }) {
+  const lines = stages.filter(s => selection[s.id].length)
+    .map(s => `${s.label}: ${selection[s.id].map(n => byId[n].name).join(', ')}`);
+  const picks = products.slice(0, 3).map(p => `${p.brand} ${p.name}`).join(' / ');
+  return `나의 Sillage 블렌드\n${lines.join('\n')}${picks ? `\n시향해 볼 향수: ${picks}` : ''}`;
+}
+
+// 결과 카드 창: 카드를 먼저 보여 주고, 공유하기·이미지 저장을 고른다
+function ShareDialog({ data, onClose }) {
+  const dialog = useRef(null);
+  const [card, setCard] = useState(null);
+  const [note, setNote] = useState('');
+  useEffect(() => {
+    const el = dialog.current;
+    if (!el.open) el.showModal();
+    let url = null, alive = true;
+    renderShareCard(data).then(blob => {
+      if (!alive || !blob) return;
+      url = URL.createObjectURL(blob);
+      setCard({ blob, url, file: new File([blob], 'sillage-blend.png', { type: 'image/png' }) });
+    });
+    return () => { alive = false; if (url) URL.revokeObjectURL(url); };
+  }, [data]);
+
+  function save() {
+    if (!card) return;
+    const link = document.createElement('a');
+    link.href = card.url; link.download = 'sillage-blend.png';
+    document.body.append(link); link.click(); link.remove();
+    setNote('이미지를 저장했어요.');
+  }
+
+  async function share() {
+    if (!card) return;
+    const text = shareText(data);
+    try {
+      if (navigator.canShare?.({ files: [card.file] })) {
+        await navigator.share({ files: [card.file], title: '나의 Sillage 블렌드', text });
+        return;
+      }
+      if (navigator.share) { await navigator.share({ title: '나의 Sillage 블렌드', text }); return; }
+      await navigator.clipboard.writeText(text);
+      setNote('이 브라우저는 바로 공유를 지원하지 않아 블렌드 내용을 복사했어요. 이미지는 저장해서 보내 주세요.');
+    } catch (error) {
+      if (error?.name !== 'AbortError') setNote('공유하지 못했어요. 이미지를 저장해서 보내 주세요.');
+    }
+  }
+
+  return <dialog className="share-dialog" ref={dialog} onClose={onClose} onCancel={onClose}
+    onClick={event => { if (event.target === dialog.current) dialog.current.close(); }} aria-labelledby="share-title">
+    <div className="share-panel">
+      <button type="button" className="share-close" aria-label="닫기" onClick={() => dialog.current.close()}>×</button>
+      <p className="index"><span>Card</span> — 나의 블렌드</p>
+      <h2 id="share-title" lang="en">Your <em>blend</em></h2>
+      <p className="title-ko">공유하거나 이미지로 간직해 보세요</p>
+      <div className="share-preview" aria-busy={!card}>
+        {card ? <img src={card.url} alt="나의 블렌드 카드: 고른 노트와 시향해 볼 향수" /> : <span className="share-loading">카드를 만드는 중<i /><i /><i /></span>}
+      </div>
+      <div className="share-actions">
+        <button type="button" className="share-primary" onClick={share} disabled={!card}>공유하기</button>
+        <button type="button" className="share-secondary" onClick={save} disabled={!card}>이미지 저장</button>
+      </div>
+      <p className="share-note" role="status">{note}</p>
+    </div>
+  </dialog>;
 }
 
 // 대화 중 MCP 도구로 확인한 정보(날씨, 향수 조회 등). 실패한 호출과 중복은 숨긴다.
@@ -751,6 +889,7 @@ function App() {
   const [photo, setPhoto] = useState(null);
   const [dragging, setDragging] = useState(false);
   const [intent, setIntent] = useState(null);
+  const [shareData, setShareData] = useState(null);
   const [liked, setLiked] = useState(readLiked);
   const [soundHint, setSoundHint] = useState(() => !sound.enabled && !hintSeen());
   const photoInput = useRef(null);
@@ -981,6 +1120,7 @@ function App() {
         <button type="button" onClick={() => { if (!sound.enabled) sound.toggle(); dismissHint(); }}>켜기</button>
         <button type="button" aria-label="안내 닫기" onClick={dismissHint}>×</button>
       </div>}
+      {shareData && <ShareDialog data={shareData} onClose={() => setShareData(null)} />}
       <div className="studio" ref={stage}>
         <Scene result={result} pulse={pulse} tones={tones} accents={accents} bottle={bottle} origin={origin} selection={selection} />
         <section className="consult" aria-labelledby="page-title">
@@ -1027,7 +1167,7 @@ function App() {
             {mode === 'incomplete' && <p className="mode-note">LLM 연결 설정을 완료하면 상담을 시작할 수 있어요.</p>}
           </section>
           <Products results={result} curation={curation?.key === blendKey ? curation : null} curating={curating}
-            liked={liked} onLike={toggleLike} onShare={(products, summary) => drawShareCard({ selection, tones, products, summary })} />
+            liked={liked} onLike={toggleLike} onShare={(products, summary) => setShareData({ selection, tones, products, summary, bottle })} />
           <Shelf liked={liked} disabled={busy} onRemove={toggleLike} onAsk={item => send(`${item.name} 같은 향으로 만들어 줘`)} />
           <ImageCredits />
         </section>
