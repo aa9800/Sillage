@@ -44,8 +44,8 @@ void main(){
   vec2 q = vec2(fbm(p * .42 + vec2(0., t)), fbm(p * .42 + vec2(5.2, -t * .8)));
   vec2 r = vec2(fbm(p * .55 + 1.7 * q + vec2(1.7, 9.2) + t * .5), fbm(p * .55 + 1.7 * q + vec2(8.3, 2.8) - t * .4));
   float silk = fbm(p * .45 + 1.35 * r);
-  float fold = smoothstep(-.42, .5, silk);
-  float sheen = pow(1. - abs(snoise(p * .7 + 1.2 * r + t * .3)), 9.) * .55;
+  float fold = smoothstep(-.6, .7, silk);
+  float sheen = pow(1. - abs(snoise(p * .7 + 1.2 * r + t * .3)), 9.) * .38;
   // 병에서 번져 나오는 범위
   float d = distance(p, o);
   float warpD = d + .12 * fbm(p * 1.6 + t * 1.3);
@@ -96,7 +96,7 @@ export function Backdrop({ target, ripple, flash, originRef }) {
   const canvasRef = useRef(null);
   const live = useRef({ target, ripple, flash });
   live.current.target = target;
-  useEffect(() => { live.current.rippleAt = performance.now(); }, [ripple]);
+  useEffect(() => { if (ripple) live.current.rippleAt = performance.now(); }, [ripple]);
   useEffect(() => { if (flash) live.current.flashAt = performance.now(); }, [flash]);
 
   useEffect(() => {
@@ -142,11 +142,11 @@ export function Backdrop({ target, ripple, flash, originRef }) {
 
     function draw(now) {
       const dt = Math.min(.1, (now - last) / 1000); last = now;
-      const goal = live.current.target;
-      const k = 1 - Math.exp(-dt * 2.2);
+      const goal = live.current.target.flow ? live.current.target.flow() : live.current.target;
+      const k = 1 - Math.exp(-dt * 1.8);
       const want = goal.tones.map(rgb);
       cur.tones = cur.tones.map((c, i) => c.map((v, j) => v + (want[i][j] - v) * k));
-      cur.dark += (goal.dark - cur.dark) * (1 - Math.exp(-dt * 4.2));
+      cur.dark += (goal.dark - cur.dark) * (1 - Math.exp(-dt * 2.0));
       cur.reach += (goal.reach - cur.reach) * (1 - Math.exp(-dt * 1.6));
       const rect = originRef?.current?.getBoundingClientRect();
       if (rect && rect.width) {

@@ -12,7 +12,7 @@ import '@astryxdesign/theme-neutral/theme.css';
 import { Liquid, mixHex } from './fluid';
 import { Backdrop } from './backdrop';
 import { NoteIcon } from './note-icons';
-import { blendColors } from './color';
+import { blendColors, mixColors } from './color';
 import { sound } from './sound';
 import entranceMotion from './entrance-motion';
 import notesCatalog from '../blend-notes.json';
@@ -65,6 +65,29 @@ const scenes = {
   testing: { tones: ['#eef1e4', '#bccab0', '#61806e'], dark: 0, reach: 1, level: 84, shift: 0 },
   begin: { tones: ['#f4e9cf', '#d6bb8b', '#8d704f'], dark: 0, reach: 1.4, level: 84, shift: 0 },
 };
+
+// 스크롤에 따라 배경색이 다음 장으로 천천히 이어지게 한다.
+// 화면 55% 높이선이 지나는 장을 찾고, 그 장의 뒤쪽 절반 동안 다음 장의 색으로 OKLab에서 섞는다.
+const smooth = t => t * t * (3 - 2 * t);
+function storyFlow() {
+  const sections = document.querySelectorAll('.entrance [data-chapter]');
+  if (!sections.length) return scenes.hero;
+  const line = innerHeight * .55;
+  let index = 0;
+  sections.forEach((section, i) => { if (section.getBoundingClientRect().top <= line) index = i; });
+  const box = sections[index].getBoundingClientRect();
+  const here = scenes[sections[index].dataset.chapter] ?? scenes.hero;
+  const next = scenes[sections[index + 1]?.dataset.chapter];
+  if (!next) return here;
+  const progress = Math.min(1, Math.max(0, (line - box.top) / Math.max(1, box.height)));
+  const t = smooth(Math.min(1, Math.max(0, (progress - .45) / .55)));
+  if (t <= 0) return here;
+  return {
+    tones: here.tones.map((tone, i) => mixColors(tone, next.tones[i], t)),
+    dark: here.dark + (next.dark - here.dark) * t,
+    reach: here.reach + (next.reach - here.reach) * t,
+  };
+}
 
 const pyramid = [
   { id: 'top', name: 'Top', ko: '탑', time: '5–15분', text: '가볍고 빨리 날아가는 향' },
@@ -937,11 +960,11 @@ function App() {
   const tones = stages.map(({ id }, index) => blendColors(selection[id].map(n => byId[n].color)) ?? defaults[index]);
   const accents = stages.map(({ id }) => selection[id].map(n => byId[n].color));
   const backdropTarget = view === 'entrance'
-    ? scenes[chapter]
+    ? { ...scenes[chapter], flow: storyFlow }
     : { tones, dark: 0, reach: result.level > 0 || countOf(selection) ? 1.25 : .7 };
 
   return <>
-    <Backdrop target={backdropTarget} ripple={view === 'studio' ? pulse : chapter} flash={flash} originRef={backdropOrigin} />
+    <Backdrop target={backdropTarget} ripple={view === 'studio' ? pulse : 0} flash={flash} originRef={backdropOrigin} />
     <div className="grain" aria-hidden="true" />
     {view !== 'studio' && <>
       <Entrance opening={view === 'opening'} onChapter={setChapter} onStart={start} />
