@@ -362,7 +362,7 @@ def chat_prompt(selected, body):
         "- 향수 이름이 나오면(예: '탐다오 같은 향', '상탈 33이랑 비교') find_perfume을 영어 이름으로 호출해라. 결과의 실제 노트만 근거로 말하고, "
         "'같은 향', '비슷하게'를 원하면 our_notes가 그대로 화면에 적용되니 reply에서는 our_notes_ko의 노트를 말해라. 두 향수를 비교하면 각각 호출해 공통점과 차이를 말해라.\n"
         "- 날씨, 오늘, 출근길, 계절 날씨가 나오면 get_weather(영어 도시 이름, 말하지 않으면 Seoul)를 호출해라. reply 첫 문장에 도시, 기온, 하늘을 말하고 "
-        "suggested_notes를 바탕으로 단계마다 replace해라.\n"
+        "suggested_notes를 바탕으로 단계마다 replace해라. 결과에 fallback=true가 있으면 실제 오늘 날씨가 아니니 note의 내용(연결 실패, 평년 날씨 기준)을 첫 문장에서 그대로 알려라.\n"
         "- describe_note는 사용자가 노트의 뜻을 직접 물었을 때만 한 번 호출해라. 노트를 고를 때는 위 목록의 느낌으로 충분하니 부르지 마라.\n"
         "- 도구 결과에 없는 향수 정보(노트, 출시, 가격)는 지어내지 마라.\n"
         "- 비교나 노트 설명처럼 질문만 했으면 선택을 바꾸지 마라(changes=[], ready=false).\n"
@@ -440,6 +440,8 @@ def tool_label(name, args, output):
         data = {}
     if data.get("error"):
         return {"tool": name, "label": "확인 실패", "detail": data["error"]}
+    if name == "get_weather" and data.get("fallback"):
+        return {"tool": name, "label": "날씨(평년값)", "detail": f"연결 실패 · {data.get('sky')} 약 {data.get('temperature_c')}°C 기준"}
     if name == "get_weather":
         return {"tool": name, "label": "날씨", "detail": f"{data.get('city')} {data.get('temperature_c')}°C · {data.get('sky')} · 습도 {data.get('humidity')}%"}
     if name == "find_perfume":
@@ -520,8 +522,9 @@ async def demo_with_tools(user_texts, updated):
             if not data.get("error"):
                 blend = {st: ids for st, ids in data["suggested_notes"].items() if ids}
                 names = ", ".join(blend_notes[i]["name"] for ids in blend.values() for i in ids)
-                reply = (f"{data['city']}{josa(data['city'], '은', '는')} 지금 {data['temperature_c']}°C, {data['sky']}{josa(data['sky'], '이에요', '예요')}. {data['why']} "
-                         f"그래서 {names}{josa(names, '을', '를')} 골라 봤어요.")
+                opening = (data["note"] if data.get("fallback") else
+                           f"{data['city']}{josa(data['city'], '은', '는')} 지금 {data['temperature_c']}°C, {data['sky']}{josa(data['sky'], '이에요', '예요')}.")
+                reply = f"{opening} {data['why']} 그래서 {names}{josa(names, '을', '를')} 골라 봤어요."
                 direction = Direction(family=data["suggested_family"], temperature=data["suggested_temperature"],
                                       airy=data["suggested_family"] in {"marine", "citrus"}, avoid_sweet=False,
                                       notes=[blend_notes[i]["name"] for ids in blend.values() for i in ids][:5],

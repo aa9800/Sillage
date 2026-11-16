@@ -14,6 +14,7 @@
 """
 import json
 import re
+from datetime import date
 from pathlib import Path
 
 import httpx
@@ -204,25 +205,50 @@ CITY_EN = {"서울": "Seoul", "부산": "Busan", "인천": "Incheon", "대구": 
            "도쿄": "Tokyo", "오사카": "Osaka", "파리": "Paris", "런던": "London", "뉴욕": "New York"}
 
 
+# 서울의 달별 평균 기온(°C, 1991–2020 평년값을 반올림)과 대략적인 습도(%). 향의 방향을 고르는 데만 쓴다.
+SEASON_NORMALS = {1: (-2, 58), 2: (1, 56), 3: (6, 57), 4: (13, 57), 5: (18, 63), 6: (23, 69),
+                  7: (25, 79), 8: (26, 76), 9: (22, 69), 10: (15, 64), 11: (7, 63), 12: (0, 60)}
+SEASON_KO = {12: "겨울", 1: "겨울", 2: "겨울", 3: "봄", 4: "봄", 5: "봄", 6: "여름", 7: "여름", 8: "여름",
+             9: "가을", 10: "가을", 11: "가을"}
+
+
+def season_fallback(city, month=None):
+    """날씨 서비스에 연결하지 못했을 때: 이달의 평년 날씨로 향의 방향을 고른다(실제 오늘 날씨가 아님을 함께 알린다)."""
+    month = month or date.today().month
+    temp, humidity = SEASON_NORMALS[month]
+    family, temperature, notes, why = weather_direction(temp, humidity, 0)
+    return {
+        "city": city, "fallback": True, "season": SEASON_KO[month], "temperature_c": temp, "humidity": humidity,
+        "sky": f"{month}월 평년 날씨", "suggested_family": family, "suggested_temperature": temperature,
+        "suggested_notes": {st: [i for i in notes if NOTES[i]["stage"] == st] for st in ("top", "heart", "base")},
+        "why": why, "note": f"날씨 서비스에 연결하지 못해 {month}월 평년 날씨({SEASON_KO[month]}, 약 {temp}°C) 기준으로 골랐어요.",
+        "source": "서울 월별 평년값",
+    }
+
+
 @mcp.tool()
 async def get_weather(city: str = "Seoul") -> str:
     """도시의 현재 날씨(기온, 습도, 하늘)를 Open-Meteo에서 받아 오늘 어울리는 향의 방향과 추천 노트 id를 제안한다.
     city는 영어 도시 이름이 가장 정확하다(예: Seoul, Busan). 모르면 Seoul."""
     name = city.strip().removesuffix("시").strip() or "Seoul"
-    async with httpx.AsyncClient(timeout=10) as client:
-        place = None
-        for query in dict.fromkeys([CITY_EN.get(name, name), name]):
-            geo = (await client.get("https://geocoding-api.open-meteo.com/v1/search",
-                                    params={"name": query, "count": 1, "language": "ko"})).json()
-            if geo.get("results"):
-                place = geo["results"][0]
-                break
-        if not place:
-            return json.dumps({"error": f"'{city}'를 찾지 못했어요. 영어 도시 이름으로 다시 찾아 주세요."}, ensure_ascii=False)
-        now = (await client.get("https://api.open-meteo.com/v1/forecast", params={
-            "latitude": place["latitude"], "longitude": place["longitude"], "timezone": "auto",
-            "current": "temperature_2m,relative_humidity_2m,weather_code,apparent_temperature",
-        })).json()["current"]
+    try:
+        async with httpx.AsyncClient(timeout=8) as client:
+            place = None
+            for query in dict.fromkeys([CITY_EN.get(name, name), name]):
+                geo = (await client.get("https://geocoding-api.open-meteo.com/v1/search",
+                                        params={"name": query, "count": 1, "language": "ko"})).json()
+                if geo.get("results"):
+                    place = geo["results"][0]
+                    break
+            if not place:
+                return json.dumps({"error": f"'{city}'를 찾지 못했어요. 영어 도시 이름으로 다시 찾아 주세요."}, ensure_ascii=False)
+            now = (await client.get("https://api.open-meteo.com/v1/forecast", params={
+                "latitude": place["latitude"], "longitude": place["longitude"], "timezone": "auto",
+                "current": "temperature_2m,relative_humidity_2m,weather_code,apparent_temperature",
+            })).json()["current"]
+    except (httpx.HTTPError, ValueError, KeyError):
+        # 인터넷이 막혔거나 날씨 서비스가 응답하지 않으면, 지금 달의 평년 날씨(서울 기준)로 대신 고른다
+        return json.dumps(season_fallback(city), ensure_ascii=False)
     family, temperature, notes, why = weather_direction(now["temperature_2m"], now["relative_humidity_2m"], now["weather_code"])
     return json.dumps({
         "city": place.get("name", city), "temperature_c": now["temperature_2m"], "feels_like_c": now["apparent_temperature"],

@@ -176,6 +176,24 @@ const bottles = [
   { id: 'emerald', ratio: 499 / 577, inset: '33% 16% 14%', mask: 'polygon(8% 0, 92% 0, 100% 12%, 100% 88%, 92% 100%, 8% 100%, 0 88%, 0 12%)' },
   { id: 'oval', ratio: 404 / 602, inset: '27% 15% 14%', mask: 'inset(0 round 50% 50% 43% 43% / 45% 45% 57% 57%)' },
 ];
+// 공유 링크로 들어오면(?top=lime&heart=violet&base=sandalwood,cedarwood&bottle=oval) 그 블렌드로 상담 화면을 바로 연다
+function sharedBlend() {
+  try {
+    const query = new URLSearchParams(location.search);
+    const picked = Object.fromEntries(stages.map(({ id }) => [id,
+      [...new Set((query.get(id) || '').split(',').filter(n => byId[n]?.stage === id))].slice(0, MAX_PER_STAGE)]));
+    return countOf(picked) ? picked : null;
+  } catch { return null; }
+}
+const sharedAtStart = sharedBlend();
+
+function blendLink(selection, bottle) {
+  const query = new URLSearchParams();
+  stages.forEach(({ id }) => { if (selection[id].length) query.set(id, selection[id].join(',')); });
+  query.set('bottle', bottle.id);
+  return `${location.origin}${location.pathname}?${query.toString().replaceAll('%2C', ',')}`;
+}
+
 function chooseBottle() {
   try {
     const forced = new URLSearchParams(location.search).get('bottle');
@@ -755,19 +773,30 @@ function ShareDialog({ data, onClose }) {
     setNote('이미지를 저장했어요.');
   }
 
+  async function copyLink() {
+    const done = () => setNote('링크를 복사했어요. 링크를 열면 같은 병과 블렌드가 그대로 열려요.');
+    try { await navigator.clipboard.writeText(data.link); done(); return; } catch { /* 클립보드 권한이 없으면 아래 방식으로 */ }
+    const area = Object.assign(document.createElement('textarea'), { value: data.link, readOnly: true });
+    area.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
+    dialog.current.append(area); area.select();
+    const ok = document.execCommand?.('copy');
+    area.remove();
+    if (ok) done(); else setNote(`복사하지 못했어요. 이 주소를 직접 복사해 주세요: ${data.link}`);
+  }
+
   async function share() {
     if (!card) return;
-    const text = shareText(data);
+    const text = `${shareText(data)}\n${data.link}`;
     try {
       if (navigator.canShare?.({ files: [card.file] })) {
         await navigator.share({ files: [card.file], title: '나의 Sillage 블렌드', text });
         return;
       }
-      if (navigator.share) { await navigator.share({ title: '나의 Sillage 블렌드', text }); return; }
+      if (navigator.share) { await navigator.share({ title: '나의 Sillage 블렌드', text, url: data.link }); return; }
       await navigator.clipboard.writeText(text);
-      setNote('이 브라우저는 바로 공유를 지원하지 않아 블렌드 내용을 복사했어요. 이미지는 저장해서 보내 주세요.');
+      setNote('이 브라우저는 공유 창을 지원하지 않아 블렌드 내용과 링크를 복사했어요. 이미지는 저장해서 함께 보내 주세요.');
     } catch (error) {
-      if (error?.name !== 'AbortError') setNote('공유하지 못했어요. 이미지를 저장해서 보내 주세요.');
+      if (error?.name !== 'AbortError') setNote('공유하지 못했어요. 링크를 복사하거나 이미지를 저장해 주세요.');
     }
   }
 
@@ -784,6 +813,7 @@ function ShareDialog({ data, onClose }) {
       <div className="share-actions">
         <button type="button" className="share-primary" onClick={share} disabled={!card}>공유하기</button>
         <button type="button" className="share-secondary" onClick={save} disabled={!card}>이미지 저장</button>
+        <button type="button" className="share-secondary" onClick={copyLink}>링크 복사</button>
       </div>
       <p className="share-note" role="status">{note}</p>
     </div>
@@ -871,7 +901,8 @@ function SoundToggle() {
 /* ───────── 앱 ───────── */
 
 function App() {
-  const [view, setView] = useState('entrance');
+  const [view, setView] = useState(sharedAtStart ? 'studio' : 'entrance');
+  const [fromLink, setFromLink] = useState(Boolean(sharedAtStart));
   const [chapter, setChapter] = useState('hero');
   const [messages, setMessages] = useState([welcome]);
   const [input, setInput] = useState('');
@@ -882,7 +913,7 @@ function App() {
   const [flash, setFlash] = useState(0);
   const [bottle] = useState(chooseBottle);
   const [mode, setMode] = useState(null);
-  const [selection, setSelection] = useState(noSelection);
+  const [selection, setSelection] = useState(sharedAtStart ?? noSelection);
   const [curation, setCuration] = useState(null);
   const [curating, setCurating] = useState(false);
   const [focusStage, setFocusStage] = useState(null);
@@ -978,6 +1009,12 @@ function App() {
     setFlash(value => value + 1);
     setView(reduceMotion() ? 'studio' : 'opening');
   }
+
+  useEffect(() => {
+    if (!sharedAtStart) return;
+    api('/api/blend', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ blend: compact(sharedAtStart) }) })
+      .then(response => (response.ok ? response.json() : null)).then(data => { if (data) present(data); }).catch(() => {});
+  }, []);
 
   function present(data) {
     setResult(data);
@@ -1091,6 +1128,8 @@ function App() {
     chatResult.current = empty;
     setSelection(noSelection);
     setMessages([welcome]); setResult(empty); setInput(''); setError(''); setBusy(false); setPulse(value => value + 1); setIntent(null);
+    setFromLink(false);
+    if (location.search) history.replaceState(null, '', location.pathname);
     composer.current?.focus({ preventScroll: true });
   }
 
@@ -1129,6 +1168,7 @@ function App() {
             <h1 id="page-title" tabIndex={-1} ref={studioTitle} lang="en">The <em>Atelier</em></h1>
             <p className="title-ko">향의 아틀리에</p>
             <p className="lede">단계마다 마음에 드는 노트를 여러 개 골라 섞어 보세요. 고른 색이 병 속에서 층을 이루며 섞이고, 그 조합과 가까운 향수를 찾아드려요.</p>
+            {fromLink && <p className="shared-note">공유받은 블렌드예요. 노트를 바꾸거나 말을 걸어 나만의 향으로 이어 가 보세요.</p>}
           </div>
           <NotePicker selection={selection} choose={choose} disabled={busy} tones={tones} focus={focusStage} />
           <section className="talk" aria-labelledby="talk-title">
@@ -1167,7 +1207,7 @@ function App() {
             {mode === 'incomplete' && <p className="mode-note">LLM 연결 설정을 완료하면 상담을 시작할 수 있어요.</p>}
           </section>
           <Products results={result} curation={curation?.key === blendKey ? curation : null} curating={curating}
-            liked={liked} onLike={toggleLike} onShare={(products, summary) => setShareData({ selection, tones, products, summary, bottle })} />
+            liked={liked} onLike={toggleLike} onShare={(products, summary) => setShareData({ selection, tones, products, summary, bottle, link: blendLink(selection, bottle) })} />
           <Shelf liked={liked} disabled={busy} onRemove={toggleLike} onAsk={item => send(`${item.name} 같은 향으로 만들어 줘`)} />
           <ImageCredits />
         </section>
