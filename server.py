@@ -349,7 +349,13 @@ async def chat(body: Chat, request: Request):
                 tools_used.append({"tool": "find_perfume", "label": "향수 조회", "detail": copied["perfume"], "copied": True, "id": copied["id"]})
             direction.changes = [{"stage": st} for st in updated]
         else:
-            updated = fill_empty_stages(updated, direction)
+            llm_changed = bool(direction.changes)
+            if not (explicit and not llm_changed):  # 한 단계만 직접 지시한 경우엔 다른 단계를 채우지 않는다
+                updated = fill_empty_stages(updated, direction)
+            # 사용자가 '베이스를 ○○로'처럼 직접 지시했고 AI가 따로 바꾼 게 없으면, 실제로 바뀐 내용을 그대로 말한다
+            changed = diff_blend(before, normalized(updated))
+            if explicit and not llm_changed and changed:
+                direction.reply = " ".join(change_sentence(c) for c in changed)
         selected = selected_notes(Blend(blend=updated))
     elif any(config):
         raise HTTPException(503, "LLM 연결 설정을 확인해 주세요.")

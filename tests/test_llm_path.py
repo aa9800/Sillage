@@ -117,3 +117,11 @@ def test_short_alias_does_not_match_inside_words():
 
 def test_find_perfume_rejects_empty_name():
     assert json.loads(mcp_server.find_perfume("!!!"))["found"] is False
+
+
+def test_explicit_change_reply_is_factual(fake_llm):
+    fake_llm["reply"] = direction(reply="베이스는 그대로 유지할게요.", changes=[])
+    out = client.post("/api/chat", json={"messages": [{"role": "user", "content": "베이스를 샌달우드로 바꿔 줘"}],
+                                         "blend": {"base": ["vetiver"]}}).json()
+    assert out["blend"]["base"] == ["sandalwood"]
+    assert out["reply"] == "베이스에서 베티버를 빼고 샌달우드를 넣었어요."

@@ -224,6 +224,7 @@ function Vessel({ bottle, tones, level, pulse, origin, accents }) {
         <Liquid tones={tones} level={level} pulse={pulse} accents={accents} />
       </div>
       <div className="glass-tint" />
+      <div className="glass-sheen" />
       <div className="crystal-light" />
     </div>
   </div>;
@@ -260,13 +261,13 @@ function Lines({ lines, className = '' }) {
 // sticky로 고정된 장의 공통 진입·퇴장: 제목 줄은 마스크 안에서 올라오고, 나머지는 살짝 떠오른다
 function chapterTimeline(target, scrub = 1.2) {
   const section = typeof target === 'string' ? document.querySelector(target) : target;
-  const tl = gsap.timeline({ scrollTrigger: { trigger: section, start: 'top top', end: 'bottom bottom', scrub } });
+  const tl = gsap.timeline({ scrollTrigger: { trigger: section, start: 'top 70%', end: 'bottom bottom', scrub } });  // 장이 올라오는 도중부터 시작해 빈 화면 구간을 줄인다
   const titleLines = section.querySelectorAll('.chapter-title .line-inner');
   const reveals = section.querySelectorAll('.reveal');
-  tl.fromTo(titleLines, { yPercent: 108 }, { yPercent: 0, stagger: .03, duration: .18, ease: 'power3.out' }, .04)
-    .fromTo(reveals, { opacity: 0, y: 34 }, { opacity: 1, y: 0, stagger: .025, duration: .18, ease: 'power2.out' }, .08)
-    .to(titleLines, { yPercent: -108, stagger: .02, duration: .12, ease: 'power2.in' }, .86)
-    .to(reveals, { opacity: 0, y: -26, stagger: .015, duration: .12, ease: 'power1.in' }, .84);
+  tl.fromTo(titleLines, { yPercent: 108 }, { yPercent: 0, stagger: .015, duration: .1, ease: 'power3.out' }, .1)
+    .fromTo(reveals, { opacity: 0, y: 34 }, { opacity: 1, y: 0, stagger: .012, duration: .1, ease: 'power2.out' }, .13)
+    .to(titleLines, { yPercent: -108, stagger: .01, duration: .06, ease: 'power2.in' }, .93)
+    .to(reveals, { opacity: 0, y: -26, stagger: .008, duration: .06, ease: 'power1.in' }, .92);
   return tl;
 }
 
@@ -305,7 +306,7 @@ function Entrance({ opening, onChapter, onStart }) {
         chapterTimeline(section)
           .fromTo(section.querySelectorAll('.giant .line'), { xPercent: i => (i ? 16 : -16) }, { xPercent: i => (i ? -8 : 8), ease: 'none', duration: 1 }, 0)
           .fromTo(section.querySelector('.giant'), { opacity: 0 }, { opacity: 1, duration: .2, ease: 'none' }, 0)
-          .to(section.querySelector('.giant'), { opacity: 0, duration: .16, ease: 'none' }, .84)
+          .to(section.querySelector('.giant'), { opacity: 0, duration: .08, ease: 'none' }, .91)
           .fromTo(section.querySelector('.timeline-fill'), { scaleX: 0 }, { scaleX: 1, duration: .4, ease: 'power2.out' }, .18);
       });
 
@@ -314,14 +315,14 @@ function Entrance({ opening, onChapter, onStart }) {
         .fromTo('.wheel', { rotate: -40, scale: .9 }, { rotate: 20, scale: 1, ease: 'none', duration: 1 }, 0)
         .fromTo('.wheel', { opacity: 0 }, { opacity: 1, duration: .14, ease: 'none' }, .02)
         .fromTo('.wheel-label', { rotate: 40 }, { rotate: -20, ease: 'none', duration: 1 }, 0)
-        .to('.wheel', { opacity: 0, duration: .12 }, .86);
+        .to('.wheel', { opacity: 0, duration: .07 }, .92);
 
       // 향료
       const mat = chapterTimeline('.materials');
       gsap.utils.toArray('.material-row').forEach((row, i) => {
         mat.fromTo(row.querySelector('.material-name'), { xPercent: i % 2 ? -26 : 26 }, { xPercent: i % 2 ? 8 : -8, ease: 'none', duration: 1 }, 0);
       });
-      mat.fromTo('.material-rows', { opacity: 0 }, { opacity: 1, duration: .14 }, 0).to('.material-rows', { opacity: 0, duration: .12 }, .86);
+      mat.fromTo('.material-rows', { opacity: 0 }, { opacity: 1, duration: .1 }, .1).to('.material-rows', { opacity: 0, duration: .07 }, .92);
 
       // 농도: 막대가 차오른다
       chapterTimeline('.strengths').fromTo('.strength-bar i', { scaleX: 0 }, { scaleX: 1, stagger: .05, duration: .25, ease: 'power2.out' }, .14);
@@ -544,7 +545,7 @@ function NoteRail({ notes, picked, choose, stage, disabled }) {
       {Array.from({ length: pages }, (_, p) => <div className="note-page" key={p}>
         {notes.slice(p * 4, p * 4 + 4).map(note => {
           const on = picked.includes(note.id);
-          return <button type="button" className="note" key={note.id} disabled={disabled} aria-pressed={on}
+          return <button type="button" className="note" key={note.id} data-note={note.id} disabled={disabled} aria-pressed={on}
             onClick={() => choose(stage, note.id)} style={{ '--c': note.color }}>
             <NoteIcon id={note.id} color={note.color} />
             <span className="note-text"><strong>{note.name}</strong><small><i lang="en">{note.english}</i>{note.feel}</small></span>
@@ -584,38 +585,67 @@ function NotePicker({ selection, choose, disabled, tones, focus }) {
   </section>;
 }
 
-function Products({ results, curation, curating, liked, onLike, onShare }) {
+// 결과 화면: '결과 보기'를 누르면 커튼처럼 위로 펼쳐지고, 향수 카드가 차례로 떠오른다
+function ResultsView({ results, curation, curating, selection, tones, liked, onLike, onShare, onClose, onAsk, onTalk, busy }) {
+  const title = useRef(null);
+  const [closing, setClosing] = useState(false);
   const products = curation?.picks?.length ? curation.picks : results.products;
   const likedIds = new Set(liked.map(item => item.id));
-  const ready = curation ? curation.ready : results.ready;
-  if (!products.length && !ready && !curating) return null;
-  return <section className="products" aria-busy={curating}>
-    <div className="section-label"><span>III.</span><h2><b lang="en">{ready ? 'Your selection' : 'First impressions'}</b>{ready ? '최종 시향 추천' : '지금 떠오르는 향수'}</h2></div>
-    <div className="curation-head">
-      {curation?.ai && <span className="ai-badge">AI 큐레이션</span>}
-      {curating && <span className="curating">조합을 읽고 어울리는 향수를 고르는 중<i /><i /><i /></span>}
-      {!curating && curation?.summary && <p className="curation-summary">{curation.summary}</p>}
-      {!curating && products.length > 0 && <button type="button" className="share-card" onClick={() => onShare(products, curation?.summary)}>
-        <span aria-hidden="true">✦</span> 결과 카드 만들기</button>}
+  useEffect(() => { title.current?.focus({ preventScroll: true }); }, []);
+  const close = () => { if (closing) return; setClosing(true); setTimeout(onClose, reduceMotion() ? 0 : 520); };
+  const filled = stages.filter(({ id }) => selection[id].length);
+  return <div className={`results${closing ? ' closing' : ''}`} role="dialog" aria-modal="true" aria-labelledby="results-title" data-lenis-prevent
+    onKeyDown={event => { if (event.key === 'Escape') close(); }}>
+    <div className="results-inner">
+      <header className="results-head">
+        <div className="results-nav">
+          <button type="button" className="results-back" onClick={close}><span aria-hidden="true">←</span> 블렌드 고치기</button>
+          <button type="button" className="results-talk" onClick={onTalk}><span aria-hidden="true">✦</span> 말로 바꾸기</button>
+        </div>
+        <p className="index"><span>Selection</span> — 나에게 맞는 향수</p>
+        <h2 id="results-title" tabIndex={-1} ref={title} lang="en">Your <em>selection</em></h2>
+        <p className="title-ko">고른 노트와 가까운 실제 향수예요. 노트는 모두 공식 페이지에서 확인한 것만 썼어요.</p>
+        <dl className="results-blend">{filled.map((stage, i) => <div key={stage.id}>
+          <dt lang="en"><i style={{ background: tones[i] }} />{stage.en}</dt>
+          <dd><span lang="en">{selection[stage.id].map(n => byId[n].english).join(', ')}</span><small>{selection[stage.id].map(n => byId[n].name).join(' · ')}</small></dd>
+        </div>)}</dl>
+        <div className="results-meta">
+          {curation?.ai && <span className="ai-badge">AI 큐레이션</span>}
+          {curating && <span className="curating">조합을 읽고 어울리는 향수를 고르는 중<i /><i /><i /></span>}
+          {!curating && curation?.summary && <p className="results-summary">{curation.summary}</p>}
+        </div>
+      </header>
+      {products.length ? <ol className={`results-list${curating ? ' dim' : ''}`}>{products.map((item, index) => {
+        const hits = item.matching_notes ?? [];
+        return <li key={item.id} className={`result-card${item.anchor ? ' is-anchor' : ''}`} style={{ '--i': index }}>
+          <div className="rc-top">
+            <span className="rc-no">{String(index + 1).padStart(2, '0')}</span>
+            {item.anchor && <span className="anchor-badge">기준 향수</span>}
+            <button type="button" className={`like${likedIds.has(item.id) ? ' on' : ''}`} aria-pressed={likedIds.has(item.id)}
+              aria-label={likedIds.has(item.id) ? `${item.name} 저장 취소` : `${item.name} 저장`} onClick={() => onLike(item)}>{likedIds.has(item.id) ? '♥' : '♡'}</button>
+          </div>
+          <span className="brand">{item.brand}{item.concentration && <em> · {item.concentration}</em>}</span>
+          <h3>{item.name}</h3>
+          <p className="rc-why">{item.why || item.description}</p>
+          <dl className="rc-pyramid">{stages.map(stage => item.pyramid?.[stage.id]?.length ? <div key={stage.id}>
+            <dt lang="en">{stage.en}</dt>
+            <dd>{item.pyramid[stage.id].map(n => <span key={n} className={hits.some(h => n.includes(h) || h.includes(n)) ? 'hit' : ''}>{n}</span>)}</dd>
+          </div> : null)}</dl>
+          {hits.length > 0 && <p className="rc-match"><b>겹치는 노트</b>{hits.join(' · ')}</p>}
+          {item.near_notes?.length > 0 && <p className="rc-match near"><b>비슷한 노트</b>{item.near_notes.join(' · ')}</p>}
+          <a className="rc-source" href={item.url} target="_blank" rel="noreferrer">노트 출처 보기 <span aria-hidden="true">↗</span></a>
+        </li>;
+      })}</ol> : !curating && <p className="error">고른 노트와 겹치는 향수를 찾지 못했어요. 노트를 하나 더 골라 보세요.</p>}
+      <div className="results-actions">
+        <button type="button" className="share-primary" disabled={!products.length || curating} onClick={() => onShare(products, curation?.summary)}>✦ 결과 카드 만들기</button>
+        <button type="button" className="share-secondary" onClick={onTalk}>✦ 말로 바꾸기</button>
+        <button type="button" className="share-secondary" onClick={close}>블렌드 고치기</button>
+      </div>
+      <Shelf liked={liked} disabled={busy} onRemove={onLike} onAsk={onAsk} />
     </div>
-    {products.length ? <ol className={curating ? 'dim' : ''}>{products.map((item, index) => (
-      <li key={item.id} style={{ '--delay': `${120 + index * 100}ms` }}>
-        <a className="product" href={item.url} target="_blank" rel="noreferrer">
-          <span className="product-no">{String(index + 1).padStart(2, '0')}</span>
-          <div>{item.anchor && <span className="anchor-badge">기준 향수</span>}<span className="brand">{item.brand}{item.concentration && <em> · {item.concentration}</em>}</span><strong>{item.name}</strong>
-            {item.why ? <p className="why">{item.why}</p> : <p>{item.description}</p>}
-            <span className="product-notes">{(item.notes ?? []).join(' · ')}</span>
-            {item.matching_notes?.length > 0 && <span className="match">선택한 노트와 겹침 · {item.matching_notes.join(' · ')}</span>}
-            {item.near_notes?.length > 0 && <span className="match near">비슷한 노트 · {item.near_notes.join(' · ')}</span>}
-            <span className="source">노트 출처 보기</span></div>
-          <span aria-hidden="true" className="external">↗</span>
-        </a>
-        <button type="button" className={`like${likedIds.has(item.id) ? ' on' : ''}`} aria-pressed={likedIds.has(item.id)}
-          aria-label={likedIds.has(item.id) ? `${item.name} 저장 취소` : `${item.name} 저장`} title={likedIds.has(item.id) ? '저장 취소' : '마음에 들면 저장'}
-          onClick={() => onLike(item)}>{likedIds.has(item.id) ? '♥' : '♡'}</button>
-      </li>))}</ol> : !curating && <p className="error">고른 노트와 겹치는 향수를 DB에서 찾지 못했어요. 다른 노트를 더해 보세요.</p>}
-  </section>;
+  </div>;
 }
+
 
 // 저장한 향수(취향 기억). 상담과 추천이 이 목록을 참고한다.
 function Shelf({ liked, onRemove, onAsk, disabled }) {
@@ -962,7 +992,12 @@ function App() {
   const [intent, setIntent] = useState(null);
   const [shareData, setShareData] = useState(null);
   const [keyAsk, setKeyAsk] = useState(0);
-  const [anchor, setAnchor] = useState(null);  // '○○ 같은 향'으로 만든 블렌드의 기준 향수 id
+  const [anchor, setAnchor] = useState(null);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatUnread, setChatUnread] = useState(false);
+  const [showResults, setShowResults] = useState(false);
+  const chatOpenRef = useRef(false);
+  chatOpenRef.current = chatOpen;  // '○○ 같은 향'으로 만든 블렌드의 기준 향수 id
   const [liked, setLiked] = useState(readLiked);
   const [soundHint, setSoundHint] = useState(() => !sound.enabled && !hintSeen());
   const photoInput = useRef(null);
@@ -987,6 +1022,27 @@ function App() {
     gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0);
     return () => { gsap.ticker.remove(tick); instance.destroy(); };
+  }, []);
+
+  useEffect(() => {
+    if (reduceMotion()) return;
+    const root = document.documentElement.style;
+    const aim = { x: 0, y: 0 }, now = { x: 0, y: 0, s: 0 };
+    let frame = 0;
+    const move = event => { aim.x = event.clientX / innerWidth * 2 - 1; aim.y = event.clientY / innerHeight * 2 - 1; };
+    const tick = () => {
+      now.x += (aim.x - now.x) * .06; now.y += (aim.y - now.y) * .06;
+      now.s += (Math.sin(scrollY / innerHeight * 1.1) * .45 - now.s) * .08;  // 스크롤하면 천천히 돌아가는 느낌
+      const tx = Math.max(-1, Math.min(1, now.x * .75 + now.s));
+      root.setProperty('--tilt-x', tx.toFixed(4));
+      root.setProperty('--tilt-y', now.y.toFixed(4));
+      root.setProperty('--light-x', `${(32 - tx * 22).toFixed(2)}%`);
+      root.setProperty('--light-y', `${(34 + now.y * 14).toFixed(2)}%`);
+      frame = requestAnimationFrame(tick);
+    };
+    addEventListener('pointermove', move, { passive: true });
+    frame = requestAnimationFrame(tick);
+    return () => { removeEventListener('pointermove', move); cancelAnimationFrame(frame); };
   }, []);
 
   const [keyStatus, setKeyStatus] = useState(null);
@@ -1068,12 +1124,33 @@ function App() {
     setPulse(value => value + 1);
   }
 
+  // 고른 노트의 그림이 병 입구로 포물선을 그리며 날아 들어간다
+  function dropNote(id) {
+    if (reduceMotion()) return;
+    const from = document.querySelector(`.note[data-note="${id}"] > :first-child`);
+    const target = origin.current;
+    if (!from || !target) return;
+    const a = from.getBoundingClientRect(), b = target.getBoundingClientRect();
+    if (b.bottom < 0 || b.top > innerHeight) return;  // 병이 화면 밖이면(모바일에서 아래로 내렸을 때) 생략
+    const ghost = from.cloneNode(true);
+    Object.assign(ghost.style, { position: 'fixed', left: `${a.left}px`, top: `${a.top}px`, width: `${a.width}px`, height: `${a.height}px`,
+      margin: '0', zIndex: '60', pointerEvents: 'none' });
+    document.body.append(ghost);
+    const dx = b.left + b.width / 2 - (a.left + a.width / 2), dy = b.top + b.height * .32 - (a.top + a.height / 2);
+    const flight = ghost.animate([
+      { transform: 'translate(0, 0) scale(1) rotate(0deg)', opacity: 1 },
+      { transform: `translate(${dx * .55}px, ${dy * .55 - 110}px) scale(.85) rotate(-10deg)`, opacity: 1, offset: .55 },
+      { transform: `translate(${dx}px, ${dy}px) scale(.16) rotate(8deg)`, opacity: 0 },
+    ], { duration: 860, easing: 'cubic-bezier(.45, 0, .2, 1)' });
+    flight.onfinish = flight.oncancel = () => ghost.remove();
+  }
+
   async function choose(stageId, id) {
     if (controller.current) return;
     blendController.current?.abort();
     const current = selection[stageId];
     const ids = current.includes(id) ? current.filter(n => n !== id) : [...current, id].slice(-MAX_PER_STAGE);
-    if (current.includes(id)) sound.deselect(); else sound.select(stages.findIndex(st => st.id === stageId));
+    if (current.includes(id)) sound.deselect(); else { sound.select(stages.findIndex(st => st.id === stageId)); dropNote(id); }
     const next = { ...selection, [stageId]: ids };
     setSelection(next);
     setError('');
@@ -1134,6 +1211,7 @@ function App() {
       if (data.intent) setIntent(data.intent);
       setAnchor(data.anchor ?? null);
       setMessages([...next, { role: 'assistant', content: data.reply, changes: data.changes ?? [], tools: data.tools ?? [] }]);
+      if (!chatOpenRef.current) setChatUnread(true);
       if (data.changes?.length) { setFocusStage({ stage: data.changes[data.changes.length - 1].stage, at: Date.now() }); sound.pour(); }
       if (matchMedia('(max-width: 900px)').matches && stage.current.getBoundingClientRect().top < -100) {
         stage.current.scrollIntoView({ behavior: reduceMotion() ? 'instant' : 'smooth' });
@@ -1181,16 +1259,17 @@ function App() {
     composer.current?.focus({ preventScroll: true });
   }
 
+  const shownProducts = (curation?.key === blendKey && curation?.picks?.length) ? curation.picks : result.products;
   const defaults = liquidColors(result.palette);
   // 단계마다 고른 노트들의 색을 OKLab에서 섞어 그 층의 색으로 쓴다
   const tones = stages.map(({ id }, index) => blendColors(selection[id].map(n => byId[n].color)) ?? defaults[index]);
   const accents = stages.map(({ id }) => selection[id].map(n => byId[n].color));
   const backdropTarget = view === 'entrance'
     ? { ...scenes[chapter], flow: storyFlow }
-    : { tones, dark: 0, reach: result.level > 0 || countOf(selection) ? 1.25 : .7 };
+    : { tones, dark: 0, reach: showResults ? 1.9 : result.level > 0 || countOf(selection) ? 1.25 : .7 };
 
   return <>
-    <Backdrop target={backdropTarget} ripple={view === 'studio' ? pulse : 0} flash={flash} originRef={backdropOrigin} />
+    <Backdrop target={backdropTarget} ripple={view === 'studio' ? pulse * 2 + (showResults ? 1 : 0) : 0} flash={flash} originRef={backdropOrigin} />
     <div className="grain" aria-hidden="true" />
     {view !== 'studio' && <>
       <Entrance opening={view === 'opening'} onChapter={setChapter} onStart={start} />
@@ -1208,6 +1287,56 @@ function App() {
         <button type="button" aria-label="안내 닫기" onClick={dismissHint}>×</button>
       </div>}
       {shareData && <ShareDialog data={shareData} onClose={() => setShareData(null)} />}
+      <div className={`chat-dock${chatOpen ? ' open' : ''}`}>
+        {chatOpen && <section className="chat-panel" role="dialog" aria-labelledby="talk-title" data-lenis-prevent
+          onKeyDown={event => { if (event.key === 'Escape') { event.stopPropagation(); setChatOpen(false); } }}>
+          <header className="chat-head">
+            <h2 id="talk-title"><b lang="en">In your words</b>말로 찾기</h2>
+            <button type="button" className="chat-close" aria-label="대화창 닫기" onClick={() => setChatOpen(false)}>×</button>
+          </header>
+            <div className="conversation" ref={conversation} role="log" aria-label="향수 상담 대화" data-lenis-prevent>
+            {messages.map((message, i) => <div className={`message ${message.role}`} key={i}>{message.image && <img className="message-photo" src={message.image} alt="보낸 사진" />}<p>{message.content}</p>
+              {message.changes?.length > 0 && <ul className="changes" aria-label="바뀐 노트">{message.changes.map(change => <li key={change.stage}>
+                <span className="change-stage" lang="en">{change.stage}</span>
+                {change.removed.map(name => <s key={name}>{name}</s>)}
+                {change.added.map(name => <b key={name}>{name}</b>)}
+              </li>)}</ul>}
+              {message.tools?.length > 0 && <ToolTrail tools={message.tools} />}
+            </div>)}
+            {busy && <div className="message assistant"><p className="working">향을 떠올리는 중<span>…</span></p></div>}
+            {error && <p className="error">{error}</p>}
+          </div>
+          {messages.length === 1 && <div className="examples" aria-label="예시 문장">
+            {examples.map(example => <button type="button" key={example} onClick={() => send(example)}>{example}</button>)}
+          </div>}
+          {photo && <div className="photo-pending"><img src={photo} alt="보낼 사진" /><span>이 사진의 분위기로 향을 찾아요<small>사진은 저장하지 않고 분석에만 써요</small></span>
+            <button type="button" onClick={() => setPhoto(null)} aria-label="사진 빼기">×</button></div>}
+          <form onSubmit={event => { event.preventDefault(); send(input); }} className={`composer${dragging ? ' dragging' : ''}`}
+            onDragOver={event => { event.preventDefault(); setDragging(true); }} onDragLeave={() => setDragging(false)}
+            onDrop={event => { event.preventDefault(); setDragging(false); attach(event.dataTransfer.files[0]); }}
+            onPaste={event => { const file = [...event.clipboardData.files].find(f => f.type.startsWith('image/')); if (file) attach(file); }}>
+            <button type="button" className="photo-button" onClick={() => photoInput.current?.click()} aria-label="사진으로 향 찾기" title="사진으로 향 찾기">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="3" /><path d="M8.5 6l1.4-2h4.2l1.4 2" /><circle cx="12" cy="12.5" r="3.4" /></svg>
+            </button>
+            <input ref={photoInput} type="file" accept="image/*" hidden onChange={event => { attach(event.target.files[0]); event.target.value = ''; }} />
+            <div className="composer-field"><TextInput ref={composer} label="찾고 있는 향" isLabelHidden
+              placeholder="장면을 말하거나, 사진을 올려 보세요" value={input} onChange={value => setInput(value.slice(0, 1000))} /></div>
+            <Button label="보내기" type="submit" variant="primary" size="md" isIconOnly
+              icon={<span aria-hidden="true">↑</span>} isDisabled={!input.trim() && !photo} isLoading={busy} />
+          </form>
+          {mode === 'demo' && <div className="demo-key">
+            <p className="mode-note">체험 모드예요. 날씨와 향수 조회는 그대로 되고, OpenAI 키를 넣으면 AI 상담·AI 큐레이션·사진 분석이 켜져요.</p>
+            <button type="button" className="demo-key-button" onClick={() => setKeyAsk(n => n + 1)}><span aria-hidden="true">✦</span> AI 키 넣기</button>
+          </div>}
+          {mode === 'incomplete' && <p className="mode-note">LLM 연결 설정을 완료하면 상담을 시작할 수 있어요.</p>}
+        </section>}
+      </div>
+      {showResults && <ResultsView results={result} curation={curation?.key === blendKey ? curation : null} curating={curating}
+        selection={selection} tones={tones} liked={liked} onLike={toggleLike} busy={busy}
+        onShare={(products, summary) => setShareData({ selection, tones, products, summary, bottle, link: blendLink(selection, bottle) })}
+        onAsk={item => { setShowResults(false); setChatOpen(true); send(`${item.name} 같은 향으로 만들어 줘`); }}
+        onTalk={() => { setChatOpen(true); setChatUnread(false); }}
+        onClose={() => setShowResults(false)} />}
       <div className="studio" ref={stage}>
         <Scene result={result} pulse={pulse} tones={tones} accents={accents} bottle={bottle} origin={origin} selection={selection} />
         <section className="consult" aria-labelledby="page-title">
@@ -1215,51 +1344,21 @@ function App() {
             <p className="index"><span>Atelier</span> — 나만의 블렌드</p>
             <h1 id="page-title" tabIndex={-1} ref={studioTitle} lang="en">The <em>Atelier</em></h1>
             <p className="title-ko">향의 아틀리에</p>
-            <p className="lede">단계마다 마음에 드는 노트를 여러 개 골라 섞어 보세요. 고른 색이 병 속에서 층을 이루며 섞이고, 그 조합과 가까운 향수를 찾아 드려요.</p>
+            <p className="lede">단계마다 마음에 드는 노트를 여러 개 골라 섞어 보세요. 노트를 누르면 병 속으로 들어가 층을 이루며 섞이고, 다 고르면 결과에서 가까운 향수를 볼 수 있어요. 말이나 사진으로 찾고 싶다면 오른쪽 아래 <b>말로 찾기</b>를 눌러 보세요.</p>
             {fromLink && <p className="shared-note">공유받은 블렌드예요. 노트를 바꾸거나 말을 걸어 나만의 향으로 이어 가 보세요.</p>}
           </div>
           <NotePicker selection={selection} choose={choose} disabled={busy} tones={tones} focus={focusStage} />
-          <section className="talk" aria-labelledby="talk-title">
-            <div className="section-label"><span>II.</span><h2 id="talk-title"><b lang="en">Or, in your words</b>또는, 말로 들려주세요</h2></div>
-            <div className="conversation" ref={conversation} role="log" aria-label="향수 상담 대화" data-lenis-prevent>
-              {messages.map((message, i) => <div className={`message ${message.role}`} key={i}>{message.image && <img className="message-photo" src={message.image} alt="보낸 사진" />}<p>{message.content}</p>
-                {message.changes?.length > 0 && <ul className="changes" aria-label="바뀐 노트">{message.changes.map(change => <li key={change.stage}>
-                  <span className="change-stage" lang="en">{change.stage}</span>
-                  {change.removed.map(name => <s key={name}>{name}</s>)}
-                  {change.added.map(name => <b key={name}>{name}</b>)}
-                </li>)}</ul>}
-                {message.tools?.length > 0 && <ToolTrail tools={message.tools} />}
-              </div>)}
-              {busy && <div className="message assistant"><p className="working">향을 떠올리는 중<span>…</span></p></div>}
-              {error && <p className="error">{error}</p>}
-            </div>
-            {messages.length === 1 && <div className="examples" aria-label="예시 문장">
-              {examples.map(example => <button type="button" key={example} onClick={() => send(example)}>{example}</button>)}
-            </div>}
-            {photo && <div className="photo-pending"><img src={photo} alt="보낼 사진" /><span>이 사진의 분위기로 향을 찾아요<small>사진은 저장하지 않고 분석에만 써요</small></span>
-              <button type="button" onClick={() => setPhoto(null)} aria-label="사진 빼기">×</button></div>}
-            <form onSubmit={event => { event.preventDefault(); send(input); }} className={`composer${dragging ? ' dragging' : ''}`}
-              onDragOver={event => { event.preventDefault(); setDragging(true); }} onDragLeave={() => setDragging(false)}
-              onDrop={event => { event.preventDefault(); setDragging(false); attach(event.dataTransfer.files[0]); }}
-              onPaste={event => { const file = [...event.clipboardData.files].find(f => f.type.startsWith('image/')); if (file) attach(file); }}>
-              <button type="button" className="photo-button" onClick={() => photoInput.current?.click()} aria-label="사진으로 향 찾기" title="사진으로 향 찾기">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="3" /><path d="M8.5 6l1.4-2h4.2l1.4 2" /><circle cx="12" cy="12.5" r="3.4" /></svg>
-              </button>
-              <input ref={photoInput} type="file" accept="image/*" hidden onChange={event => { attach(event.target.files[0]); event.target.value = ''; }} />
-              <div className="composer-field"><TextInput ref={composer} label="찾고 있는 향" isLabelHidden
-                placeholder="장면을 말하거나, 사진을 올려 보세요" value={input} onChange={value => setInput(value.slice(0, 1000))} /></div>
-              <Button label="보내기" type="submit" variant="primary" size="md" isIconOnly
-                icon={<span aria-hidden="true">↑</span>} isDisabled={!input.trim() && !photo} isLoading={busy} />
-            </form>
-            {mode === 'demo' && <div className="demo-key">
-              <p className="mode-note">체험 모드예요. 날씨와 향수 조회는 그대로 되고, OpenAI 키를 넣으면 AI 상담·AI 큐레이션·사진 분석이 켜져요.</p>
-              <button type="button" className="demo-key-button" onClick={() => setKeyAsk(n => n + 1)}><span aria-hidden="true">✦</span> AI 키 넣기</button>
-            </div>}
-            {mode === 'incomplete' && <p className="mode-note">LLM 연결 설정을 완료하면 상담을 시작할 수 있어요.</p>}
-          </section>
-          <Products results={result} curation={curation?.key === blendKey ? curation : null} curating={curating}
-            liked={liked} onLike={toggleLike} onShare={(products, summary) => setShareData({ selection, tones, products, summary, bottle, link: blendLink(selection, bottle) })} />
-          <Shelf liked={liked} disabled={busy} onRemove={toggleLike} onAsk={item => send(`${item.name} 같은 향으로 만들어 줘`)} />
+          <div className="result-cta">
+            <button type="button" className="result-button" disabled={!countOf(selection)} onClick={() => { setFlash(value => value + 1); setShowResults(true); }}>
+              <span><b lang="en">See your selection</b><small>{!countOf(selection) ? '노트를 하나 이상 고르면 결과를 볼 수 있어요'
+                : curating ? '어울리는 향수를 고르는 중…' : `향수 ${shownProducts.length}개 · 향수별 노트와 특징`}</small></span>
+              <i aria-hidden="true">→</i>
+            </button>
+            <button type="button" className="chat-launcher" aria-expanded={chatOpen} onClick={() => { setChatOpen(open => !open); setChatUnread(false); }}>
+              {chatOpen ? <><span aria-hidden="true">×</span> 닫기</> : <><span aria-hidden="true">✦</span> 말로 찾기</>}
+              {chatUnread && !chatOpen && <i className="unread" aria-label="새 답변" />}
+            </button>
+          </div>
           <ImageCredits />
         </section>
       </div>
