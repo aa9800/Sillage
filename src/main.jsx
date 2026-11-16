@@ -187,6 +187,9 @@ function sharedBlend() {
 }
 const sharedAtStart = sharedBlend();
 
+// 내 PC에서 실행 중이면(127.0.0.1 등) 링크는 다른 사람 기기에서 열리지 않는다
+const localOnly = ['localhost', '127.0.0.1', '[::1]', '::1'].includes(location.hostname);
+
 function blendLink(selection, bottle) {
   const query = new URLSearchParams();
   stages.forEach(({ id }) => { if (selection[id].length) query.set(id, selection[id].join(',')); });
@@ -793,7 +796,9 @@ function ShareDialog({ data, onClose }) {
   }
 
   async function copyLink() {
-    const done = () => setNote('링크를 복사했어요. 링크를 열면 같은 병과 블렌드가 그대로 열려요.');
+    const done = () => setNote(localOnly
+      ? '링크를 복사했어요. 지금은 이 PC에서 실행 중이라 이 링크는 이 PC에서만 열려요. 다른 사람에게는 공유하기나 이미지로 보내 주세요.'
+      : '링크를 복사했어요. 링크를 열면 같은 병과 블렌드가 그대로 열려요.');
     try { await navigator.clipboard.writeText(data.link); done(); return; } catch { /* 클립보드 권한이 없으면 아래 방식으로 */ }
     const area = Object.assign(document.createElement('textarea'), { value: data.link, readOnly: true });
     area.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
@@ -805,15 +810,16 @@ function ShareDialog({ data, onClose }) {
 
   async function share() {
     if (!card) return;
-    const text = `${shareText(data)}\n${data.link}`;
+    const text = localOnly ? shareText(data) : `${shareText(data)}\n${data.link}`;
     try {
       if (navigator.canShare?.({ files: [card.file] })) {
         await navigator.share({ files: [card.file], title: '나의 Sillage 블렌드', text });
         return;
       }
-      if (navigator.share) { await navigator.share({ title: '나의 Sillage 블렌드', text, url: data.link }); return; }
+      if (navigator.share) { await navigator.share({ title: '나의 Sillage 블렌드', text, ...(localOnly ? {} : { url: data.link }) }); return; }
       await navigator.clipboard.writeText(text);
-      setNote('이 브라우저는 공유 창을 지원하지 않아 블렌드 내용과 링크를 복사했어요. 이미지는 저장해서 함께 보내 주세요.');
+      setNote(localOnly ? '이 브라우저는 공유 창을 지원하지 않아 블렌드 내용을 복사했어요. 이미지는 저장해서 함께 보내 주세요.'
+        : '이 브라우저는 공유 창을 지원하지 않아 블렌드 내용과 링크를 복사했어요. 이미지는 저장해서 함께 보내 주세요.');
     } catch (error) {
       if (error?.name !== 'AbortError') setNote('공유하지 못했어요. 링크를 복사하거나 이미지를 저장해 주세요.');
     }
@@ -826,6 +832,7 @@ function ShareDialog({ data, onClose }) {
       <p className="index"><span>Card</span> — 나의 블렌드</p>
       <h2 id="share-title" lang="en">Your <em>blend</em></h2>
       <p className="title-ko">공유하거나 이미지로 간직해 보세요</p>
+      {localOnly && <p className="share-local">지금은 이 PC에서 실행 중이라 링크는 이 PC에서만 열려요. 다른 사람에게는 <b>공유하기</b>나 <b>이미지</b>로 보내 주세요.</p>}
       <div className="share-preview" aria-busy={!card}>
         {card ? <img src={card.url} alt="나의 블렌드 카드: 고른 노트와 시향해 볼 향수" /> : <span className="share-loading">카드를 만드는 중<i /><i /><i /></span>}
       </div>

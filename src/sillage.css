@@ -915,3 +915,5 @@ html[data-dark="1"] .grid-lines, html[data-dark="1"] .grid-lines i { border-colo
 .share-actions .share-primary { grid-column: 1 / -1; }
 .shared-note { margin: 14px 0 0; padding: 10px 14px; border-radius: 12px; background: rgba(255, 255, 255, .5);
   box-shadow: inset 0 0 0 1px var(--hair); font: 400 12.5px/1.6 var(--sans); color: var(--ink-soft); word-break: keep-all; }
+.share-local { margin: -8px 0 16px; font: 400 12px/1.6 var(--sans); color: var(--ink-mute); word-break: keep-all; }
+.share-local b { font-weight: 600; color: var(--ink-soft); }
