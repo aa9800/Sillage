@@ -11,6 +11,7 @@ import '@astryxdesign/core/astryx.css';
 import '@astryxdesign/theme-neutral/theme.css';
 import { Liquid, mixHex } from './fluid';
 // 실험용 three.js 병은 ?3d=1일 때만 따로 불러온다(기본은 고화질 사진 병)
+import FRAMES from '../public/atelier/frames/frames.json';
 const Bottle3D = lazy(() => import('./bottle3d').then(m => ({ default: m.Bottle3D })));
 import { Backdrop } from './backdrop';
 import { NoteIcon } from './note-icons';
@@ -178,6 +179,15 @@ const bottles = [
   { id: 'emerald', ratio: 499 / 577, inset: '33% 16% 14%', mask: 'polygon(8% 0, 92% 0, 100% 12%, 100% 88%, 92% 100%, 8% 100%, 0 88%, 0 12%)' },
   { id: 'oval', ratio: 404 / 602, inset: '27% 15% 14%', mask: 'inset(0 round 50% 50% 43% 43% / 45% 45% 57% 57%)' },
 ];
+
+// 병 표시 방식: 기본은 Blender로 각도마다 렌더한 프레임(scripts/render_bottles.py)을 넘겨 돌린다.
+// ?flat=1 → 예전 사진 병, ?3d=1 → 실험용 three.js 병
+const urlFlag = name => { try { return new URLSearchParams(location.search).get(name) === '1'; } catch { return false; } };
+const use3D = urlFlag('3d');
+const useFrames = !use3D && !urlFlag('flat');
+if (useFrames) bottles.forEach(b => { const f = FRAMES[b.id]; if (f) b.ratio = f.w / f.h; });
+// 지금 보이는 프레임 번호(결과 카드도 같은 각도로 그린다)
+let frameNow = 15;
 // 공유 링크로 들어오면(?top=lime&heart=violet&base=sandalwood,cedarwood&bottle=oval) 그 블렌드로 상담 화면을 바로 연다
 function sharedBlend() {
   try {
@@ -216,7 +226,6 @@ function chooseBottle() {
 
 /* ───────── 병 ───────── */
 
-const use3D = (() => { try { return new URLSearchParams(location.search).get('3d') === '1'; } catch { return false; } })();
 
 function Vessel({ bottle, tones, level, pulse, origin, accents }) {
   const [flat, setFlat] = useState(!use3D);
@@ -226,7 +235,19 @@ function Vessel({ bottle, tones, level, pulse, origin, accents }) {
     <div className="vessel-shadow" />
     <Suspense fallback={null}><Bottle3D design={bottle.id} tones={tones} level={level} pulse={pulse} onFail={() => setFlat(true)} /></Suspense>
   </div>;
-  // 기본: 고화질 사진 병. 돌리지 않고 제자리에서 천천히 떠 있기만 한다
+  const f = useFrames && FRAMES[bottle.id];
+  if (f) return <div className="vessel is-frames" ref={origin} style={style} aria-hidden="true">
+    <div className="vessel-shadow" />
+    <div className="bottle" data-vessel={bottle.id} style={{ '--cols': f.cols, '--rows': f.rows }}>
+      <div className="frame-liquid" style={{ '--sheet': `url(/atelier/frames/${bottle.id}-mask.webp)` }}>
+        <div className="frame-chamber" style={{ inset: f.chamber.map(v => `${v}%`).join(' ') }}>
+          <Liquid tones={tones} level={level} pulse={pulse} accents={accents} />
+        </div>
+      </div>
+      <div className="frame-glass" style={{ '--sheet': `url(/atelier/frames/${bottle.id}-glass.webp)` }} />
+    </div>
+  </div>;
+  // ?flat=1: 고화질 사진 병(돌지 않음)
   return <div className="vessel" ref={origin} style={style} aria-hidden="true">
     <div className="vessel-shadow" />
     <div className="bottle" data-vessel={bottle.id} style={{ '--vessel': `url(${image})`, '--fill': `${Math.max(8, level * .8)}%` }}>
@@ -740,7 +761,26 @@ async function renderShareCard({ selection, tones, products, bottle }) {
   halo.addColorStop(0, 'rgba(255,255,255,.5)'); halo.addColorStop(1, 'rgba(255,255,255,0)');
   g.fillStyle = halo; g.fillRect(0, 0, W, H);
   const solid = document.querySelector('.scene canvas.bottle3d');
-  if (solid?.width) {
+  const fr = useFrames && FRAMES[bottle.id];
+  if (fr) try {
+    const [glass, mask] = await Promise.all([loadImage(`/atelier/frames/${bottle.id}-glass.webp`), loadImage(`/atelier/frames/${bottle.id}-mask.webp`)]);
+    const sx = (frameNow % fr.cols) * fr.w, sy = Math.floor(frameNow / fr.cols) * fr.h;
+    const dh = 720, dw = Math.min(W - 160, dh * fr.w / fr.h), fh = dw * fr.h / fr.w, dx = (W - dw) / 2, dy = 70 + (dh - fh) / 2;
+    const layer = document.createElement('canvas'); layer.width = fr.w; layer.height = fr.h;
+    const lg = layer.getContext('2d');
+    const liquid = document.querySelector('.scene .frame-chamber canvas');
+    if (liquid?.width) {
+      const [t, r, b, l] = fr.chamber.map(v => v / 100);
+      lg.drawImage(liquid, l * fr.w, t * fr.h, (1 - l - r) * fr.w, (1 - t - b) * fr.h);
+      lg.globalCompositeOperation = 'destination-in';
+      lg.drawImage(mask, sx, sy, fr.w, fr.h, 0, 0, fr.w, fr.h);
+      lg.globalCompositeOperation = 'source-over';
+    }
+    lg.drawImage(glass, sx, sy, fr.w, fr.h, 0, 0, fr.w, fr.h);
+    g.save(); g.shadowColor = tones[2] + '55'; g.shadowBlur = 60; g.shadowOffsetY = 30;
+    g.drawImage(layer, dx, dy, dw, fh); g.restore();
+  } catch { /* 병 이미지를 못 불러와도 카드는 만든다 */ }
+  else if (solid?.width) {
     // 3D 병: 지금 화면의 병(유리·액체·마개)을 그대로 옮긴다
     const ratio = solid.width / solid.height, dh = 720, dw = Math.min(W - 160, dh * ratio);
     const fh = dw / ratio;
@@ -1042,7 +1082,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (reduceMotion() || !use3D) return;
+    if (reduceMotion() || !(use3D || useFrames)) return;
     const root = document.documentElement.style;
     const aim = { x: 0, y: 0 }, now = { x: 0, y: 0, s: 0 };
     let frame = 0;
@@ -1050,7 +1090,16 @@ function App() {
     const tick = () => {
       now.x += (aim.x - now.x) * .06; now.y += (aim.y - now.y) * .06;
       now.s += (Math.sin(scrollY / innerHeight * 1.1) * .45 - now.s) * .08;  // 스크롤하면 천천히 돌아가는 느낌
-      const tx = Math.max(-1, Math.min(1, now.x * .75 + now.s));
+      const idle = Math.sin(performance.now() / 1000 * .32) * .22;
+      const tx = Math.max(-1, Math.min(1, now.x * .75 + now.s + idle));
+      if (useFrames) {
+        const n = 31, k = Math.round((tx + 1) / 2 * (n - 1));
+        if (k !== frameNow) {
+          frameNow = k;
+          root.setProperty('--fx', `${(k % 8) / 7 * 100}%`);
+          root.setProperty('--fy', `${Math.floor(k / 8) / 3 * 100}%`);
+        }
+      }
       root.setProperty('--tilt-x', tx.toFixed(4));
       root.setProperty('--tilt-y', now.y.toFixed(4));
       root.setProperty('--light-x', `${(32 - tx * 22).toFixed(2)}%`);

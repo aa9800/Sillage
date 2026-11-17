@@ -1130,3 +1130,15 @@ html[data-dark="1"] .grid-lines, html[data-dark="1"] .grid-lines i { border-colo
 .bottle3d-host { inset: 0 -30%; }
 .vessel.is-3d::before { opacity: .22; }
 
+
+/* ───────── 렌더 프레임 병 (11/17): Blender로 각도마다 렌더한 유리를 넘겨 돌린다 ─────────
+   --fx/--fy(App이 마우스·스크롤로 정함) = 스프라이트에서 지금 각도의 칸. 액체는 같은 칸의 마스크 모양으로만 보인다. */
+.frame-liquid, .frame-glass { position: absolute; inset: 0; pointer-events: none; }
+.frame-glass { background: var(--sheet) no-repeat; background-size: calc(var(--cols) * 100%) calc(var(--rows) * 100%);
+  background-position: var(--fx, 100%) var(--fy, 33.33%); }
+.frame-liquid { -webkit-mask: var(--sheet) no-repeat; mask: var(--sheet) no-repeat;
+  -webkit-mask-size: calc(var(--cols) * 100%) calc(var(--rows) * 100%); mask-size: calc(var(--cols) * 100%) calc(var(--rows) * 100%);
+  -webkit-mask-position: var(--fx, 100%) var(--fy, 33.33%); mask-position: var(--fx, 100%) var(--fy, 33.33%); }
+.frame-chamber { position: absolute; }
+.frame-chamber .liquid-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.vessel.is-frames::before { opacity: .38; }
