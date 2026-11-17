@@ -1142,3 +1142,8 @@ html[data-dark="1"] .grid-lines, html[data-dark="1"] .grid-lines i { border-colo
 .frame-chamber { position: absolute; }
 .frame-chamber .liquid-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 .vessel.is-frames::before { opacity: .38; }
+/* 렌더 병은 사진 병보다 넓어서, 아래 블렌드 글(VOTRE PARFUM)과 겹치지 않게 병 자리를 위로 올리고 폭을 제한한다 */
+@media (min-width: 901px) {
+  .scene-stage { inset: 9svh 0 34svh; }
+  .scene-stage .vessel.is-frames { height: min(100%, calc(36vw / var(--ratio))); }
+}
