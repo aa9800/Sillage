@@ -1,7 +1,6 @@
 .env
 .venv/
 node_modules/
-dist/
 __pycache__/
 _backup_*/
 data/build-log.txt

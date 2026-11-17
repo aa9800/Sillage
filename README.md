@@ -54,6 +54,14 @@ python -m venv .venv
 
 macOS·Linux에서는 `sh run.sh`를 실행해요.
 
+## 온라인 데모 배포 (Render, 무료)
+
+저장소의 `render.yaml`로 [Render](https://render.com) 무료 웹 서비스에 올릴 수 있어요. 빌드된 화면(`dist/`)이 저장소에 들어 있어서 Node 없이 Python만으로 실행돼요.
+
+1. Render에 GitHub 계정으로 로그인 → **New → Blueprint** → 이 저장소를 고르면 `render.yaml` 설정대로 만들어져요.
+2. API 키는 넣지 않아요. 데모는 **체험 모드**로 열리고, AI 상담은 보는 사람이 화면에서 자기 키를 넣어 써요.
+3. 무료 서버는 15분 동안 접속이 없으면 잠들어서, 그 뒤 처음 열 때 30초~1분 걸려요.
+
 ## OpenAI API 키 (선택)
 
 키가 없어도 **체험 모드**로 화면, 노트 블렌딩, 규칙 기반 추천, MCP 날씨·향수 조회가 모두 동작해요. LLM 상담, AI 큐레이션, 사진 분석을 쓰려면 둘 중 하나를 해요.

@@ -1,0 +1,13 @@
+# Render 무료 웹 서비스 배포 설정(Blueprint). 교육용 키는 넣지 않는다 → 체험 모드로 열림.
+# AI 상담을 쓰려면 화면 오른쪽 위 '체험 모드' 버튼에 각자 OpenAI 키를 넣는다(브라우저 탭에만 보관).
+services:
+  - type: web
+    name: sillage
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn server:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/status
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
