@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { Suspense, lazy, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -10,7 +10,8 @@ import { neutralTheme } from '@astryxdesign/theme-neutral/built';
 import '@astryxdesign/core/astryx.css';
 import '@astryxdesign/theme-neutral/theme.css';
 import { Liquid, mixHex } from './fluid';
-import { Bottle3D, canUse3D } from './bottle3d';
+// 실험용 three.js 병은 ?3d=1일 때만 따로 불러온다(기본은 고화질 사진 병)
+const Bottle3D = lazy(() => import('./bottle3d').then(m => ({ default: m.Bottle3D })));
 import { Backdrop } from './backdrop';
 import { NoteIcon } from './note-icons';
 import { blendColors, mixColors } from './color';
@@ -215,26 +216,36 @@ function chooseBottle() {
 
 /* ───────── 병 ───────── */
 
-// 3D로 그릴 수 있으면 3D 병, 아니면(WebGL 없음, ?flat=1) 이미지 병
-const use3D = canUse3D();
+const use3D = (() => { try { return new URLSearchParams(location.search).get('3d') === '1'; } catch { return false; } })();
+// 병의 두께(px): 기울이면 뒤쪽 유리 테두리가 이만큼 밀려 보인다
+const DEPTH = { crystal: 30, ribbon: 34, column: 26, emerald: 40, oval: 36 };
+const SLICES = Array.from({ length: 10 }, (_, i) => (i + 1) / 10);
 
 function Vessel({ bottle, tones, level, pulse, origin, accents }) {
   const [flat, setFlat] = useState(!use3D);
   const image = `/atelier/${bottle.id}.webp`;
-  if (!flat) return <div className="vessel is-3d" ref={origin} style={{ '--ratio': bottle.ratio, '--t0': tones[0], '--t1': tones[1], '--t2': tones[2] }} aria-hidden="true">
+  const style = { '--ratio': bottle.ratio, '--t0': tones[0], '--t1': tones[1], '--t2': tones[2] };
+  if (!flat) return <div className="vessel is-3d" ref={origin} style={style} aria-hidden="true">
     <div className="vessel-shadow" />
-    <Bottle3D design={bottle.id} tones={tones} level={level} pulse={pulse} onFail={() => setFlat(true)} />
+    <Suspense fallback={null}><Bottle3D design={bottle.id} tones={tones} level={level} pulse={pulse} onFail={() => setFlat(true)} /></Suspense>
   </div>;
-  return <div className="vessel" ref={origin} style={{ '--ratio': bottle.ratio, '--t0': tones[0], '--t1': tones[1], '--t2': tones[2] }} aria-hidden="true">
+  // 사진 병 + 깊이: 뒤 유리벽(-두께) · 두께 테두리 조각들 · 본체(0) · 앞 반사(+) 를 실제 3D 공간에 겹쳐 둔다
+  return <div className="vessel" ref={origin} aria-hidden="true"
+    style={{ ...style, '--depth': `${DEPTH[bottle.id] ?? 30}px`, '--vessel': `url(${image})`, '--rim': `url(/atelier/${bottle.id}-rim.webp)` }}>
     <div className="vessel-shadow" />
-    <div className="bottle" data-vessel={bottle.id} style={{ '--vessel': `url(${image})`, '--fill': `${Math.max(8, level * .8)}%` }}>
-      <img className="crystal" src={image} alt="" />
-      <div className="liquid-chamber" style={{ inset: bottle.inset, clipPath: bottle.mask }}>
-        <Liquid tones={tones} level={level} pulse={pulse} accents={accents} />
+    <div className="vessel-body" data-vessel={bottle.id}>
+      <img className="vessel-back" src={image} alt="" />
+      {SLICES.map(k => <i className="vessel-slice" key={k} style={{ '--k': k }} />)}
+      <div className="bottle" data-vessel={bottle.id} style={{ '--fill': `${Math.max(8, level * .8)}%` }}>
+        <img className="crystal" src={image} alt="" />
+        <div className="liquid-chamber" style={{ inset: bottle.inset, clipPath: bottle.mask }}>
+          <Liquid tones={tones} level={level} pulse={pulse} accents={accents} />
+        </div>
+        <div className="glass-tint" />
+        <div className="crystal-light" />
       </div>
-      <div className="glass-tint" />
+      <i className="vessel-rim-front" />
       <div className="glass-sheen" />
-      <div className="crystal-light" />
     </div>
   </div>;
 }
