@@ -940,20 +940,6 @@ html[data-dark="1"] .grid-lines, html[data-dark="1"] .grid-lines i { border-colo
   font: 600 10px var(--sans); letter-spacing: .06em; vertical-align: middle; }
 .product .match.near { color: var(--ink-mute); }
 
-/* ───────── 병 3D 기울기와 마우스 반사광 (11/16) ───────── */
-.vessel { transform: perspective(1600px) rotateY(calc(var(--tilt-x, 0) * 10deg)) rotateX(calc(var(--tilt-y, 0) * -5deg));
-  transform-style: preserve-3d; will-change: transform; }
-/* 유리 표면에 맺힌 빛: 마우스 반대편으로 옮겨 가며, 기울기에 따라 세로 띠 반사가 미끄러진다(저절로 지나가지 않음) */
-.glass-sheen {
-  position: absolute; inset: 0; pointer-events: none; mask: var(--vessel) center / contain no-repeat;
-  -webkit-mask: var(--vessel) center / contain no-repeat;
-  background:
-    radial-gradient(ellipse 30% 42% at var(--light-x, 32%) var(--light-y, 34%), rgba(255, 255, 255, .38), rgba(255, 255, 255, 0) 72%),
-    linear-gradient(90deg, transparent calc(18% + var(--tilt-x, 0) * 14%), rgba(255, 255, 255, .22) calc(24% + var(--tilt-x, 0) * 14%),
-      transparent calc(30% + var(--tilt-x, 0) * 14%));
-  mix-blend-mode: screen; opacity: .85;
-}
-@media (prefers-reduced-motion: reduce) { .vessel { transform: none; } .glass-sheen { opacity: .5; } }
 
 /* 스토리 길이 줄이기: 장마다 화면 2.3개 → 1.65개 */
 .chapter { height: 165svh; }
@@ -1099,21 +1085,6 @@ html[data-dark="1"] .grid-lines, html[data-dark="1"] .grid-lines i { border-colo
 
 /* ───────── 2차 (11/16): 입체감, 결과 배경, 버튼 한 줄, 결과에서 말로 바꾸기 ───────── */
 /* 입체감: 더 크게 돌고, 유리·액체·반사가 서로 다른 깊이로 움직인다(시차). 기운 쪽 가장자리에 빛이 맺히고 반대쪽은 살짝 그늘진다. */
-.vessel { transform: perspective(900px) rotateY(calc(var(--tilt-x, 0) * 17deg)) rotateX(calc(var(--tilt-y, 0) * -7deg)); }
-.liquid-chamber { translate: calc(var(--tilt-x, 0) * -6px) calc(var(--tilt-y, 0) * -3px); }
-.glass-tint { translate: calc(var(--tilt-x, 0) * 2px) 0; }
-.glass-sheen {
-  translate: calc(var(--tilt-x, 0) * 10px) calc(var(--tilt-y, 0) * 5px);
-  background:
-    radial-gradient(ellipse 30% 42% at var(--light-x, 32%) var(--light-y, 34%), rgba(255, 255, 255, .4), rgba(255, 255, 255, 0) 72%),
-    linear-gradient(90deg, transparent calc(18% + var(--tilt-x, 0) * 14%), rgba(255, 255, 255, .24) calc(24% + var(--tilt-x, 0) * 14%),
-      transparent calc(30% + var(--tilt-x, 0) * 14%)),
-    linear-gradient(90deg, rgb(255 255 255 / calc(max(0, var(--tilt-x, 0) * -1) * .5)) 0, transparent 16%, transparent 84%,
-      rgb(255 255 255 / calc(max(0, var(--tilt-x, 0)) * .5)) 100%),
-    linear-gradient(90deg, rgb(40 36 30 / calc(max(0, var(--tilt-x, 0)) * .14)) 0, transparent 22%, transparent 78%,
-      rgb(40 36 30 / calc(max(0, var(--tilt-x, 0) * -1) * .14)) 100%);
-}
-.vessel-shadow { translate: calc(var(--tilt-x, 0) * -22px) 0; }
 
 /* 결과 화면: 종이색으로 덮지 않고, 뒤에서 일렁이는 내 블렌드 색이 비쳐 보이게 */
 .results { background: linear-gradient(180deg, rgba(239, 235, 228, .38), rgba(239, 235, 228, .62));
@@ -1159,26 +1130,3 @@ html[data-dark="1"] .grid-lines, html[data-dark="1"] .grid-lines i { border-colo
 .bottle3d-host { inset: 0 -30%; }
 .vessel.is-3d::before { opacity: .22; }
 
-/* ───────── 사진 병 입체감 (11/17): 3D 렌더 대신 고화질 사진을 깊이층으로 겹친다 ─────────
-   뒤 유리벽(-두께) → 두께 테두리 조각 10장 → 본체 사진(0) → 앞 테두리 빛 → 반사광(+).
-   기울이면 층마다 원근이 달라 병이 돌아가는 것처럼 보이고, 옆으로 유리 두께가 드러난다. */
-.vessel { transform-style: preserve-3d;
-  transform: perspective(1100px) rotateY(calc(var(--tilt-x, 0) * 24deg)) rotateX(calc(var(--tilt-y, 0) * -8deg)); }
-.vessel-body { position: absolute; inset: 0; transform-style: preserve-3d; animation: float 10s ease-in-out infinite; }
-.vessel-body > .bottle { animation: none; }
-.vessel-back, .vessel-slice, .vessel-rim-front { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-.vessel-back { object-fit: contain; transform: translateZ(calc(var(--depth) * -1)) scale(.97);
-  opacity: .22; filter: saturate(.5) brightness(1.05) blur(.6px); }
-.vessel-slice { -webkit-mask: var(--rim) center / contain no-repeat; mask: var(--rim) center / contain no-repeat;
-  transform: translateZ(calc(var(--depth) * var(--k) * -1));
-  background: linear-gradient(90deg, color-mix(in srgb, var(--t1), #4d4a44 55%), color-mix(in srgb, var(--t0), #f4f1ea 40%) 50%, color-mix(in srgb, var(--t2), #4d4a44 55%));
-  opacity: calc(.34 - var(--k) * .2); }
-.vessel-rim-front { -webkit-mask: var(--rim) center / contain no-repeat; mask: var(--rim) center / contain no-repeat;
-  transform: translateZ(1px); mix-blend-mode: screen;
-  background: linear-gradient(90deg, rgb(255 255 255 / calc(.15 + max(0, var(--tilt-x, 0) * -1) * .6)), transparent 30% 70%,
-    rgb(255 255 255 / calc(.15 + max(0, var(--tilt-x, 0)) * .6))); }
-.vessel .glass-sheen { transform: translateZ(calc(var(--depth) * .45)); translate: 0 0; }
-.vessel.is-3d .vessel-body { display: none; }
-@media (prefers-reduced-motion: reduce) { .vessel-body { animation: none; } }
-[data-vessel="crystal"] .vessel-back { clip-path: polygon(41% 0, 57% 0, 75% 8%, 76% 25%, 85% 35%, 100% 59%, 100% 64%, 88% 75%,
-    77% 88%, 75% 100%, 24% 100%, 19% 88%, 11% 75%, 0 64%, 0 59%, 14% 35%, 24% 25%, 25% 8%); }

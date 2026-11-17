@@ -217,9 +217,6 @@ function chooseBottle() {
 /* ───────── 병 ───────── */
 
 const use3D = (() => { try { return new URLSearchParams(location.search).get('3d') === '1'; } catch { return false; } })();
-// 병의 두께(px): 기울이면 뒤쪽 유리 테두리가 이만큼 밀려 보인다
-const DEPTH = { crystal: 30, ribbon: 34, column: 26, emerald: 40, oval: 36 };
-const SLICES = Array.from({ length: 10 }, (_, i) => (i + 1) / 10);
 
 function Vessel({ bottle, tones, level, pulse, origin, accents }) {
   const [flat, setFlat] = useState(!use3D);
@@ -229,23 +226,16 @@ function Vessel({ bottle, tones, level, pulse, origin, accents }) {
     <div className="vessel-shadow" />
     <Suspense fallback={null}><Bottle3D design={bottle.id} tones={tones} level={level} pulse={pulse} onFail={() => setFlat(true)} /></Suspense>
   </div>;
-  // 사진 병 + 깊이: 뒤 유리벽(-두께) · 두께 테두리 조각들 · 본체(0) · 앞 반사(+) 를 실제 3D 공간에 겹쳐 둔다
-  return <div className="vessel" ref={origin} aria-hidden="true"
-    style={{ ...style, '--depth': `${DEPTH[bottle.id] ?? 30}px`, '--vessel': `url(${image})`, '--rim': `url(/atelier/${bottle.id}-rim.webp)` }}>
+  // 기본: 고화질 사진 병. 돌리지 않고 제자리에서 천천히 떠 있기만 한다
+  return <div className="vessel" ref={origin} style={style} aria-hidden="true">
     <div className="vessel-shadow" />
-    <div className="vessel-body" data-vessel={bottle.id}>
-      <img className="vessel-back" src={image} alt="" />
-      {SLICES.map(k => <i className="vessel-slice" key={k} style={{ '--k': k }} />)}
-      <div className="bottle" data-vessel={bottle.id} style={{ '--fill': `${Math.max(8, level * .8)}%` }}>
-        <img className="crystal" src={image} alt="" />
-        <div className="liquid-chamber" style={{ inset: bottle.inset, clipPath: bottle.mask }}>
-          <Liquid tones={tones} level={level} pulse={pulse} accents={accents} />
-        </div>
-        <div className="glass-tint" />
-        <div className="crystal-light" />
+    <div className="bottle" data-vessel={bottle.id} style={{ '--vessel': `url(${image})`, '--fill': `${Math.max(8, level * .8)}%` }}>
+      <img className="crystal" src={image} alt="" />
+      <div className="liquid-chamber" style={{ inset: bottle.inset, clipPath: bottle.mask }}>
+        <Liquid tones={tones} level={level} pulse={pulse} accents={accents} />
       </div>
-      <i className="vessel-rim-front" />
-      <div className="glass-sheen" />
+      <div className="glass-tint" />
+      <div className="crystal-light" />
     </div>
   </div>;
 }
@@ -1052,7 +1042,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (reduceMotion()) return;
+    if (reduceMotion() || !use3D) return;
     const root = document.documentElement.style;
     const aim = { x: 0, y: 0 }, now = { x: 0, y: 0, s: 0 };
     let frame = 0;
